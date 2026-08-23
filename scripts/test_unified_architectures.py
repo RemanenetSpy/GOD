@@ -38,14 +38,16 @@ def test_kolmogorov_causal_induction():
         [0, 0, 0]
     ])
     
-    # First discovery
-    progs = ke.induce_causal_laws(prev, curr, step=1)
-    assert len(progs) > 0, "Failed to induce causal transition rules!"
+    # Step multiple times to satisfy statistical confirmation threshold (>= 5)
+    for s in range(1, 6):
+        progs = ke.induce_causal_laws(prev, curr, step=s)
+    
+    assert len(ke.program_library) > 0, "Failed to induce causal transition rules!"
     initial_count = len(ke.program_library)
-    print(f"  -> Discovered {initial_count} unique laws from blinker transition.")
+    print(f"  -> Discovered {initial_count} unique laws from confirmed blinker transitions.")
     
     # Step again with identical transition (Deduplication Check)
-    progs_repeat = ke.induce_causal_laws(prev, curr, step=2)
+    progs_repeat = ke.induce_causal_laws(prev, curr, step=6)
     assert len(progs_repeat) == 0, "Deduplication failed! Minted duplicate rules on repeat observation."
     assert len(ke.program_library) == initial_count, "Library size increased on duplicate observation!"
     print("  -> Strict Deduplication verified! (0 duplicates minted)")

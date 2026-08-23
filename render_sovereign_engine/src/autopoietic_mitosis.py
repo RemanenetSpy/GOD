@@ -25,12 +25,12 @@ class AutopoieticMitosisEngine:
     """
     Life Cycle Controller for Sovereign Civilization: Mitosis, Fusion, and Natural Selection.
     """
-    def __init__(self, max_population: int = 12):
+    def __init__(self, max_population: int = 10):
         self.max_population = max_population
-        self.generation_counter = 1
+        self.generation_counter = 0
         self.birth_events: List[str] = []
         self.merger_events: List[str] = []
-        self.death_events: List[str] = []
+        self.last_mitosis_step: Dict[str, int] = {}
 
     def check_mitosis(
         self,
@@ -38,16 +38,23 @@ class AutopoieticMitosisEngine:
         energy: float,
         subroutine_count: int,
         position: Tuple[int, int],
-        current_pop: int
+        current_pop: int,
+        current_step: int = 0
     ) -> Optional[Dict[str, Any]]:
         """
         Evaluates whether an agent undergoes Mitosis / Spawning.
-        Condition: Energy == 300.0 (Cap), has >= 3 subroutines, and room in ecosystem.
+        Requires: Energy >= 295.0, >= 2 subroutines, room in ecosystem, and cooldown.
         """
         if current_pop >= self.max_population:
             return None
 
+        # 250-step maturation cooldown between divisions
+        last_step = self.last_mitosis_step.get(node_id, -999)
+        if current_step - last_step < 250:
+            return None
+
         if energy >= 295.0 and subroutine_count >= 2:
+            self.last_mitosis_step[node_id] = current_step
             self.generation_counter += 1
             offspring_id = f"{node_id}_child_{self.generation_counter}"
             

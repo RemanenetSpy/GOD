@@ -421,7 +421,8 @@ class SovereignCivilization:
                 energy=node.state.energy,
                 subroutine_count=len(node.kolmogorov_engine.program_library),
                 position=node.state.position,
-                current_pop=len(self.nodes)
+                current_pop=len(self.nodes),
+                current_step=self.step_count
             )
             if spawn_info:
                 child_id = spawn_info["offspring_id"]

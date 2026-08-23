@@ -387,7 +387,7 @@ def visual_dashboard():
       border-radius: 6px;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       transition: all 0.2s;
     }
     .tab-btn:hover { background: #374151; color: #fff; }
@@ -417,7 +417,7 @@ def visual_dashboard():
       border-radius: 6px;
       cursor: pointer;
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       transition: all 0.2s;
     }
     button:hover { background: #374151; }
@@ -449,7 +449,7 @@ def visual_dashboard():
       align-items: center;
     }
 
-    .panel-title { font-weight: 600; font-size: 0.95rem; }
+    .panel-title { font-weight: 600; font-size: 0.92rem; }
 
     .canvas-wrapper {
       position: relative;
@@ -476,11 +476,11 @@ def visual_dashboard():
       .telemetry-grid { grid-template-columns: 1fr; }
     }
 
-    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
-    th { color: var(--text-muted); font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; font-family: monospace; }
+    th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    th { color: var(--text-muted); font-weight: 600; font-family: sans-serif; font-size: 0.75rem; }
 
-    .agent-tag { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+    .agent-tag { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; }
     .tag-classical { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
     .tag-quantum { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
     .tag-modern { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
@@ -495,14 +495,23 @@ def visual_dashboard():
       background: #000;
       border: 1px solid var(--border-color);
       border-radius: 6px;
-      height: 150px;
+      height: 180px;
       overflow-y: auto;
       padding: 8px;
-      font-family: monospace;
-      font-size: 0.75rem;
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.72rem;
       display: flex;
       flex-direction: column;
       gap: 4px;
+    }
+
+    pre {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: #93c5fd;
+      white-space: pre-wrap;
+      margin-top: 2px;
     }
 
     .stream-line.fever { color: #f87171; }
@@ -524,7 +533,7 @@ def visual_dashboard():
 
   <!-- 3-WAY UNIVERSE TOGGLE TABS -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Continuous Archive (30+ Laws)</button>
+    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Continuous Archive</button>
     <button class="tab-btn" id="tab-b" onclick="switchUniverse('b')">🌌 Universe B: Cyclic Pruner (Forced Rediscovery)</button>
     <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian Ecology</button>
   </div>
@@ -541,7 +550,7 @@ def visual_dashboard():
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">🌱 Living Cellular Automata Universe</div>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">Green: Life | Red: Barriers | C/Q/M/S/H: Organisms</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Green: Life | Red: Barriers | C/Q/M/S/H: Organisms</span>
       </div>
       <div class="canvas-wrapper">
         <canvas id="ca-canvas" width="400" height="400"></canvas>
@@ -551,7 +560,7 @@ def visual_dashboard():
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">🧠 Collective Consciousness Consensus Field Φ(x)</div>
-        <span style="font-size: 0.8rem; color: var(--text-muted);">True Quantum Belief Tensors Synthesized via M_t^i</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">True Quantum Belief Tensors Synthesized via M_t^i</span>
       </div>
       <div class="canvas-wrapper">
         <canvas id="mind-canvas" width="400" height="400"></canvas>
@@ -563,7 +572,7 @@ def visual_dashboard():
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">📊 Real-Time Relativistic Agent Telemetry (S_t^i)</div>
-        <span id="telemetry-summary" style="font-size: 0.8rem; color: var(--text-muted);">Step: 000 | Total Energy: 1200.0</span>
+        <span id="telemetry-summary" style="font-size: 0.78rem; color: var(--text-muted);">Step: 000 | Total Energy: 1200.0</span>
       </div>
       <table>
         <thead>
@@ -586,7 +595,7 @@ def visual_dashboard():
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">📜 Kolmogorov Program Library (L(S_t^i) Causal Induction)</div>
-        <span id="sub-count" style="font-size: 0.8rem; color: var(--text-muted);">0 Unique Laws</span>
+        <span id="sub-count" style="font-size: 0.78rem; color: var(--text-muted);">0 Unique Laws</span>
       </div>
       <div class="stream-box" id="subroutine-box"></div>
     </div>
@@ -595,13 +604,16 @@ def visual_dashboard():
   <div class="panel">
     <div class="panel-header">
       <div class="panel-title">📡 Relativistic Message Stream (M_t^i Fabric & Pruning Events)</div>
-      <span id="msg-counter" style="font-size: 0.8rem; color: var(--text-muted);">0 Messages Exchanged</span>
+      <span id="msg-counter" style="font-size: 0.78rem; color: var(--text-muted);">0 Messages Exchanged</span>
     </div>
     <div class="stream-box" id="message-box"></div>
   </div>
 
   <script>
     let activeUniverse = 'a';
+    let lastSubroutineCount = -1;
+    let lastSubroutineKeys = "";
+    let lastMessageCount = -1;
 
     const canvasCA = document.getElementById("ca-canvas");
     const ctxCA = canvasCA.getContext("2d");
@@ -625,6 +637,9 @@ def visual_dashboard():
 
     function switchUniverse(u) {
       activeUniverse = u;
+      lastSubroutineCount = -1;
+      lastSubroutineKeys = "";
+      lastMessageCount = -1;
       document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
       document.getElementById(`tab-${u}`).classList.add("active");
       fetchState();
@@ -709,31 +724,51 @@ def visual_dashboard():
         }
       }
 
-      // 3. Render Telemetry Table
+      // 3. Render Telemetry Table smoothly
       const tbody = document.getElementById("telemetry-body");
-      tbody.innerHTML = "";
       let totEnergy = 0;
 
-      data.nodes.forEach(node => {
-        totEnergy += node.energy;
-        const tr = document.createElement("tr");
-        const pillarPrefix = node.pillar.split("-")[0].toLowerCase();
-        const tagClass = `tag-${pillarPrefix}`;
-        const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
+      // Update rows smoothly
+      const rows = tbody.querySelectorAll("tr");
+      if (rows.length !== data.nodes.length) {
+        tbody.innerHTML = "";
+        data.nodes.forEach(node => {
+          totEnergy += node.energy;
+          const tr = document.createElement("tr");
+          const pillarPrefix = node.pillar.split("-")[0].toLowerCase();
+          const tagClass = `tag-${pillarPrefix}`;
+          const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
 
-        tr.innerHTML = `
-          <td><span class="agent-tag ${tagClass}">${node.id}</span></td>
-          <td>${node.pillar}</td>
-          <td>(${node.pos[0]}, ${node.pos[1]})</td>
-          <td>${node.energy.toFixed(1)}</td>
-          <td>${node.dh_dt >= 0 ? '+' : ''}${node.dh_dt.toFixed(2)}</td>
-          <td>${node.temperature.toFixed(2)}</td>
-          <td>D${node.dim_10d}</td>
-          <td>${node.sub_count}</td>
-          <td>${feverBadge}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+          tr.innerHTML = `
+            <td><span class="agent-tag ${tagClass}">${node.id}</span></td>
+            <td>${node.pillar}</td>
+            <td>(${node.pos[0]}, ${node.pos[1]})</td>
+            <td>${node.energy.toFixed(1)}</td>
+            <td>${node.dh_dt >= 0 ? '+' : ''}${node.dh_dt.toFixed(2)}</td>
+            <td>${node.temperature.toFixed(2)}</td>
+            <td>D${node.dim_10d}</td>
+            <td>${node.sub_count}</td>
+            <td>${feverBadge}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } else {
+        data.nodes.forEach((node, idx) => {
+          totEnergy += node.energy;
+          const tr = rows[idx];
+          const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
+          const cells = tr.querySelectorAll("td");
+          if (cells.length >= 9) {
+            cells[2].textContent = `(${node.pos[0]}, ${node.pos[1]})`;
+            cells[3].textContent = node.energy.toFixed(1);
+            cells[4].textContent = `${node.dh_dt >= 0 ? '+' : ''}${node.dh_dt.toFixed(2)}`;
+            cells[5].textContent = node.temperature.toFixed(2);
+            cells[6].textContent = `D${node.dim_10d}`;
+            cells[7].textContent = node.sub_count;
+            cells[8].innerHTML = feverBadge;
+          }
+        });
+      }
 
       document.getElementById("telemetry-summary").innerText = `Step: ${data.step.toString().padStart(3, '0')} | Total Energy: ${totEnergy.toFixed(1)}`;
       document.getElementById("pop-counter").innerText = `👥 Population: ${data.population}`;
@@ -742,37 +777,45 @@ def visual_dashboard():
       const stagText = data.pruning_enabled ? `🔄 Saturation Timer: ${data.stagnation_steps} / 1500` : `🔒 Pruning: Disabled (Permanent Vault)`;
       document.getElementById("stagnation-status").innerText = stagText;
 
-      // 4. Render Subroutines
-      const subBox = document.getElementById("subroutine-box");
+      // 4. Render Subroutines smoothly without text flicker
       const subs = data.subroutines || [];
-      document.getElementById("sub-count").innerText = `${subs.length} Unique Discovered Laws`;
-      if (subs.length > 0) {
-        subBox.innerHTML = subs.map(item => `
-          <div class="stream-line sub" style="border-bottom: 1px solid #1f2937; padding-bottom: 4px; margin-bottom: 4px;">
-            <span style="font-weight:bold; color:#ec4899;">• [${item.signature}]</span>
-            <pre style="color:#93c5fd; white-space:pre-wrap; margin-top:2px;">${item.code}</pre>
-          </div>
-        `).join("");
-      } else {
-        subBox.innerHTML = "<div style='color:#6b7280;'>Inducing causal transition laws...</div>";
+      const currentKeys = subs.map(s => s.signature).join(",");
+      if (currentKeys !== lastSubroutineKeys) {
+        lastSubroutineKeys = currentKeys;
+        document.getElementById("sub-count").innerText = `${subs.length} Unique Discovered Laws`;
+        const subBox = document.getElementById("subroutine-box");
+        if (subs.length > 0) {
+          subBox.innerHTML = subs.map(item => `
+            <div class="stream-line sub" style="border-bottom: 1px solid #1f2937; padding-bottom: 4px; margin-bottom: 4px;">
+              <span style="font-weight:bold; color:#ec4899;">• [${item.signature}]</span>
+              <pre>${item.code}</pre>
+            </div>
+          `).join("");
+        } else {
+          subBox.innerHTML = "<div style='color:#6b7280;'>Inducing verified causal transition laws...</div>";
+        }
       }
 
-      // 5. Render Messages & Events
-      const msgBox = document.getElementById("message-box");
-      let lines = [];
-      if (data.events && data.events.prunings) {
-        data.events.prunings.forEach(p => lines.push(`<div class="stream-line prune">${p}</div>`));
+      // 5. Render Messages & Events smoothly
+      const msgCount = (data.events ? (data.events.prunings?.length || 0) + (data.events.births?.length || 0) : 0) + (data.messages?.length || 0);
+      if (msgCount !== lastMessageCount) {
+        lastMessageCount = msgCount;
+        const msgBox = document.getElementById("message-box");
+        let lines = [];
+        if (data.events && data.events.prunings) {
+          data.events.prunings.forEach(p => lines.push(`<div class="stream-line prune">${p}</div>`));
+        }
+        if (data.events && data.events.births) {
+          data.events.births.forEach(b => lines.push(`<div class="stream-line mitosis">${b}</div>`));
+        }
+        if (data.messages && data.messages.length > 0) {
+          data.messages.forEach(m => {
+            const cls = m.includes("fever") ? "fever" : (m.includes("subroutine") ? "sub" : "grad");
+            lines.push(`<div class="stream-line ${cls}">[M_t^i] ${m}</div>`);
+          });
+        }
+        msgBox.innerHTML = lines.join("");
       }
-      if (data.events && data.events.births) {
-        data.events.births.forEach(b => lines.push(`<div class="stream-line mitosis">${b}</div>`));
-      }
-      if (data.messages && data.messages.length > 0) {
-        data.messages.forEach(m => {
-          const cls = m.includes("fever") ? "fever" : (m.includes("subroutine") ? "sub" : "grad");
-          lines.push(`<div class="stream-line ${cls}">[M_t^i] ${m}</div>`);
-        });
-      }
-      msgBox.innerHTML = lines.join("");
     }
 
     document.getElementById("btn-fever").onclick = () => fetch(`/api/action/fever?u=${activeUniverse}`, { method: "POST" });
