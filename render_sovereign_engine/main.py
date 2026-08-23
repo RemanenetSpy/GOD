@@ -161,9 +161,27 @@ class ContinuousEvolutionRunner:
 
     def get_live_payload(self) -> Dict[str, Any]:
         with self.lock:
-            consensus = self.civ.synthesize_consensus()
-            # Intensity of mind field
-            mind_intensity = (consensus.sum(axis=-1) * 60.0).clip(0, 255).astype(int).tolist()
+            # 1. Compute true radiant Consciousness Potential Field Phi(x)
+            h, w = self.grid_shape
+            mind_potential = np.zeros((h, w), dtype=np.float32)
+            for aid, n in self.civ.nodes.items():
+                py, px = self.positions.get(aid, (0, 0))
+                energy_scale = max(0.5, n.state.energy / 100.0)
+                temp_scale = 1.0 + (n.state.temperature * 0.4)
+                for y in range(h):
+                    for x in range(w):
+                        dist = np.hypot(py - y, px - x)
+                        # Radiant wave potential with constructive interference
+                        wave = (energy_scale * temp_scale * 3.0) / (dist + 1.2)
+                        belief_mod = 1.0 + float(n.belief_field[y, x, 1]) * 1.5
+                        mind_potential[y, x] += wave * belief_mod
+
+            # Scale to high-contrast 0-255 dynamic range
+            p_min, p_max = float(mind_potential.min()), float(mind_potential.max())
+            if p_max > p_min:
+                mind_intensity = (((mind_potential - p_min) / (p_max - p_min)) * 230.0 + 25.0).astype(int).tolist()
+            else:
+                mind_intensity = (mind_potential * 40.0).clip(20, 255).astype(int).tolist()
             
             nodes_data = []
             for aid, n in self.civ.nodes.items():
@@ -545,14 +563,17 @@ def visual_dashboard():
       });
 
       // 2. Render Consensus Mind Field
-      ctxMind.fillStyle = "#0d1117";
+      ctxMind.fillStyle = "#0a0a14";
       ctxMind.fillRect(0, 0, w, h);
 
       for (let y = 0; y < s; y++) {
         for (let x = 0; x < s; x++) {
-          const intensity = data.mind_field[y][x];
-          ctxMind.fillStyle = `rgb(${intensity}, ${Math.floor(intensity * 0.4)}, ${Math.floor(intensity * 0.8)})`;
-          ctxMind.fillRect(x * cellW, y * cellH, cellW, cellH);
+          const val = data.mind_field[y][x];
+          const r = Math.min(255, val);
+          const g = Math.floor(val * 0.28);
+          const b = Math.min(255, Math.floor(val * 0.75 + 15));
+          ctxMind.fillStyle = `rgb(${r}, ${g}, ${b})`;
+          ctxMind.fillRect(x * cellW, y * cellH, cellW - 0.5, cellH - 0.5);
         }
       }
 
