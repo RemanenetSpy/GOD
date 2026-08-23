@@ -1,12 +1,11 @@
 """
 ========================================================================================
-SOVEREIGN CIVILIZATION 24/7 CLOUD SERVER & 10-ARCHITECTURE VISUAL LABORATORY
+SOVEREIGN CIVILIZATION 24/7 CLOUD SERVER & TRI-UNIVERSE PARALLEL LABORATORY
 ========================================================================================
-1. Runs the FULL Authentic Python Sovereign Civilization Engine (10 Architectures).
-2. True Causal Rule Induction (Moore neighborhood physics, symmetries, clusters).
-3. Population Mitosis (Reproduction at H=300), Mergers, and Mortality.
-4. Quantum Belief Superposition & 10D String Cognitive Coordinates.
-5. Real-time visual dual-canvas dashboard & UptimeRobot /ping support.
+Runs 3 Independent Parallel Civilizations Simultaneously:
+1. 🌍 Universe A: Continuous Archive (100% Rule Retention, 30+ Laws baseline).
+2. 🌌 Universe B: Cyclic Pruner (Mathematical FIFO Pruning on Stagnation).
+3. 🔥 Universe C: Unbounded Darwin (Malthusian Population + Cyclic Pruning).
 ========================================================================================
 """
 
@@ -39,12 +38,29 @@ vault = HFDatasetMemoryVault(repo_id=HF_REPO, token=HF_TOKEN)
 
 
 class ContinuousEvolutionRunner:
-    def __init__(self, grid_size: int = 25, ca_rule: str = "Conway (B3/S23)"):
+    def __init__(
+        self,
+        universe_id: str,
+        mode_name: str,
+        enable_pruning: bool = False,
+        max_pop: int = 10,
+        grid_size: int = 25,
+        ca_rule: str = "Conway (B3/S23)",
+        vault_file: str = "civilization_champion.json"
+    ):
+        self.universe_id = universe_id
+        self.mode_name = mode_name
         self.grid_size = grid_size
         self.grid_shape = (grid_size, grid_size)
         self.ca_rule = ca_rule
+        self.vault_file = vault_file
+        
         self.universe = CellularAutomataUniverse(grid_shape=self.grid_shape, ca_rule=ca_rule)
-        self.civ = SovereignCivilization(grid_shape=self.grid_shape)
+        self.civ = SovereignCivilization(
+            grid_shape=self.grid_shape,
+            max_population=max_pop,
+            enable_cyclic_pruning=enable_pruning
+        )
         
         self.positions: Dict[str, Tuple[int, int]] = {
             "classical_prime": (2, 2),
@@ -67,23 +83,23 @@ class ContinuousEvolutionRunner:
 
     def load_from_cloud(self):
         try:
-            cloud_data = vault.load_checkpoint()
+            cloud_data = vault.load_checkpoint(filename=self.vault_file)
             if cloud_data:
                 self.step_count = cloud_data.get("step_num", cloud_data.get("stepCount", 0))
-                if "subroutines" in cloud_data:
+                if "subroutines" in cloud_data and not self.civ.enable_cyclic_pruning:
                     self.civ.global_subroutine_archive.update(cloud_data["subroutines"])
-                print(f"[Render Engine] Recovered from Cloud Vault at Step {self.step_count} with {len(self.civ.global_subroutine_archive)} subroutines!")
+                print(f"[Render Engine] [{self.mode_name}] Recovered at Step {self.step_count} with {len(self.civ.global_subroutine_archive)} subroutines!")
         except Exception as e:
-            print(f"[Render Engine Warning] Initial recovery error: {e}")
+            print(f"[Render Engine Warning] Recovery error for {self.universe_id}: {e}")
 
     def _evolution_loop(self):
-        print("[Render Engine] 24/7 Sovereign Evolution Loop STARTED in background!")
+        print(f"[Render Engine] [{self.mode_name}] 24/7 Sovereign Evolution Loop STARTED!")
         while self.running:
             try:
                 with self.lock:
                     self.step_count += 1
                     
-                    # Ensure all active nodes have positions
+                    # Ensure all active nodes have coordinates
                     for aid in list(self.civ.nodes.keys()):
                         if aid not in self.positions:
                             self.positions[aid] = (
@@ -114,10 +130,10 @@ class ContinuousEvolutionRunner:
                             reward=rewards.get(aid, 0.0)
                         )
                         
-                    # 3. Execute true Python physics step, learning induction, & message routing
+                    # 3. Step master civilization
                     actions = self.civ.step(observations)
                     
-                    # 4. Move agents along physical coordinates
+                    # 4. Move agents
                     for aid, act in actions.items():
                         if aid not in self.positions:
                             continue
@@ -128,31 +144,29 @@ class ContinuousEvolutionRunner:
                         elif act == Action.MOVE_RIGHT: px = min(w - 1, px + 1)
                         self.positions[aid] = (py, px)
                     
-                    # 5. Throttled Cloud Commit (every 60 seconds to respect HF rate limits)
+                    # 5. Throttled Cloud Commit
                     now = time.time()
-                    if now - self.last_saved_time >= 60.0:
+                    if now - self.last_saved_time >= 90.0:
                         self.last_saved_time = now
                         state_dict = {
+                            "universe_id": self.universe_id,
+                            "mode_name": self.mode_name,
                             "step_num": self.step_count,
                             "ca_rule": self.ca_rule,
                             "population": len(self.civ.nodes),
-                            "positions": {k: list(v) for k, v in self.positions.items()},
                             "subroutines": self.civ.global_subroutine_archive,
-                            "agent_energies": {k: float(n.state.energy) for k, n in self.civ.nodes.items()},
-                            "agent_temperatures": {k: float(n.state.temperature) for k, n in self.civ.nodes.items()},
-                            "agent_fever": {k: bool(n.state.fever_active) for k, n in self.civ.nodes.items()},
                             "total_subroutines": len(self.civ.global_subroutine_archive)
                         }
                         vault.save_checkpoint(
                             state_dict,
-                            commit_msg=f"Continuous 24/7 evolution step {self.step_count}",
+                            filename=self.vault_file,
+                            commit_msg=f"Continuous 24/7 {self.mode_name} step {self.step_count}",
                             async_upload=True
                         )
 
-                # Control tick rate
                 time.sleep(self.speed_ms / 1000.0)
             except Exception as e:
-                print(f"[Render Evolution Error]: {e}")
+                print(f"[Render Evolution Error {self.universe_id}]: {e}")
                 time.sleep(1.0)
 
     def trigger_fever(self):
@@ -166,7 +180,11 @@ class ContinuousEvolutionRunner:
         with self.lock:
             self.ca_rule = rule
             self.universe = CellularAutomataUniverse(grid_shape=self.grid_shape, ca_rule=rule)
-            self.civ = SovereignCivilization(grid_shape=self.grid_shape)
+            self.civ = SovereignCivilization(
+                grid_shape=self.grid_shape,
+                max_population=self.civ.max_population,
+                enable_cyclic_pruning=self.civ.enable_cyclic_pruning
+            )
             self.positions = {
                 "classical_prime": (2, 2),
                 "quantum_prime": (self.grid_size - 3, 2),
@@ -180,7 +198,6 @@ class ContinuousEvolutionRunner:
             h, w = self.grid_shape
             mind_potential = np.zeros((h, w), dtype=np.float32)
             
-            # Compute radiant potential field with dynamic wave superposition
             for aid, n in self.civ.nodes.items():
                 py, px = self.positions.get(aid, (0, 0))
                 energy_scale = max(0.5, n.state.energy / 100.0)
@@ -192,7 +209,6 @@ class ContinuousEvolutionRunner:
                         belief_mod = 1.0 + float(n.belief_engine.belief_tensor[y, x, 1]) * 1.5
                         mind_potential[y, x] += wave * belief_mod
 
-            # Dynamic range normalization
             p_min, p_max = float(mind_potential.min()), float(mind_potential.max())
             if p_max > p_min:
                 mind_intensity = (((mind_potential - p_min) / (p_max - p_min)) * 230.0 + 25.0).astype(int).tolist()
@@ -215,15 +231,16 @@ class ContinuousEvolutionRunner:
                     "sub_count": len(n.kolmogorov_engine.program_library)
                 })
                 
-            recent_msgs = [m.summary() for m in self.civ.fabric.history[-25:]]
+            recent_msgs = [m.summary() for m in self.civ.fabric.history[-20:]]
             recent_msgs.reverse()
             
-            # Formatted list of unique discovered programs with descriptions
             subroutine_items = []
             for sig, code in self.civ.global_subroutine_archive.items():
                 subroutine_items.append({"signature": sig, "code": code})
 
             return {
+                "universe_id": self.universe_id,
+                "mode_name": self.mode_name,
                 "step": self.step_count,
                 "ca_rule": self.ca_rule,
                 "grid_size": self.grid_size,
@@ -235,33 +252,66 @@ class ContinuousEvolutionRunner:
                 "messages": recent_msgs,
                 "events": {
                     "births": self.civ.mitosis_engine.birth_events[-5:],
-                    "mergers": self.civ.mitosis_engine.merger_events[-5:]
+                    "mergers": self.civ.mitosis_engine.merger_events[-5:],
+                    "prunings": self.civ.pruning_events[-5:]
                 },
+                "stagnation_steps": self.civ.steps_since_last_discovery,
+                "pruning_enabled": self.civ.enable_cyclic_pruning,
                 "total_messages": self.civ.fabric.total_messages_routed,
                 "cloud_vault": HF_REPO
             }
 
 
-runner = ContinuousEvolutionRunner()
-app = FastAPI(title="Sovereign Civilization 24/7 Cloud Engine")
+# Spawn Tri-Universe Runners Concurrently
+runners: Dict[str, ContinuousEvolutionRunner] = {
+    "a": ContinuousEvolutionRunner(
+        universe_id="a",
+        mode_name="Universe A (Continuous Archive)",
+        enable_pruning=False,
+        max_pop=10,
+        vault_file="civilization_universe_a.json"
+    ),
+    "b": ContinuousEvolutionRunner(
+        universe_id="b",
+        mode_name="Universe B (Cyclic Pruner)",
+        enable_pruning=True,
+        max_pop=10,
+        vault_file="civilization_universe_b.json"
+    ),
+    "c": ContinuousEvolutionRunner(
+        universe_id="c",
+        mode_name="Universe C (Unbounded Darwin)",
+        enable_pruning=True,
+        max_pop=35,
+        vault_file="civilization_universe_c.json"
+    ),
+}
+
+app = FastAPI(title="Sovereign Civilization 24/7 Tri-Universe Engine")
 
 @app.api_route("/api/state", methods=["GET", "HEAD"])
-def api_state():
-    return runner.get_live_payload()
+def api_state(u: str = "a"):
+    target_runner = runners.get(u.lower(), runners["a"])
+    return target_runner.get_live_payload()
 
 @app.post("/api/action/fever")
-def api_fever():
-    runner.trigger_fever()
-    return {"status": "FEVER_TRIGGERED"}
+def api_fever(u: str = "a"):
+    target_runner = runners.get(u.lower(), runners["a"])
+    target_runner.trigger_fever()
+    return {"status": "FEVER_TRIGGERED", "universe": u}
 
 @app.post("/api/action/reset")
-def api_reset(rule: str = "Conway (B3/S23)"):
-    runner.reset(rule)
-    return {"status": "RESET_OK"}
+def api_reset(u: str = "a", rule: str = "Conway (B3/S23)"):
+    target_runner = runners.get(u.lower(), runners["a"])
+    target_runner.reset(rule)
+    return {"status": "RESET_OK", "universe": u}
 
 @app.api_route("/ping", methods=["GET", "HEAD"])
 def ping():
-    return JSONResponse(content={"status": "OK", "step": runner.step_count})
+    return JSONResponse(content={
+        "status": "OK",
+        "steps": {k: r.step_count for k, r in runners.items()}
+    })
 
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def visual_dashboard():
@@ -271,7 +321,7 @@ def visual_dashboard():
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌌 Sovereign Civilization 24/7 Engine (10 Unified Architectures)</title>
+  <title>🌌 Sovereign Civilization Tri-Universe Parallel Engine</title>
   <style>
     :root {
       --bg-main: #0a0e17;
@@ -317,6 +367,35 @@ def visual_dashboard():
       border-radius: 9999px;
       font-size: 0.8rem;
       font-weight: 600;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      background: var(--bg-panel);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #1f2937;
+      color: var(--text-muted);
+      border: 1px solid #374151;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { background: #374151; color: #fff; }
+    .tab-btn.active {
+      background: #2563eb;
+      border-color: #3b82f6;
+      color: #fff;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
     }
 
     .controls-bar {
@@ -430,23 +509,32 @@ def visual_dashboard():
     .stream-line.sub { color: var(--accent-pink); }
     .stream-line.grad { color: var(--accent-cyan); }
     .stream-line.mitosis { color: var(--accent-green); }
+    .stream-line.prune { color: #fbbf24; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="title-group">
-      <h1>🌌 Sovereign Civilization: 10 Unified Architectures</h1>
-      <p>100% Real Python Engine | God Equation: <code>S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i)</code></p>
+      <h1>🌌 Sovereign Civilization: Tri-Universe Parallel Engine</h1>
+      <p id="universe-subtitle">Viewing Universe A (Continuous Archive) | 100% Real Python 3.11 Runtime</p>
     </div>
-    <div class="badge" id="phase-badge">● LIVE 24/7 SOVEREIGN RUNTIME</div>
+    <div class="badge">● 3 PARALLEL UNIVERSES RUNNING 24/7</div>
   </header>
+
+  <!-- 3-WAY UNIVERSE TOGGLE TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Continuous Archive (30+ Laws)</button>
+    <button class="tab-btn" id="tab-b" onclick="switchUniverse('b')">🌌 Universe B: Cyclic Pruner (Forced Rediscovery)</button>
+    <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian Ecology</button>
+  </div>
 
   <div class="controls-bar">
     <button class="fever" id="btn-fever">🔥 Trigger Fever</button>
     <button id="btn-reset">🔄 Reset Universe</button>
     <span id="pop-counter" style="font-weight: 700; font-size: 0.85rem; color: #38bdf8;">👥 Population: 4</span>
-    <span id="cloud-status" style="font-size: 0.75rem; color: #10b981; margin-left: auto;">☁️ Cloud Vault: Connected (Explorerp/sovereign-civilization-memory)</span>
+    <span id="stagnation-status" style="font-size: 0.8rem; color: #fbbf24; margin-left: 12px;">🔄 Saturation: 0 / 1500</span>
+    <span id="cloud-status" style="font-size: 0.75rem; color: #10b981; margin-left: auto;">☁️ Cloud Vault: Connected</span>
   </div>
 
   <div class="canvas-container">
@@ -506,13 +594,15 @@ def visual_dashboard():
 
   <div class="panel">
     <div class="panel-header">
-      <div class="panel-title">📡 Relativistic Message Stream (M_t^i Fabric & Mitosis Events)</div>
+      <div class="panel-title">📡 Relativistic Message Stream (M_t^i Fabric & Pruning Events)</div>
       <span id="msg-counter" style="font-size: 0.8rem; color: var(--text-muted);">0 Messages Exchanged</span>
     </div>
     <div class="stream-box" id="message-box"></div>
   </div>
 
   <script>
+    let activeUniverse = 'a';
+
     const canvasCA = document.getElementById("ca-canvas");
     const ctxCA = canvasCA.getContext("2d");
     const canvasMind = document.getElementById("mind-canvas");
@@ -533,9 +623,16 @@ def visual_dashboard():
       "string_meta": "S"
     };
 
+    function switchUniverse(u) {
+      activeUniverse = u;
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(`tab-${u}`).classList.add("active");
+      fetchState();
+    }
+
     async function fetchState() {
       try {
-        const res = await fetch("/api/state");
+        const res = await fetch(`/api/state?u=${activeUniverse}`);
         if (!res.ok) return;
         const data = await res.json();
         render(data);
@@ -543,6 +640,8 @@ def visual_dashboard():
     }
 
     function render(data) {
+      document.getElementById("universe-subtitle").innerText = `Viewing ${data.mode_name} | God Equation: S_{t+1}^i = U(...) + L(...)`;
+      
       const s = data.grid_size || 25;
       const w = canvasCA.width;
       const h = canvasCA.height;
@@ -639,6 +738,9 @@ def visual_dashboard():
       document.getElementById("telemetry-summary").innerText = `Step: ${data.step.toString().padStart(3, '0')} | Total Energy: ${totEnergy.toFixed(1)}`;
       document.getElementById("pop-counter").innerText = `👥 Population: ${data.population}`;
       document.getElementById("msg-counter").innerText = `${data.total_messages} Messages Exchanged`;
+      
+      const stagText = data.pruning_enabled ? `🔄 Saturation Timer: ${data.stagnation_steps} / 1500` : `🔒 Pruning: Disabled (Permanent Vault)`;
+      document.getElementById("stagnation-status").innerText = stagText;
 
       // 4. Render Subroutines
       const subBox = document.getElementById("subroutine-box");
@@ -658,6 +760,9 @@ def visual_dashboard():
       // 5. Render Messages & Events
       const msgBox = document.getElementById("message-box");
       let lines = [];
+      if (data.events && data.events.prunings) {
+        data.events.prunings.forEach(p => lines.push(`<div class="stream-line prune">${p}</div>`));
+      }
       if (data.events && data.events.births) {
         data.events.births.forEach(b => lines.push(`<div class="stream-line mitosis">${b}</div>`));
       }
@@ -670,8 +775,8 @@ def visual_dashboard():
       msgBox.innerHTML = lines.join("");
     }
 
-    document.getElementById("btn-fever").onclick = () => fetch("/api/action/fever", { method: "POST" });
-    document.getElementById("btn-reset").onclick = () => fetch("/api/action/reset", { method: "POST" });
+    document.getElementById("btn-fever").onclick = () => fetch(`/api/action/fever?u=${activeUniverse}`, { method: "POST" });
+    document.getElementById("btn-reset").onclick = () => fetch(`/api/action/reset?u=${activeUniverse}`, { method: "POST" });
 
     // Poll live Python server every 120ms
     setInterval(fetchState, 120);

@@ -328,12 +328,22 @@ class BaseSovereignNode:
 
 class SovereignCivilization:
     """Master Orchestrator of the Sovereign Relativistic Multi-Agent Civilization."""
-    def __init__(self, grid_shape: Tuple[int, int] = (25, 25)):
+    def __init__(
+        self,
+        grid_shape: Tuple[int, int] = (25, 25),
+        max_population: int = 10,
+        enable_cyclic_pruning: bool = False
+    ):
         self.grid_shape = grid_shape
+        self.max_population = max_population
+        self.enable_cyclic_pruning = enable_cyclic_pruning
         self.fabric = RelativisticMessageFabric()
-        self.mitosis_engine = AutopoieticMitosisEngine(max_population=10)
+        self.mitosis_engine = AutopoieticMitosisEngine(max_population=max_population)
         self.step_count = 0
+        self.steps_since_last_discovery = 0
+        self.last_archive_size = 0
         self.global_subroutine_archive: Dict[str, str] = {}
+        self.pruning_events: List[str] = []
         
         # Initialize 4 Sovereign Pillars
         self.nodes: Dict[str, BaseSovereignNode] = {
@@ -436,6 +446,28 @@ class SovereignCivilization:
         # 3. Route All Messages
         for msg in out_msgs:
             self.fabric.transmit(msg)
+
+        # 4. Saturation Tracking & Cyclic Pruning Protocol
+        current_size = len(self.global_subroutine_archive)
+        if current_size > self.last_archive_size:
+            self.steps_since_last_discovery = 0
+            self.last_archive_size = current_size
+        else:
+            self.steps_since_last_discovery += 1
+
+        if self.enable_cyclic_pruning and self.global_subroutine_archive:
+            # When saturated for >= 1500 steps (24 mixing cycles), prune oldest rule every 500 steps
+            if self.steps_since_last_discovery >= 1500 and self.step_count % 500 == 0:
+                oldest_sig = next(iter(self.global_subroutine_archive))
+                del self.global_subroutine_archive[oldest_sig]
+                for n in self.nodes.values():
+                    if oldest_sig in n.kolmogorov_engine.program_library:
+                        del n.kolmogorov_engine.program_library[oldest_sig]
+                self.last_archive_size = len(self.global_subroutine_archive)
+                event_msg = f"🗑️ PRUNED: [{oldest_sig}] evicted to force rediscovery (Stagnant: {self.steps_since_last_discovery} steps)"
+                self.pruning_events.append(event_msg)
+                if len(self.pruning_events) > 50:
+                    self.pruning_events.pop(0)
 
         return actions
 

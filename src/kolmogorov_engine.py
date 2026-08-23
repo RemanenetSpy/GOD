@@ -211,6 +211,14 @@ class KolmogorovEngine:
 
         return newly_discovered
 
+    def evict_oldest_program(self) -> Optional[str]:
+        """Evicts the earliest discovered program in FIFO order (for cyclic memory pruning)."""
+        if not self.program_library:
+            return None
+        oldest_sig = next(iter(self.program_library))
+        del self.program_library[oldest_sig]
+        return oldest_sig
+
     def get_library_dict(self) -> Dict[str, str]:
         """Returns clean serializable dictionary of all unique discovered subroutines."""
         return {sig: p.code_str for sig, p in self.program_library.items()}
