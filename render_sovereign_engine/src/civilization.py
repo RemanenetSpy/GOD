@@ -429,3 +429,12 @@ class SovereignCivilization:
         self.energy_trace.append(float(tot_e))
         self.entropy_trace.append(float(avg_h))
         return actions
+
+    def synthesize_consensus(self) -> np.ndarray:
+        consensus = np.zeros((*self.grid_shape, 4), dtype=np.float32)
+        tot_w = 0.0
+        for node in self.nodes.values():
+            w = node.state.energy / (node.state.temperature + 0.1)
+            consensus += w * node.belief_field
+            tot_w += w
+        return consensus / tot_w if tot_w > 0 else consensus
