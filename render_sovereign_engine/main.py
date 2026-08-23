@@ -199,7 +199,7 @@ class ContinuousEvolutionRunner:
 runner = ContinuousEvolutionRunner()
 app = FastAPI(title="Sovereign Civilization 24/7 Cloud Engine")
 
-@app.get("/api/state")
+@app.api_route("/api/state", methods=["GET", "HEAD"])
 def api_state():
     return runner.get_live_payload()
 
@@ -213,11 +213,11 @@ def api_reset(rule: str = "Conway (B3/S23)"):
     runner.reset(rule)
     return {"status": "RESET_OK"}
 
-@app.get("/ping")
+@app.api_route("/ping", methods=["GET", "HEAD"])
 def ping():
     return JSONResponse(content={"status": "OK", "step": runner.step_count})
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def visual_dashboard():
     return """
 <!DOCTYPE html>
