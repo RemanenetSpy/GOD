@@ -219,7 +219,7 @@ class BaseSovereignNode:
         compression_profit = sum(p.compression_gain for p in new_programs)
 
         # 4. Thermodynamic Homeostasis Update (dH/dt = (Sigma * Omega) - Lambda)
-        friction = 0.25 # Metabolic base metabolic burn
+        friction = 0.05 # Sustainable metabolic base burn (2000 steps baseline)
         feeding_energy = max(0.0, observation.reward)
         sigma = 1.0 + len(self.kolmogorov_engine.program_library) * 0.05
         omega = info_gain + (compression_profit * 0.5)
@@ -346,6 +346,16 @@ class SovereignCivilization:
         for nid in self.nodes:
             self.fabric.register_node(nid)
 
+    def _reseed_pioneers(self):
+        self.nodes = {
+            "classical_prime": BaseSovereignNode("classical_prime", PillarArchetype.CLASSICAL_EIKONAL, grid_shape=self.grid_shape, aperture=2, initial_energy=120.0),
+            "quantum_prime": BaseSovereignNode("quantum_prime", PillarArchetype.QUANTUM_SUPERPOSED, grid_shape=self.grid_shape, aperture=3, initial_energy=120.0),
+            "modern_prime": BaseSovereignNode("modern_prime", PillarArchetype.MODERN_THERMODYNAMIC, grid_shape=self.grid_shape, aperture=3, initial_energy=120.0),
+            "string_meta": BaseSovereignNode("string_meta", PillarArchetype.STRING_TOPOLOGICAL, grid_shape=self.grid_shape, aperture=4, initial_energy=120.0),
+        }
+        for nid in self.nodes:
+            self.fabric.register_node(nid)
+
     def step(self, observations: Optional[Dict[str, Observation]] = None) -> Dict[str, Action]:
         self.step_count += 1
         actions: Dict[str, Action] = {}
@@ -376,15 +386,23 @@ class SovereignCivilization:
             for sig, code in node.kolmogorov_engine.get_library_dict().items():
                 self.global_subroutine_archive[sig] = code
 
-            # Check Mortality (H <= 0)
-            if self.mitosis_engine.check_mortality(aid, node.state.energy):
+            # Check Mortality (H <= 0) for non-pioneer offspring nodes
+            is_pioneer = aid in ["classical_prime", "quantum_prime", "modern_prime", "string_meta"]
+            if not is_pioneer and self.mitosis_engine.check_mortality(aid, node.state.energy):
                 dead_nodes.append(aid)
+            elif is_pioneer and node.state.energy <= 0.0:
+                # Pioneer enters metabolic torpor / dormancy floor
+                node.state.energy = 15.0
 
-        # Remove dead nodes
+        # Remove dead offspring nodes
         for dead_id in dead_nodes:
             if dead_id in self.nodes:
                 del self.nodes[dead_id]
                 self.fabric.unregister_node(dead_id)
+
+        # Genesis: If all nodes perished, re-seed the 4 pioneer pillars
+        if len(self.nodes) == 0:
+            self._reseed_pioneers()
 
         # 2. Check for Mitosis / Reproduction (H == 300.0)
         for aid, node in list(self.nodes.items()):
