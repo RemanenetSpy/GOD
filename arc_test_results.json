@@ -1,0 +1,14 @@
+{
+  "training": {},
+  "evaluation": {},
+  "summary": {
+    "training_solve_rate": 0.0,
+    "evaluation_solve_rate": 0.0,
+    "total_tasks": 0,
+    "total_solved": 0,
+    "avg_vocab_size": 0.0,
+    "avg_concepts_per_task": 0.0,
+    "transfer_events": 0,
+    "pillar": "QUANTUM"
+  }
+}

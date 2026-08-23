@@ -1,0 +1,92 @@
+[
+  {
+    "file": "IERC20Mintable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\interfaces\\IERC20Mintable.sol",
+    "lines": 20,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.035765866640885574,
+      "min_density": 0.002789878753206156,
+      "void_threshold": 0.00823348170402546
+    }
+  },
+  {
+    "file": "ECDSAChecks.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\libraries\\ECDSAChecks.sol",
+    "lines": 44,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.06155160886756521,
+      "min_density": 0.002061643302098432,
+      "void_threshold": 0.010616040525827293
+    }
+  },
+  {
+    "file": "Bridge.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\modules\\bridge\\Bridge.sol",
+    "lines": 660,
+    "voids": [
+      {
+        "line": 12,
+        "density": 0.012355124639582177,
+        "content": "} from \"@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.17093508121139467,
+      "min_density": 0.0010664008493854278,
+      "void_threshold": 0.013697443074232181
+    }
+  },
+  {
+    "file": "IBridge.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\modules\\bridge\\interfaces\\IBridge.sol",
+    "lines": 271,
+    "voids": [
+      {
+        "line": 10,
+        "density": 0.019152608751840237,
+        "content": "interface IBridge {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08128621652562937,
+      "min_density": 0.001946519782345292,
+      "void_threshold": 0.019152608751840237
+    }
+  },
+  {
+    "file": "Mapper.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\modules\\mapper\\Mapper.sol",
+    "lines": 211,
+    "voids": [
+      {
+        "line": 15,
+        "density": 0.011269946528690945,
+        "content": "contract Mapper is Initializable, UUPSUpgradeable, AccessControlUpgradeable, IMapper {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08764330578991666,
+      "min_density": 0.002307896499460226,
+      "void_threshold": 0.016607462613167385
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\bridge-contracts-main\\ether\\contracts\\main\\modules\\mapper\\interfaces\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 10,
+        "density": 0.018841045764190194,
+        "content": "interface IMapper {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07235700045900059,
+      "min_density": 0.0022198579637128604,
+      "void_threshold": 0.023809034317495974
+    }
+  }
+]

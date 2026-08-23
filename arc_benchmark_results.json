@@ -1,0 +1,60 @@
+{
+  "training": {
+    "007bbfb7": {
+      "task_id": "007bbfb7",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 525,
+      "time_seconds": 0.6209273338317871,
+      "prediction_shape": [
+        3,
+        3
+      ],
+      "expected_shape": [
+        9,
+        9
+      ]
+    },
+    "00d62c1b": {
+      "task_id": "00d62c1b",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 525,
+      "time_seconds": 0.38732075691223145,
+      "prediction_shape": [
+        20,
+        20
+      ],
+      "expected_shape": [
+        20,
+        20
+      ]
+    },
+    "017c7c7b": {
+      "task_id": "017c7c7b",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 525,
+      "time_seconds": 0.15871834754943848,
+      "prediction_shape": [
+        6,
+        3
+      ],
+      "expected_shape": [
+        9,
+        3
+      ]
+    }
+  },
+  "evaluation": {},
+  "summary": {
+    "training_solve_rate": 0.0,
+    "evaluation_solve_rate": 0.0,
+    "total_tasks": 3,
+    "total_solved": 0,
+    "avg_vocab_size": 525,
+    "avg_concepts_per_task": 0.0,
+    "transfer_events": 0,
+    "pillar": "QUANTUM"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "total_tasks": 10,
+  "solved": 0,
+  "success_rate": 0.0,
+  "results": [
+    {
+      "task": "00d62c1b.json",
+      "agent": "PHYSICS",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "0ca9ddb6.json",
+      "agent": "RELATIVITY",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "0a938d79.json",
+      "agent": "INFORMATION",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "1cf80156.json",
+      "agent": "QUANTUM",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "007bbfb7.json",
+      "agent": "PHYSICS",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "00576224.json",
+      "agent": "RELATIVITY",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "025d127b.json",
+      "agent": "INFORMATION",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "05f2a901.json",
+      "agent": "QUANTUM",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "0520fde7.json",
+      "agent": "PHYSICS",
+      "solved": false,
+      "final_reward": 0.0
+    },
+    {
+      "task": "05269061.json",
+      "agent": "RELATIVITY",
+      "solved": false,
+      "final_reward": 0.0
+    }
+  ]
+}

@@ -1,0 +1,2860 @@
+[
+  {
+    "file": "IERC20Mintable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\interfaces\\IERC20Mintable.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0035339811171405692,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.035765866640885574,
+      "min_density": 0.002789878753206156,
+      "void_threshold": 0.00823348170402546
+    }
+  },
+  {
+    "file": "ECDSAChecks.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\libraries\\ECDSAChecks.sol",
+    "lines": 44,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005432486114358287,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 44,
+        "density": 0.007101555821456038,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.01042453426985862,
+        "content": "pragma solidity =0.8.30;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06155160886756521,
+      "min_density": 0.002061643302098432,
+      "void_threshold": 0.010616040525827293
+    }
+  },
+  {
+    "file": "Bridge.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\modules\\bridge\\Bridge.sol",
+    "lines": 660,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005800360765083706,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 660,
+        "density": 0.007379595901190705,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.009782664140760993,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 21,
+        "density": 0.010021422638785844,
+        "content": "/**"
+      },
+      {
+        "line": 13,
+        "density": 0.011583776657173635,
+        "content": "import { IERC20Upgradeable } from \"@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable"
+      },
+      {
+        "line": 12,
+        "density": 0.012355124639582177,
+        "content": "} from \"@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol\";"
+      },
+      {
+        "line": 14,
+        "density": 0.013294862477042457,
+        "content": "import { SafeERC20Upgradeable } from \"@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC2"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.17093508121139467,
+      "min_density": 0.0010664008493854278,
+      "void_threshold": 0.013697443074232181
+    }
+  },
+  {
+    "file": "IBridge.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\modules\\bridge\\interfaces\\IBridge.sol",
+    "lines": 271,
+    "voids": [
+      {
+        "line": 271,
+        "density": 0.003294444319776233,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005519915944953184,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.010248536463270144,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 4,
+        "density": 0.016985367326468,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.019152608751840237,
+        "content": "interface IBridge {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08128621652562937,
+      "min_density": 0.001946519782345292,
+      "void_threshold": 0.019152608751840237
+    }
+  },
+  {
+    "file": "Mapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\modules\\mapper\\Mapper.sol",
+    "lines": 211,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005092234111890368,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.007076518846280487,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 211,
+        "density": 0.00878291747776199,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.009353541141673064,
+        "content": "import { AccessControlUpgradeable } from \"@openzeppelin/contracts-upgradeable/access/AccessControlUp"
+      },
+      {
+        "line": 6,
+        "density": 0.011190725953756416,
+        "content": "import { UUPSUpgradeable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"
+      },
+      {
+        "line": 15,
+        "density": 0.011269946528690945,
+        "content": "contract Mapper is Initializable, UUPSUpgradeable, AccessControlUpgradeable, IMapper {"
+      },
+      {
+        "line": 5,
+        "density": 0.012228811517974572,
+        "content": "import { Initializable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014988509688309636,
+        "content": "import { IMapper } from \"./interfaces/IMapper.sol\";"
+      },
+      {
+        "line": 9,
+        "density": 0.015547366474729233,
+        "content": "/**"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08764330578991666,
+      "min_density": 0.002307896499460226,
+      "void_threshold": 0.016607462613167385
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\main\\modules\\mapper\\interfaces\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 182,
+        "density": 0.002803866751632521,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005258001502321109,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009506291586990193,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 4,
+        "density": 0.016029743652046277,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.018841045764190194,
+        "content": "interface IMapper {"
+      },
+      {
+        "line": 7,
+        "density": 0.02371174653905088,
+        "content": "* @notice Interface for the Mapper contract responsible for managing token mappings across chains."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07235700045900059,
+      "min_density": 0.0022198579637128604,
+      "void_threshold": 0.023809034317495974
+    }
+  },
+  {
+    "file": "IERC20Mintable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\interfaces\\IERC20Mintable.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0035339811171405692,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.035765866640885574,
+      "min_density": 0.002789878753206156,
+      "void_threshold": 0.00823348170402546
+    }
+  },
+  {
+    "file": "ECDSAChecks.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\libraries\\ECDSAChecks.sol",
+    "lines": 44,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005432486114358287,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 44,
+        "density": 0.007101555821456038,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.01042453426985862,
+        "content": "pragma solidity =0.8.30;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06155160886756521,
+      "min_density": 0.002061643302098432,
+      "void_threshold": 0.010616040525827293
+    }
+  },
+  {
+    "file": "BridgeTest.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\bridge\\BridgeTest.sol",
+    "lines": 665,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005819275956790954,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 665,
+        "density": 0.007424220852907966,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.009788754035159372,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 21,
+        "density": 0.010172282368457197,
+        "content": "/**"
+      },
+      {
+        "line": 13,
+        "density": 0.011612247116523484,
+        "content": "import { IERC20Upgradeable } from \"@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable"
+      },
+      {
+        "line": 12,
+        "density": 0.012372067431716859,
+        "content": "} from \"@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol\";"
+      },
+      {
+        "line": 14,
+        "density": 0.01332190466021465,
+        "content": "import { SafeERC20Upgradeable } from \"@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC2"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.17134561708499194,
+      "min_density": 0.0010819766611120346,
+      "void_threshold": 0.013830489495566268
+    }
+  },
+  {
+    "file": "IBridge.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\bridge\\interfaces\\IBridge.sol",
+    "lines": 271,
+    "voids": [
+      {
+        "line": 271,
+        "density": 0.0032938188253561302,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.0055022218580095626,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.010240607565396045,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 4,
+        "density": 0.01698181622970892,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.01914892906389677,
+        "content": "interface IBridge {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08117139448834859,
+      "min_density": 0.0019462731115032033,
+      "void_threshold": 0.01914892906389677
+    }
+  },
+  {
+    "file": "MapperTest.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\mapper\\MapperTest.sol",
+    "lines": 216,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005099559167148267,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.007069995121055328,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 216,
+        "density": 0.008831783843638127,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.009389079301337463,
+        "content": "import { AccessControlUpgradeable } from \"@openzeppelin/contracts-upgradeable/access/AccessControlUp"
+      },
+      {
+        "line": 15,
+        "density": 0.010980360415427026,
+        "content": "contract MapperTest is Initializable, UUPSUpgradeable, AccessControlUpgradeable, IMapper {"
+      },
+      {
+        "line": 6,
+        "density": 0.011216120663838022,
+        "content": "import { UUPSUpgradeable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"
+      },
+      {
+        "line": 5,
+        "density": 0.012267360263048378,
+        "content": "import { Initializable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014994206302518171,
+        "content": "import { IMapper } from \"./interfaces/IMapper.sol\";"
+      },
+      {
+        "line": 9,
+        "density": 0.01586702364893384,
+        "content": "/**"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08867689850685803,
+      "min_density": 0.0022424548135745147,
+      "void_threshold": 0.016850548207821787
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\mapper\\interfaces\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 182,
+        "density": 0.002803866751632521,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005258001502321109,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009506291586990193,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 4,
+        "density": 0.016029743652046277,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.018841045764190194,
+        "content": "interface IMapper {"
+      },
+      {
+        "line": 7,
+        "density": 0.02371174653905088,
+        "content": "* @notice Interface for the Mapper contract responsible for managing token mappings across chains."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07235700045900059,
+      "min_density": 0.0022198579637128604,
+      "void_threshold": 0.023809034317495974
+    }
+  },
+  {
+    "file": "ExampleToken.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\ExampleToken.sol",
+    "lines": 60,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.00632364533900933,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.008793726651733098,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 60,
+        "density": 0.0113857616619076,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.012273406113079189,
+        "content": "import { ERC20 } from \"@openzeppelin/contracts/token/ERC20/ERC20.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07992253031757048,
+      "min_density": 0.002446134875335958,
+      "void_threshold": 0.01660039831576841
+    }
+  },
+  {
+    "file": "ExampleUUPSToken.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\ExampleUUPSToken.sol",
+    "lines": 73,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005546605666986737,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.007962543336935307,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 73,
+        "density": 0.010641576471038382,
+        "content": "}"
+      },
+      {
+        "line": 15,
+        "density": 0.011855115913657293,
+        "content": "contract ExampleUUPSToken is Initializable, ERC20Upgradeable, OwnableUpgradeable, UUPSUpgradeable {"
+      },
+      {
+        "line": 4,
+        "density": 0.012541581723684537,
+        "content": "import { OwnableUpgradeable } from \"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.so"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06535856666656054,
+      "min_density": 0.0030022860956249947,
+      "void_threshold": 0.012863753349712877
+    }
+  },
+  {
+    "file": "BridgeReentrancyAttack.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\bridge-reentrancy-attack\\BridgeReentrancyAttack.sol",
+    "lines": 44,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005647257461575816,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009239996613602187,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 44,
+        "density": 0.010249577062124652,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.05714963512195891,
+      "min_density": 0.0031900926759079284,
+      "void_threshold": 0.010735784611979665
+    }
+  },
+  {
+    "file": "WCLReentrancyAttack.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\bridge-reentrancy-attack\\WCLReentrancyAttack.sol",
+    "lines": 48,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005822758389445313,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 48,
+        "density": 0.009316960182834743,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.009512751544641157,
+        "content": "pragma solidity =0.8.30;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.0687028175095591,
+      "min_density": 0.00255738096346732,
+      "void_threshold": 0.011243055415921575
+    }
+  },
+  {
+    "file": "DPReentrancyAttack.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\example-token-broken\\DPReentrancyAttack.sol",
+    "lines": 85,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.00612953054032526,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 21,
+        "density": 0.008228933464928619,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.008573147526154538,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 85,
+        "density": 0.009953362608836355,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.0109947085871946,
+        "content": "import { ERC20 } from \"@openzeppelin/contracts/token/ERC20/ERC20.sol\";"
+      },
+      {
+        "line": 11,
+        "density": 0.012085659614897633,
+        "content": "interface IBridgeDepositTokens {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06192856597698074,
+      "min_density": 0.0029736519603057125,
+      "void_threshold": 0.013070476044521884
+    }
+  },
+  {
+    "file": "ExampleTokenBroken.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\example-token-broken\\ExampleTokenBroken.sol",
+    "lines": 90,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005522546393851926,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.008470118262484156,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 90,
+        "density": 0.009643171289442084,
+        "content": "}"
+      },
+      {
+        "line": 5,
+        "density": 0.011403119475664926,
+        "content": "import { IBridge } from \"../../../../../main/modules/bridge/interfaces/IBridge.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14396923667652275,
+      "min_density": 0.0026921176109501377,
+      "void_threshold": 0.011549709051825653
+    }
+  },
+  {
+    "file": "WTLReentrancyAttack.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\example-token-broken\\WTLReentrancyAttack.sol",
+    "lines": 101,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005742899741915044,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 35,
+        "density": 0.007026597534225989,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.008786259589584698,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 101,
+        "density": 0.009517250875927105,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08169317389414786,
+      "min_density": 0.0032960331554518045,
+      "void_threshold": 0.0103331673520905
+    }
+  },
+  {
+    "file": "Mapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\mapper-broken\\Mapper.sol",
+    "lines": 180,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005217094604144798,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.007286500897300747,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 180,
+        "density": 0.007916166163530984,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.00961436145557152,
+        "content": "import { AccessControlUpgradeable } from \"@openzeppelin/contracts-upgradeable/access/AccessControlUp"
+      },
+      {
+        "line": 6,
+        "density": 0.011226743315529007,
+        "content": "import { UUPSUpgradeable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol"
+      },
+      {
+        "line": 15,
+        "density": 0.011663090923805386,
+        "content": "contract Mapper is Initializable, UUPSUpgradeable, AccessControlUpgradeable, IMapper {"
+      },
+      {
+        "line": 5,
+        "density": 0.012213841574748608,
+        "content": "import { Initializable } from \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014877893584912994,
+        "content": "import { IMapper } from \"./interfaces/IMapper.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08076598441770098,
+      "min_density": 0.002720328523993464,
+      "void_threshold": 0.015354385541751272
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\stub\\mapper-broken\\interfaces\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 182,
+        "density": 0.0028271251890331734,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005303068091674679,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009535060927360294,
+        "content": "pragma solidity =0.8.30;"
+      },
+      {
+        "line": 4,
+        "density": 0.016035476728920337,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.018962093500470373,
+        "content": "interface IMapper {"
+      },
+      {
+        "line": 7,
+        "density": 0.023918678578131826,
+        "content": "* @notice Interface for the Mapper contract responsible for managing token mappings across chains."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07245918447807607,
+      "min_density": 0.0022186082628812475,
+      "void_threshold": 0.024010826190286102
+    }
+  },
+  {
+    "file": "BridgeWrapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\wrappers\\BridgeWrapper.sol",
+    "lines": 21,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.006446311254646779,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.033062664987694154,
+      "min_density": 0.0028449552449718676,
+      "void_threshold": 0.006446311254646779
+    }
+  },
+  {
+    "file": "ECDSAChecksWrapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\ether\\contracts\\tests\\modules\\utils\\wrappers\\ECDSAChecksWrapper.sol",
+    "lines": 26,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.0062843554433176935,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04547687056910827,
+      "min_density": 0.002499106340671672,
+      "void_threshold": 0.00696014750624014
+    }
+  },
+  {
+    "file": "Migrations.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\Migrations.sol",
+    "lines": 16,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008295216327898503,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.0633026635359491,
+      "min_density": 0.0014579907625661282,
+      "void_threshold": 0.01010886293040756
+    }
+  },
+  {
+    "file": "AccessControlUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\AccessControlUpgradeable.sol",
+    "lines": 232,
+    "voids": [
+      {
+        "line": 232,
+        "density": 0.0064510655749379945,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.006874276286747527,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 4,
+        "density": 0.010517721554601385,
+        "content": "pragma solidity ^0.8.20;"
+      },
+      {
+        "line": 6,
+        "density": 0.010565894054276482,
+        "content": "import {IAccessControlUpgradeable} from \"./IAccessControlUpgradeable.sol\";"
+      },
+      {
+        "line": 51,
+        "density": 0.010954605256907267,
+        "content": "abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable, IAccessControlUpgra"
+      },
+      {
+        "line": 10,
+        "density": 0.010973466294943593,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.01153255182136717,
+        "content": "// OpenZeppelin Contracts (last updated v5.4.0) (access/AccessControl.sol)"
+      },
+      {
+        "line": 9,
+        "density": 0.012330251822982766,
+        "content": "import {ERC165Upgradeable} from \"./ERC165Upgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014064689949591874,
+        "content": "import {ContextUpgradeable} from \"./ContextUpgradeable.sol\";"
+      },
+      {
+        "line": 8,
+        "density": 0.014469199378452235,
+        "content": "import {IERC165Upgradeable} from \"./IERC165Upgradeable.sol\";"
+      },
+      {
+        "line": 66,
+        "density": 0.014968949781764355,
+        "content": "bytes32 private constant AccessControlStorageLocation = 0x02dd7bc7dec4dceedda775e58dd541e08a116c6c53"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10755257211318002,
+      "min_density": 0.0016976363294736534,
+      "void_threshold": 0.016110680120710853
+    }
+  },
+  {
+    "file": "AddressUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\AddressUpgradeable.sol",
+    "lines": 244,
+    "voids": [
+      {
+        "line": 244,
+        "density": 0.006644680040243118,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.00765494961975697,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 4,
+        "density": 0.012239842112608939,
+        "content": "pragma solidity ^0.8.1;"
+      },
+      {
+        "line": 9,
+        "density": 0.013001623402378062,
+        "content": "library AddressUpgradeable {"
+      },
+      {
+        "line": 2,
+        "density": 0.01355216291896212,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/Address.sol)"
+      },
+      {
+        "line": 6,
+        "density": 0.01857779525350317,
+        "content": "/**"
+      },
+      {
+        "line": 80,
+        "density": 0.02430172192291648,
+        "content": "* use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode"
+      },
+      {
+        "line": 7,
+        "density": 0.024438138344897945,
+        "content": "* @dev Collection of functions related to the address type"
+      },
+      {
+        "line": 62,
+        "density": 0.02514677944394128,
+        "content": "* https://solidity.readthedocs.io/en/v0.8.0/security-considerations.html#use-the-checks-effects-inte"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14733361133112347,
+      "min_density": 0.001975690140266367,
+      "void_threshold": 0.02764129744384965
+    }
+  },
+  {
+    "file": "Bridge.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\Bridge.sol",
+    "lines": 656,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005789424634082841,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 656,
+        "density": 0.007483325778833195,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.009822841581674473,
+        "content": "pragma solidity =0.8.24;"
+      },
+      {
+        "line": 17,
+        "density": 0.010237226523725263,
+        "content": "/**"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.17672537841815497,
+      "min_density": 0.0010961834912201712,
+      "void_threshold": 0.013885118575341198
+    }
+  },
+  {
+    "file": "ContextUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ContextUpgradeable.sol",
+    "lines": 41,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007964635036763793,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 5,
+        "density": 0.011280169958481082,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 41,
+        "density": 0.012081567744450333,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.03709668144650412,
+      "min_density": 0.003056801335550069,
+      "void_threshold": 0.012081567744450333
+    }
+  },
+  {
+    "file": "draft-IERC1822Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\draft-IERC1822Upgradeable.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0038962159184548453,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04328816527825145,
+      "min_density": 0.0038962159184548453,
+      "void_threshold": 0.005486462302441629
+    }
+  },
+  {
+    "file": "ECDSAChecks.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ECDSAChecks.sol",
+    "lines": 44,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.005401458692270782,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 44,
+        "density": 0.007334538292534196,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.010441554287490279,
+        "content": "pragma solidity =0.8.24;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06014639067268534,
+      "min_density": 0.0022715784645194483,
+      "void_threshold": 0.010536304937908178
+    }
+  },
+  {
+    "file": "ECDSAUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ECDSAUpgradeable.sol",
+    "lines": 217,
+    "voids": [
+      {
+        "line": 217,
+        "density": 0.005930199967285094,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.0071217590492772265,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.008615551511309614,
+        "content": "import \"./StringsUpgradeable.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.011345867422782397,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/cryptography/ECDSA.sol)"
+      },
+      {
+        "line": 4,
+        "density": 0.012299544883019023,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 14,
+        "density": 0.012403671312049395,
+        "content": "library ECDSAUpgradeable {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.1196524745354938,
+      "min_density": 0.001635018023376063,
+      "void_threshold": 0.013304965670956053
+    }
+  },
+  {
+    "file": "ERC165Checker.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ERC165Checker.sol",
+    "lines": 126,
+    "voids": [
+      {
+        "line": 126,
+        "density": 0.007787104942164152,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.008083762785919043,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.010732480634693412,
+        "content": "import \"./IERC165.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.11191545606757702,
+      "min_density": 0.003924934159296079,
+      "void_threshold": 0.013658460082037792
+    }
+  },
+  {
+    "file": "ERC165Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ERC165Upgradeable.sol",
+    "lines": 42,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007910281934037556,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.009834614866296344,
+        "content": "import \"./IERC165Upgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04167077039922605,
+      "min_density": 0.00207366684967438,
+      "void_threshold": 0.009850894685859079
+    }
+  },
+  {
+    "file": "ERC1967UpgradeUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ERC1967UpgradeUpgradeable.sol",
+    "lines": 170,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007287425017504122,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 170,
+        "density": 0.00960354903542534,
+        "content": "}"
+      },
+      {
+        "line": 8,
+        "density": 0.01081222805412598,
+        "content": "import \"./draft-IERC1822Upgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.012116606631525615,
+        "content": "import \"./IERC1967Upgradeable.sol\";"
+      },
+      {
+        "line": 11,
+        "density": 0.012277649066884782,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 6,
+        "density": 0.012459012847483339,
+        "content": "import \"./IBeaconUpgradeable.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.012493198699310124,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (proxy/ERC1967/ERC1967Upgrade.sol)"
+      },
+      {
+        "line": 10,
+        "density": 0.013124057264062289,
+        "content": "import \"./StorageSlotUpgradeable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.01323679586198139,
+        "content": "pragma solidity ^0.8.2;"
+      },
+      {
+        "line": 19,
+        "density": 0.013423276673844011,
+        "content": "abstract contract ERC1967UpgradeUpgradeable is Initializable, IERC1967Upgradeable {"
+      },
+      {
+        "line": 9,
+        "density": 0.013480814535083471,
+        "content": "import \"./AddressUpgradeable.sol\";"
+      },
+      {
+        "line": 15,
+        "density": 0.013861819698456257,
+        "content": "* https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.11469925183463088,
+      "min_density": 0.0026749990752510788,
+      "void_threshold": 0.015326552019881302
+    }
+  },
+  {
+    "file": "ERC20BurnableUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ERC20BurnableUpgradeable.sol",
+    "lines": 52,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007577452028941362,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 52,
+        "density": 0.01044366242647343,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.011806361764952436,
+        "content": "import \"./ERC20Upgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.0907087771513521,
+      "min_density": 0.002857670994516153,
+      "void_threshold": 0.011842314794399506
+    }
+  },
+  {
+    "file": "ERC20Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ERC20Upgradeable.sol",
+    "lines": 377,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008024472432365991,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 377,
+        "density": 0.00890163238780803,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.0089386820857287,
+        "content": "import \"./IERC20Upgradeable.sol\";"
+      },
+      {
+        "line": 39,
+        "density": 0.009495284593313292,
+        "content": "contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpg"
+      },
+      {
+        "line": 9,
+        "density": 0.010018621796869272,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.010438943758489354,
+        "content": "import \"./IERC20MetadataUpgradeable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.011162441651517252,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 2,
+        "density": 0.011491112196715496,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (token/ERC20/ERC20.sol)"
+      },
+      {
+        "line": 19,
+        "density": 0.01155984130689527,
+        "content": "* https://forum.openzeppelin.com/t/how-to-implement-erc20-supply-mechanisms/226[How"
+      },
+      {
+        "line": 8,
+        "density": 0.012070715543843966,
+        "content": "import \"./ContextUpgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.13323536467334718,
+      "min_density": 0.0011042282409972498,
+      "void_threshold": 0.018400346774330466
+    }
+  },
+  {
+    "file": "IAccessControlUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IAccessControlUpgradeable.sol",
+    "lines": 98,
+    "voids": [
+      {
+        "line": 98,
+        "density": 0.0031834888313456732,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.009184919035346342,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.20489267059913874,
+      "min_density": 0.0031834888313456732,
+      "void_threshold": 0.027154979606226815
+    }
+  },
+  {
+    "file": "IBeaconUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IBeaconUpgradeable.sol",
+    "lines": 16,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011252455456446639,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06873061902554739,
+      "min_density": 0.010591318652752134,
+      "void_threshold": 0.011307741578307566
+    }
+  },
+  {
+    "file": "IBridge.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IBridge.sol",
+    "lines": 271,
+    "voids": [
+      {
+        "line": 271,
+        "density": 0.003294444319776233,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005535867627671774,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.010289038657481177,
+        "content": "pragma solidity =0.8.24;"
+      },
+      {
+        "line": 4,
+        "density": 0.016985367326468,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.019152608751840237,
+        "content": "interface IBridge {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08128660165252631,
+      "min_density": 0.001946519782345292,
+      "void_threshold": 0.019152608751840237
+    }
+  },
+  {
+    "file": "IERC165.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC165.sol",
+    "lines": 25,
+    "voids": [
+      {
+        "line": 25,
+        "density": 0.00629605280246864,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.045481254644490425,
+      "min_density": 0.004680220662048815,
+      "void_threshold": 0.007862764408561816
+    }
+  },
+  {
+    "file": "IERC165Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC165Upgradeable.sol",
+    "lines": 25,
+    "voids": [
+      {
+        "line": 25,
+        "density": 0.006320444987292105,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04555190636708227,
+      "min_density": 0.0046723629353563195,
+      "void_threshold": 0.007849852097604974
+    }
+  },
+  {
+    "file": "IERC1967Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC1967Upgradeable.sol",
+    "lines": 26,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011818755200104463,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09292375128731781,
+      "min_density": 0.009858420210792236,
+      "void_threshold": 0.01339226718591641
+    }
+  },
+  {
+    "file": "IERC20MetadataUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC20MetadataUpgradeable.sol",
+    "lines": 28,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.08833001129809522,
+      "min_density": 0.00462767660125724,
+      "void_threshold": 0.010438893117095062
+    }
+  },
+  {
+    "file": "IERC20Mintable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC20Mintable.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0035339811171405692,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.035772003983331545,
+      "min_density": 0.002789878753206156,
+      "void_threshold": 0.008256148330729957
+    }
+  },
+  {
+    "file": "IERC20PermitUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC20PermitUpgradeable.sol",
+    "lines": 90,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007047718224043471,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 90,
+        "density": 0.007804699182078997,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.00983497047936068,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.4) (token/ERC20/extensions/IERC20Permit.sol)"
+      },
+      {
+        "line": 4,
+        "density": 0.010560602988504461,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 42,
+        "density": 0.011151561122270141,
+        "content": "interface IERC20PermitUpgradeable {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06130320245539497,
+      "min_density": 0.0032805539098142806,
+      "void_threshold": 0.01174868312707685
+    }
+  },
+  {
+    "file": "IERC20Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IERC20Upgradeable.sol",
+    "lines": 78,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.010878453463386006,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 78,
+        "density": 0.024709824551590296,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.20000729044128826,
+      "min_density": 0.010878453463386006,
+      "void_threshold": 0.031297288076861586
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 182,
+        "density": 0.0028271251890331734,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005311576425193286,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009558987993888412,
+        "content": "pragma solidity =0.8.24;"
+      },
+      {
+        "line": 4,
+        "density": 0.016035476728920337,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.018962093500470373,
+        "content": "interface IMapper {"
+      },
+      {
+        "line": 7,
+        "density": 0.023918678578131826,
+        "content": "* @notice Interface for the Mapper contract responsible for managing token mappings across chains."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07245948618857694,
+      "min_density": 0.0022186082628812475,
+      "void_threshold": 0.024010826190286102
+    }
+  },
+  {
+    "file": "Initializable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\Initializable.sol",
+    "lines": 166,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007398111804147589,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 166,
+        "density": 0.007849467043637683,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.009001634800747078,
+        "content": "import \"./AddressUpgradeable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.013834119930051942,
+        "content": "pragma solidity ^0.8.2;"
+      },
+      {
+        "line": 2,
+        "density": 0.01397950040826782,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (proxy/utils/Initializable.sol)"
+      },
+      {
+        "line": 51,
+        "density": 0.01653584882457533,
+        "content": "* /// @custom:oz-upgrades-unsafe-allow constructor"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08922789377606517,
+      "min_density": 0.0027890850286147015,
+      "void_threshold": 0.017371636207930398
+    }
+  },
+  {
+    "file": "MathUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\MathUpgradeable.sol",
+    "lines": 339,
+    "voids": [
+      {
+        "line": 339,
+        "density": 0.009060425534015074,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.009528664566819823,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.011161446975883345,
+        "content": "/**"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.278346536579255,
+      "min_density": 0.0014254125685139246,
+      "void_threshold": 0.013984091520943754
+    }
+  },
+  {
+    "file": "Ownable2StepUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\Ownable2StepUpgradeable.sol",
+    "lines": 71,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008989814048277991,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 71,
+        "density": 0.012994171902279526,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.013860313008249065,
+        "content": "import \"./OwnableUpgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014603472021826745,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.014691188723251166,
+        "content": "pragma solidity ^0.8.0;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06956797862901544,
+      "min_density": 0.0028773483756912455,
+      "void_threshold": 0.014691188723251166
+    }
+  },
+  {
+    "file": "OwnableUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\OwnableUpgradeable.sol",
+    "lines": 95,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.009543199214757842,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 95,
+        "density": 0.015329350395201426,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.022199729304486993,
+        "content": "import \"./ContextUpgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.026414057152784866,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.02670155135518945,
+        "content": "pragma solidity ^0.8.0;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10042074967538027,
+      "min_density": 0.007647887142710784,
+      "void_threshold": 0.027542159158204012
+    }
+  },
+  {
+    "file": "ReentrancyGuardUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\ReentrancyGuardUpgradeable.sol",
+    "lines": 89,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008553606895696361,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 5,
+        "density": 0.010014672354321385,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.01069525050936916,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 89,
+        "density": 0.011127752963104687,
+        "content": "}"
+      },
+      {
+        "line": 2,
+        "density": 0.012026481345333129,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (security/ReentrancyGuard.sol)"
+      },
+      {
+        "line": 21,
+        "density": 0.012486371177539958,
+        "content": "* https://blog.openzeppelin.com/reentrancy-after-istanbul/[Reentrancy After Istanbul]."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04136027018554556,
+      "min_density": 0.0037626150292946014,
+      "void_threshold": 0.013676864312872215
+    }
+  },
+  {
+    "file": "SafeERC20Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\SafeERC20Upgradeable.sol",
+    "lines": 143,
+    "voids": [
+      {
+        "line": 143,
+        "density": 0.006721283708834369,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.00797720938399449,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.011113548963422157,
+        "content": "import \"./IERC20Upgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07993217588368882,
+      "min_density": 0.0038954721959091735,
+      "void_threshold": 0.011171105078537398
+    }
+  },
+  {
+    "file": "SignedMathUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\SignedMathUpgradeable.sol",
+    "lines": 43,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008252123964213244,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 43,
+        "density": 0.018381281134908414,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.12490062902486433,
+      "min_density": 0.006413791988926435,
+      "void_threshold": 0.022528235474296034
+    }
+  },
+  {
+    "file": "StorageSlotUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\StorageSlotUpgradeable.sol",
+    "lines": 138,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007343259633159758,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.017909239199552437,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/StorageSlot.sol)"
+      },
+      {
+        "line": 138,
+        "density": 0.01977073866708625,
+        "content": "}"
+      },
+      {
+        "line": 34,
+        "density": 0.020130822485532197,
+        "content": "library StorageSlotUpgradeable {"
+      },
+      {
+        "line": 5,
+        "density": 0.02103761829018469,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 18,
+        "density": 0.02273518388768429,
+        "content": "*     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3"
+      },
+      {
+        "line": 3,
+        "density": 0.023839557530625055,
+        "content": "// This file was procedurally generated from scripts/generate/templates/StorageSlot.js."
+      },
+      {
+        "line": 7,
+        "density": 0.025174811712473214,
+        "content": "/**"
+      },
+      {
+        "line": 31,
+        "density": 0.02999521274768887,
+        "content": "* _Available since v4.1 for `address`, `bool`, `bytes32`, `uint256`._"
+      },
+      {
+        "line": 11,
+        "density": 0.03003909638204805,
+        "content": "* This library helps with reading and writing to such slots without the need for inline assembly."
+      },
+      {
+        "line": 10,
+        "density": 0.030558262971743914,
+        "content": "* Storage slots are often used to avoid storage conflict when dealing with upgradeable contracts."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14975684023698715,
+      "min_density": 0.004352028426707165,
+      "void_threshold": 0.03121791787115673
+    }
+  },
+  {
+    "file": "StringsUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\StringsUpgradeable.sol",
+    "lines": 85,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008300470965106844,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 7,
+        "density": 0.014505471922486845,
+        "content": "import \"./SignedMathUpgradeable.sol\";"
+      },
+      {
+        "line": 12,
+        "density": 0.01454396925569668,
+        "content": "library StringsUpgradeable {"
+      },
+      {
+        "line": 6,
+        "density": 0.014794287885608336,
+        "content": "import \"./MathUpgradeable.sol\";"
+      },
+      {
+        "line": 85,
+        "density": 0.01486672903125469,
+        "content": "}"
+      },
+      {
+        "line": 9,
+        "density": 0.015228033655847724,
+        "content": "/**"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.22669851974759275,
+      "min_density": 0.0024526573746794633,
+      "void_threshold": 0.016280049628711282
+    }
+  },
+  {
+    "file": "UUPSUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\bridge\\UUPSUpgradeable.sol",
+    "lines": 112,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.00769757799746763,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 7,
+        "density": 0.012197792768026891,
+        "content": "import \"./ERC1967UpgradeUpgradeable.sol\";"
+      },
+      {
+        "line": 112,
+        "density": 0.014530638123465698,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09948689944948816,
+      "min_density": 0.005089099417639059,
+      "void_threshold": 0.015332280873642586
+    }
+  },
+  {
+    "file": "AccessControlUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\AccessControlUpgradeable.sol",
+    "lines": 232,
+    "voids": [
+      {
+        "line": 232,
+        "density": 0.0064510655749379945,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.006874276286747527,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 4,
+        "density": 0.010517721554601385,
+        "content": "pragma solidity ^0.8.20;"
+      },
+      {
+        "line": 6,
+        "density": 0.010565894054276482,
+        "content": "import {IAccessControlUpgradeable} from \"./IAccessControlUpgradeable.sol\";"
+      },
+      {
+        "line": 51,
+        "density": 0.010954605256907267,
+        "content": "abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable, IAccessControlUpgra"
+      },
+      {
+        "line": 10,
+        "density": 0.010973466294943593,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.01153255182136717,
+        "content": "// OpenZeppelin Contracts (last updated v5.4.0) (access/AccessControl.sol)"
+      },
+      {
+        "line": 9,
+        "density": 0.012330251822982766,
+        "content": "import {ERC165Upgradeable} from \"./ERC165Upgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014064689949591874,
+        "content": "import {ContextUpgradeable} from \"./ContextUpgradeable.sol\";"
+      },
+      {
+        "line": 8,
+        "density": 0.014469199378452235,
+        "content": "import {IERC165Upgradeable} from \"./IERC165Upgradeable.sol\";"
+      },
+      {
+        "line": 66,
+        "density": 0.014968949781764355,
+        "content": "bytes32 private constant AccessControlStorageLocation = 0x02dd7bc7dec4dceedda775e58dd541e08a116c6c53"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10755257211318002,
+      "min_density": 0.0016976363294736534,
+      "void_threshold": 0.016110680120710853
+    }
+  },
+  {
+    "file": "AddressUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\AddressUpgradeable.sol",
+    "lines": 244,
+    "voids": [
+      {
+        "line": 244,
+        "density": 0.006644680040243118,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.00765494961975697,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 4,
+        "density": 0.012239842112608939,
+        "content": "pragma solidity ^0.8.1;"
+      },
+      {
+        "line": 9,
+        "density": 0.013001623402378062,
+        "content": "library AddressUpgradeable {"
+      },
+      {
+        "line": 2,
+        "density": 0.01355216291896212,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/Address.sol)"
+      },
+      {
+        "line": 6,
+        "density": 0.01857779525350317,
+        "content": "/**"
+      },
+      {
+        "line": 80,
+        "density": 0.02430172192291648,
+        "content": "* use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode"
+      },
+      {
+        "line": 7,
+        "density": 0.024438138344897945,
+        "content": "* @dev Collection of functions related to the address type"
+      },
+      {
+        "line": 62,
+        "density": 0.02514677944394128,
+        "content": "* https://solidity.readthedocs.io/en/v0.8.0/security-considerations.html#use-the-checks-effects-inte"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14733361133112347,
+      "min_density": 0.001975690140266367,
+      "void_threshold": 0.02764129744384965
+    }
+  },
+  {
+    "file": "ContextUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\ContextUpgradeable.sol",
+    "lines": 41,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007964635036763793,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 5,
+        "density": 0.011280169958481082,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 41,
+        "density": 0.012081567744450333,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.03709668144650412,
+      "min_density": 0.003056801335550069,
+      "void_threshold": 0.012081567744450333
+    }
+  },
+  {
+    "file": "draft-IERC1822Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\draft-IERC1822Upgradeable.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0038962159184548453,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04328816527825145,
+      "min_density": 0.0038962159184548453,
+      "void_threshold": 0.005486462302441629
+    }
+  },
+  {
+    "file": "ERC165Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\ERC165Upgradeable.sol",
+    "lines": 42,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007910281934037556,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 6,
+        "density": 0.009834614866296344,
+        "content": "import \"./IERC165Upgradeable.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04167077039922605,
+      "min_density": 0.00207366684967438,
+      "void_threshold": 0.009850894685859079
+    }
+  },
+  {
+    "file": "ERC1967UpgradeUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\ERC1967UpgradeUpgradeable.sol",
+    "lines": 170,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007287425017504122,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 170,
+        "density": 0.00960354903542534,
+        "content": "}"
+      },
+      {
+        "line": 8,
+        "density": 0.01081222805412598,
+        "content": "import \"./draft-IERC1822Upgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.012116606631525615,
+        "content": "import \"./IERC1967Upgradeable.sol\";"
+      },
+      {
+        "line": 11,
+        "density": 0.012277649066884782,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 6,
+        "density": 0.012459012847483339,
+        "content": "import \"./IBeaconUpgradeable.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.012493198699310124,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (proxy/ERC1967/ERC1967Upgrade.sol)"
+      },
+      {
+        "line": 10,
+        "density": 0.013124057264062289,
+        "content": "import \"./StorageSlotUpgradeable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.01323679586198139,
+        "content": "pragma solidity ^0.8.2;"
+      },
+      {
+        "line": 19,
+        "density": 0.013423276673844011,
+        "content": "abstract contract ERC1967UpgradeUpgradeable is Initializable, IERC1967Upgradeable {"
+      },
+      {
+        "line": 9,
+        "density": 0.013480814535083471,
+        "content": "import \"./AddressUpgradeable.sol\";"
+      },
+      {
+        "line": 15,
+        "density": 0.013861819698456257,
+        "content": "* https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.11469925183463088,
+      "min_density": 0.0026749990752510788,
+      "void_threshold": 0.015326552019881302
+    }
+  },
+  {
+    "file": "IAccessControlUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\IAccessControlUpgradeable.sol",
+    "lines": 98,
+    "voids": [
+      {
+        "line": 98,
+        "density": 0.0031834888313456732,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.009184919035346342,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.20489267059913874,
+      "min_density": 0.0031834888313456732,
+      "void_threshold": 0.027154979606226815
+    }
+  },
+  {
+    "file": "IBeaconUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\IBeaconUpgradeable.sol",
+    "lines": 16,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011252455456446639,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06873061902554739,
+      "min_density": 0.010591318652752134,
+      "void_threshold": 0.011307741578307566
+    }
+  },
+  {
+    "file": "IERC165Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\IERC165Upgradeable.sol",
+    "lines": 25,
+    "voids": [
+      {
+        "line": 25,
+        "density": 0.006320444987292105,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04555190636708227,
+      "min_density": 0.0046723629353563195,
+      "void_threshold": 0.007849852097604974
+    }
+  },
+  {
+    "file": "IERC1967Upgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\IERC1967Upgradeable.sol",
+    "lines": 26,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011818755200104463,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09292375128731781,
+      "min_density": 0.009858420210792236,
+      "void_threshold": 0.01339226718591641
+    }
+  },
+  {
+    "file": "IMapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\IMapper.sol",
+    "lines": 182,
+    "voids": [
+      {
+        "line": 182,
+        "density": 0.0028271251890331734,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.005311576425193286,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.009558987993888412,
+        "content": "pragma solidity =0.8.24;"
+      },
+      {
+        "line": 4,
+        "density": 0.016035476728920337,
+        "content": "/**"
+      },
+      {
+        "line": 10,
+        "density": 0.018962093500470373,
+        "content": "interface IMapper {"
+      },
+      {
+        "line": 7,
+        "density": 0.023918678578131826,
+        "content": "* @notice Interface for the Mapper contract responsible for managing token mappings across chains."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.07245948618857694,
+      "min_density": 0.0022186082628812475,
+      "void_threshold": 0.024010826190286102
+    }
+  },
+  {
+    "file": "Initializable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\Initializable.sol",
+    "lines": 166,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007398111804147589,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 166,
+        "density": 0.007849467043637683,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.009001634800747078,
+        "content": "import \"./AddressUpgradeable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.013834119930051942,
+        "content": "pragma solidity ^0.8.2;"
+      },
+      {
+        "line": 2,
+        "density": 0.01397950040826782,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (proxy/utils/Initializable.sol)"
+      },
+      {
+        "line": 51,
+        "density": 0.01653584882457533,
+        "content": "* /// @custom:oz-upgrades-unsafe-allow constructor"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08922789377606517,
+      "min_density": 0.0027890850286147015,
+      "void_threshold": 0.017371636207930398
+    }
+  },
+  {
+    "file": "Mapper.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\Mapper.sol",
+    "lines": 211,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.0051029692573612275,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.007170005376887683,
+        "content": "pragma solidity =0.8.24;"
+      },
+      {
+        "line": 211,
+        "density": 0.008915669363188359,
+        "content": "}"
+      },
+      {
+        "line": 4,
+        "density": 0.010213251942493062,
+        "content": "import { AccessControlUpgradeable } from \"./AccessControlUpgradeable.sol\";"
+      },
+      {
+        "line": 15,
+        "density": 0.011359973413891661,
+        "content": "contract Mapper is Initializable, UUPSUpgradeable, AccessControlUpgradeable, IMapper {"
+      },
+      {
+        "line": 6,
+        "density": 0.013649738381294468,
+        "content": "import { UUPSUpgradeable } from \"./UUPSUpgradeable.sol\";"
+      },
+      {
+        "line": 5,
+        "density": 0.014628302333333723,
+        "content": "import { Initializable } from \"./Initializable.sol\";"
+      },
+      {
+        "line": 9,
+        "density": 0.01592573846022932,
+        "content": "/**"
+      },
+      {
+        "line": 7,
+        "density": 0.016325875797107616,
+        "content": "import { IMapper } from \"./IMapper.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08913287253737194,
+      "min_density": 0.0023177979039838733,
+      "void_threshold": 0.016856759195006867
+    }
+  },
+  {
+    "file": "Ownable2StepUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\Ownable2StepUpgradeable.sol",
+    "lines": 71,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008989814048277991,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 71,
+        "density": 0.012994171902279526,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.013860313008249065,
+        "content": "import \"./OwnableUpgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.014603472021826745,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.014691188723251166,
+        "content": "pragma solidity ^0.8.0;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06956797862901544,
+      "min_density": 0.0028773483756912455,
+      "void_threshold": 0.014691188723251166
+    }
+  },
+  {
+    "file": "OwnableUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\OwnableUpgradeable.sol",
+    "lines": 95,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.009543199214757842,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 95,
+        "density": 0.015329350395201426,
+        "content": "}"
+      },
+      {
+        "line": 6,
+        "density": 0.022199729304486993,
+        "content": "import \"./ContextUpgradeable.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.026414057152784866,
+        "content": "import {Initializable} from \"./Initializable.sol\";"
+      },
+      {
+        "line": 4,
+        "density": 0.02670155135518945,
+        "content": "pragma solidity ^0.8.0;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10042074967538027,
+      "min_density": 0.007647887142710784,
+      "void_threshold": 0.027542159158204012
+    }
+  },
+  {
+    "file": "StorageSlotUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\StorageSlotUpgradeable.sol",
+    "lines": 138,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007343259633159758,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.017909239199552437,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/StorageSlot.sol)"
+      },
+      {
+        "line": 138,
+        "density": 0.01977073866708625,
+        "content": "}"
+      },
+      {
+        "line": 34,
+        "density": 0.020130822485532197,
+        "content": "library StorageSlotUpgradeable {"
+      },
+      {
+        "line": 5,
+        "density": 0.02103761829018469,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 18,
+        "density": 0.02273518388768429,
+        "content": "*     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3"
+      },
+      {
+        "line": 3,
+        "density": 0.023839557530625055,
+        "content": "// This file was procedurally generated from scripts/generate/templates/StorageSlot.js."
+      },
+      {
+        "line": 7,
+        "density": 0.025174811712473214,
+        "content": "/**"
+      },
+      {
+        "line": 31,
+        "density": 0.02999521274768887,
+        "content": "* _Available since v4.1 for `address`, `bool`, `bytes32`, `uint256`._"
+      },
+      {
+        "line": 11,
+        "density": 0.03003909638204805,
+        "content": "* This library helps with reading and writing to such slots without the need for inline assembly."
+      },
+      {
+        "line": 10,
+        "density": 0.030558262971743914,
+        "content": "* Storage slots are often used to avoid storage conflict when dealing with upgradeable contracts."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14975684023698715,
+      "min_density": 0.004352028426707165,
+      "void_threshold": 0.03121791787115673
+    }
+  },
+  {
+    "file": "UUPSUpgradeable.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\mapper\\UUPSUpgradeable.sol",
+    "lines": 112,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.00769757799746763,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 7,
+        "density": 0.012197792768026891,
+        "content": "import \"./ERC1967UpgradeUpgradeable.sol\";"
+      },
+      {
+        "line": 112,
+        "density": 0.014530638123465698,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09948689944948816,
+      "min_density": 0.005089099417639059,
+      "void_threshold": 0.015332280873642586
+    }
+  },
+  {
+    "file": "Address.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\Address.sol",
+    "lines": 244,
+    "voids": [
+      {
+        "line": 244,
+        "density": 0.0066428580243287,
+        "content": "}"
+      },
+      {
+        "line": 1,
+        "density": 0.007656124063363499,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 4,
+        "density": 0.012263347649716922,
+        "content": "pragma solidity ^0.8.1;"
+      },
+      {
+        "line": 2,
+        "density": 0.013568810416945397,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/Address.sol)"
+      },
+      {
+        "line": 9,
+        "density": 0.01721891088666278,
+        "content": "library Address {"
+      },
+      {
+        "line": 6,
+        "density": 0.018573826905741084,
+        "content": "/**"
+      },
+      {
+        "line": 80,
+        "density": 0.024325179800426443,
+        "content": "* use https://solidity.readthedocs.io/en/latest/units-and-global-variables.html?highlight=abi.decode"
+      },
+      {
+        "line": 7,
+        "density": 0.024470532825530317,
+        "content": "* @dev Collection of functions related to the address type"
+      },
+      {
+        "line": 62,
+        "density": 0.025175323127991277,
+        "content": "* https://solidity.readthedocs.io/en/v0.8.0/security-considerations.html#use-the-checks-effects-inte"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14733963919390955,
+      "min_density": 0.001974644684170732,
+      "void_threshold": 0.027667013585049458
+    }
+  },
+  {
+    "file": "draft-IERC1822.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\draft-IERC1822.sol",
+    "lines": 20,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.0038983130843707648,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.04336632754173254,
+      "min_density": 0.0038983130843707648,
+      "void_threshold": 0.005515389239431444
+    }
+  },
+  {
+    "file": "ERC1967Proxy.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\ERC1967Proxy.sol",
+    "lines": 32,
+    "voids": [
+      {
+        "line": 32,
+        "density": 0.008052371605079663,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.041283351431860474,
+      "min_density": 0.001993750087529396,
+      "void_threshold": 0.008076487764203347
+    }
+  },
+  {
+    "file": "ERC1967Upgrade.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\ERC1967Upgrade.sol",
+    "lines": 157,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.00752588930616576,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 157,
+        "density": 0.010161450863220643,
+        "content": "}"
+      },
+      {
+        "line": 8,
+        "density": 0.011343225740103319,
+        "content": "import \"./draft-IERC1822.sol\";"
+      },
+      {
+        "line": 7,
+        "density": 0.012522876357484267,
+        "content": "import \"./IERC1967.sol\";"
+      },
+      {
+        "line": 10,
+        "density": 0.012780461894858815,
+        "content": "import \"./StorageSlot.sol\";"
+      },
+      {
+        "line": 6,
+        "density": 0.012874653104043772,
+        "content": "import \"./IBeacon.sol\";"
+      },
+      {
+        "line": 2,
+        "density": 0.013133097007647374,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (proxy/ERC1967/ERC1967Upgrade.sol)"
+      },
+      {
+        "line": 4,
+        "density": 0.014234290218699291,
+        "content": "pragma solidity ^0.8.2;"
+      },
+      {
+        "line": 14,
+        "density": 0.01449321090225216,
+        "content": "* https://eips.ethereum.org/EIPS/eip-1967[EIP1967] slots."
+      },
+      {
+        "line": 18,
+        "density": 0.014809528920907864,
+        "content": "abstract contract ERC1967Upgrade is IERC1967 {"
+      },
+      {
+        "line": 9,
+        "density": 0.014851862174245889,
+        "content": "import \"./Address.sol\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.12188731066026286,
+      "min_density": 0.00296760460360213,
+      "void_threshold": 0.016364373801877413
+    }
+  },
+  {
+    "file": "IBeacon.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\IBeacon.sol",
+    "lines": 16,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011304391545316775,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.06829586531658297,
+      "min_density": 0.010699836449638608,
+      "void_threshold": 0.01138979851509782
+    }
+  },
+  {
+    "file": "IERC1967.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\IERC1967.sol",
+    "lines": 26,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.011856002190354278,
+        "content": "// SPDX-License-Identifier: MIT"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09242116056182453,
+      "min_density": 0.009917098385390196,
+      "void_threshold": 0.013417951250997059
+    }
+  },
+  {
+    "file": "Proxy.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\Proxy.sol",
+    "lines": 86,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.008535808134440052,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 86,
+        "density": 0.013498833165387795,
+        "content": "}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.14307791106287704,
+      "min_density": 0.004451365624849727,
+      "void_threshold": 0.01800966851147421
+    }
+  },
+  {
+    "file": "StorageSlot.sol",
+    "path": "C:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\scripts\\..\\bridge-contracts-main\\tron\\contracts\\main\\modules\\proxy\\StorageSlot.sol",
+    "lines": 138,
+    "voids": [
+      {
+        "line": 1,
+        "density": 0.007351433465422719,
+        "content": "// SPDX-License-Identifier: MIT"
+      },
+      {
+        "line": 2,
+        "density": 0.017879155907753796,
+        "content": "// OpenZeppelin Contracts (last updated v4.9.0) (utils/StorageSlot.sol)"
+      },
+      {
+        "line": 138,
+        "density": 0.01985019748197644,
+        "content": "}"
+      },
+      {
+        "line": 34,
+        "density": 0.02016734338629077,
+        "content": "library StorageSlot {"
+      },
+      {
+        "line": 5,
+        "density": 0.020987645529387273,
+        "content": "pragma solidity ^0.8.0;"
+      },
+      {
+        "line": 18,
+        "density": 0.02268696432055916,
+        "content": "*     bytes32 internal constant _IMPLEMENTATION_SLOT = 0x360894a13ba1a3210667c828492db98dca3e2076cc3"
+      },
+      {
+        "line": 3,
+        "density": 0.023753683556474024,
+        "content": "// This file was procedurally generated from scripts/generate/templates/StorageSlot.js."
+      },
+      {
+        "line": 7,
+        "density": 0.02516965466807625,
+        "content": "/**"
+      },
+      {
+        "line": 31,
+        "density": 0.029942264757286632,
+        "content": "* _Available since v4.1 for `address`, `bool`, `bytes32`, `uint256`._"
+      },
+      {
+        "line": 11,
+        "density": 0.02999634611500933,
+        "content": "* This library helps with reading and writing to such slots without the need for inline assembly."
+      },
+      {
+        "line": 10,
+        "density": 0.03049458471237437,
+        "content": "* Storage slots are often used to avoid storage conflict when dealing with upgradeable contracts."
+      }
+    ],
+    "stats": {
+      "mean_density": 0.1498140056314746,
+      "min_density": 0.004344145082833397,
+      "void_threshold": 0.03144344953027037
+    }
+  }
+]

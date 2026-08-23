@@ -1,0 +1,199 @@
+====================================================================================================
+BATCH CONTRACT SCAN - PURE ENGINE DISCOVERY
+====================================================================================================
+
+Total Files Scanned: 82
+Valid Results: 82
+
+CLASSIFICATION SUMMARY:
+  CRITICAL_ANOMALY: 68 files
+  HIGH_ANOMALY: 13 files
+  MODERATE_ANOMALY: 1 files
+
+====================================================================================================
+TOP ANOMALIES (Highest to Lowest)
+====================================================================================================
+
+1. ERC20Upgradeable.sol
+   Anomaly Score: 4.2385 (CRITICAL_ANOMALY)
+   Lines: 377
+   Density: mean=0.875, peaks=0
+   Entropy: mean=1.079, variance=4.519
+   Cost: total=895, outliers=19
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\ERC20Upgradeable.sol
+
+2. IBridge.sol
+   Anomaly Score: 4.1308 (CRITICAL_ANOMALY)
+   Lines: 271
+   Density: mean=0.814, peaks=0
+   Entropy: mean=1.548, variance=6.337
+   Cost: total=385, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\IBridge.sol
+
+3. IBridge.sol
+   Anomaly Score: 4.1307 (CRITICAL_ANOMALY)
+   Lines: 271
+   Density: mean=0.814, peaks=0
+   Entropy: mean=1.548, variance=6.338
+   Cost: total=385, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\tests\modules\bridge\interfaces\IBridge.sol
+
+4. IBridge.sol
+   Anomaly Score: 4.1306 (CRITICAL_ANOMALY)
+   Lines: 271
+   Density: mean=0.814, peaks=0
+   Entropy: mean=1.548, variance=6.336
+   Cost: total=385, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\main\modules\bridge\interfaces\IBridge.sol
+
+5. MathUpgradeable.sol
+   Anomaly Score: 3.9956 (CRITICAL_ANOMALY)
+   Lines: 339
+   Density: mean=0.876, peaks=0
+   Entropy: mean=1.140, variance=4.534
+   Cost: total=1106, outliers=6
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\MathUpgradeable.sol
+
+6. IMapper.sol
+   Anomaly Score: 3.7947 (CRITICAL_ANOMALY)
+   Lines: 182
+   Density: mean=0.729, peaks=0
+   Entropy: mean=2.138, variance=7.994
+   Cost: total=284, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\main\modules\mapper\interfaces\IMapper.sol
+
+7. IMapper.sol
+   Anomaly Score: 3.7947 (CRITICAL_ANOMALY)
+   Lines: 182
+   Density: mean=0.729, peaks=0
+   Entropy: mean=2.138, variance=7.994
+   Cost: total=284, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\tests\modules\mapper\interfaces\IMapper.sol
+
+8. IMapper.sol
+   Anomaly Score: 3.7905 (CRITICAL_ANOMALY)
+   Lines: 182
+   Density: mean=0.729, peaks=0
+   Entropy: mean=2.136, variance=7.980
+   Cost: total=284, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\tests\modules\utils\stub\mapper-broken\interfaces\IMapper.sol
+
+9. IMapper.sol
+   Anomaly Score: 3.7859 (CRITICAL_ANOMALY)
+   Lines: 182
+   Density: mean=0.729, peaks=0
+   Entropy: mean=2.138, variance=7.976
+   Cost: total=284, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\IMapper.sol
+
+10. IMapper.sol
+   Anomaly Score: 3.7859 (CRITICAL_ANOMALY)
+   Lines: 182
+   Density: mean=0.729, peaks=0
+   Entropy: mean=2.138, variance=7.976
+   Cost: total=284, outliers=10
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\mapper\IMapper.sol
+
+11. AddressUpgradeable.sol
+   Anomaly Score: 3.6668 (CRITICAL_ANOMALY)
+   Lines: 244
+   Density: mean=0.804, peaks=0
+   Entropy: mean=1.699, variance=6.148
+   Cost: total=633, outliers=12
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\AddressUpgradeable.sol
+
+12. AddressUpgradeable.sol
+   Anomaly Score: 3.6668 (CRITICAL_ANOMALY)
+   Lines: 244
+   Density: mean=0.804, peaks=0
+   Entropy: mean=1.699, variance=6.148
+   Cost: total=633, outliers=12
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\mapper\AddressUpgradeable.sol
+
+13. Address.sol
+   Anomaly Score: 3.6649 (CRITICAL_ANOMALY)
+   Lines: 244
+   Density: mean=0.804, peaks=0
+   Entropy: mean=1.698, variance=6.139
+   Cost: total=633, outliers=12
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\proxy\Address.sol
+
+14. ECDSAUpgradeable.sol
+   Anomaly Score: 3.5695 (CRITICAL_ANOMALY)
+   Lines: 217
+   Density: mean=0.764, peaks=0
+   Entropy: mean=1.998, variance=7.032
+   Cost: total=647, outliers=11
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\ECDSAUpgradeable.sol
+
+15. AccessControlUpgradeable.sol
+   Anomaly Score: 3.5685 (CRITICAL_ANOMALY)
+   Lines: 232
+   Density: mean=0.797, peaks=0
+   Entropy: mean=1.788, variance=6.318
+   Cost: total=545, outliers=8
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\bridge\AccessControlUpgradeable.sol
+
+16. AccessControlUpgradeable.sol
+   Anomaly Score: 3.5685 (CRITICAL_ANOMALY)
+   Lines: 232
+   Density: mean=0.797, peaks=0
+   Entropy: mean=1.788, variance=6.318
+   Cost: total=545, outliers=8
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\mapper\AccessControlUpgradeable.sol
+
+17. Mapper.sol
+   Anomaly Score: 3.3683 (CRITICAL_ANOMALY)
+   Lines: 211
+   Density: mean=0.753, peaks=0
+   Entropy: mean=2.043, variance=6.795
+   Cost: total=530, outliers=9
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\tron\contracts\main\modules\mapper\Mapper.sol
+
+18. Mapper.sol
+   Anomaly Score: 3.3639 (CRITICAL_ANOMALY)
+   Lines: 211
+   Density: mean=0.749, peaks=0
+   Entropy: mean=2.071, variance=6.849
+   Cost: total=542, outliers=12
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\main\modules\mapper\Mapper.sol
+
+19. MapperTest.sol
+   Anomaly Score: 3.3597 (CRITICAL_ANOMALY)
+   Lines: 216
+   Density: mean=0.757, peaks=0
+   Entropy: mean=2.056, variance=6.794
+   Cost: total=549, outliers=12
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\tests\modules\mapper\MapperTest.sol
+
+20. Bridge.sol
+   Anomaly Score: 3.1679 (CRITICAL_ANOMALY)
+   Lines: 660
+   Density: mean=0.928, peaks=0
+   Entropy: mean=0.643, variance=3.107
+   Cost: total=1419, outliers=40
+   Path: C:\Users\reman\OneDrive\Desktop\mine data\GOD\scripts\..\bridge-contracts-main\ether\contracts\main\modules\bridge\Bridge.sol
+
+====================================================================================================
+STATISTICAL BASELINE
+====================================================================================================
+Mean Anomaly Score: 2.1513
+Median: 1.9488
+Std Dev: 1.0862
+Max: 4.2385
+Min: 0.4065
+
+====================================================================================================
+METHODOLOGY
+====================================================================================================
+This scan uses ZERO hardcoded patterns.
+No knowledge of 'reentrancy', 'access control', or any specific vulnerability.
+
+Engines measure:
+  1. Information Density (LPMI) - Where structure exists
+  2. Entropy - Where complexity/unpredictability exists
+  3. Flow Convergence - Where execution paths meet
+  4. Computational Cost - Which syntax is expensive
+
+Anomaly Score = Statistical deviation from normal distribution
+High scores = Something unusual is happening (could be bug, could be complex logic)

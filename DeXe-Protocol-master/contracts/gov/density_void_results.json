@@ -1,0 +1,389 @@
+[
+  {
+    "file": "GovPool.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\GovPool.sol",
+    "lines": 644,
+    "voids": [
+      {
+        "line": 38,
+        "density": 0.016885425577055288,
+        "content": "contract GovPool is"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10760832127561809,
+      "min_density": 0.0009210252912038273,
+      "void_threshold": 0.026824515270189985
+    }
+  },
+  {
+    "file": "ERC20Gov.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20Gov.sol",
+    "lines": 119,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.11435890953702542,
+      "min_density": 0.004028376952173139,
+      "void_threshold": 0.015457167519557611
+    }
+  },
+  {
+    "file": "ERC20GovBurnable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovBurnable.sol",
+    "lines": 24,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.08441534402316686,
+      "min_density": 0.0024659235389471526,
+      "void_threshold": 0.007677507088140434
+    }
+  },
+  {
+    "file": "ERC20GovCapped.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovCapped.sol",
+    "lines": 49,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.07729448288847908,
+      "min_density": 0.0022177637487945357,
+      "void_threshold": 0.014664164913464974
+    }
+  },
+  {
+    "file": "ERC20GovCappedPausable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovCappedPausable.sol",
+    "lines": 67,
+    "voids": [
+      {
+        "line": 10,
+        "density": 0.01486197197375374,
+        "content": "contract ERC20GovCappedPausable is"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08103309786218121,
+      "min_density": 0.0024619756057524898,
+      "void_threshold": 0.01630935159999983
+    }
+  },
+  {
+    "file": "ERC20GovMinimal.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovMinimal.sol",
+    "lines": 23,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.09758369069856512,
+      "min_density": 0.003625776469319267,
+      "void_threshold": 0.007318329861828542
+    }
+  },
+  {
+    "file": "ERC20GovMintable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovMintable.sol",
+    "lines": 33,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.07990331412993923,
+      "min_density": 0.0018327037025156329,
+      "void_threshold": 0.010685094086757907
+    }
+  },
+  {
+    "file": "ERC20GovMintablePausable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovMintablePausable.sol",
+    "lines": 55,
+    "voids": [
+      {
+        "line": 9,
+        "density": 0.014204531127784505,
+        "content": "contract ERC20GovMintablePausable is"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08291157361814963,
+      "min_density": 0.002154064776654005,
+      "void_threshold": 0.014584405995925002
+    }
+  },
+  {
+    "file": "ERC20GovPausable.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC20\\ERC20GovPausable.sol",
+    "lines": 44,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.09860678231851507,
+      "min_density": 0.002076599353048925,
+      "void_threshold": 0.012979899501062887
+    }
+  },
+  {
+    "file": "ERC721Expert.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\experts\\ERC721Expert.sol",
+    "lines": 100,
+    "voids": [
+      {
+        "line": 9,
+        "density": 0.01705661728719945,
+        "content": "contract ERC721Expert is IERC721Expert, ERC721URIStorageUpgradeable, OwnableUpgradeable {"
+      },
+      {
+        "line": 10,
+        "density": 0.023428621429491453,
+        "content": "uint256 internal constant MAX_TAG_LENGTH = 3;"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08254469649390993,
+      "min_density": 0.005755176481123192,
+      "void_threshold": 0.026136608410151328
+    }
+  },
+  {
+    "file": "AbstractERC721Multiplier.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\multipliers\\AbstractERC721Multiplier.sol",
+    "lines": 186,
+    "voids": [
+      {
+        "line": 15,
+        "density": 0.01108724686668937,
+        "content": "abstract contract AbstractERC721Multiplier is"
+      },
+      {
+        "line": 22,
+        "density": 0.025862369995449573,
+        "content": "string public constant LOCK_UNLOCK = \"LOCK_UNLOCK\";"
+      },
+      {
+        "line": 138,
+        "density": 0.027607209181329816,
+        "content": "function _afterTokenUnlock(uint256 tokenId) internal virtual {}"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10370385587907098,
+      "min_density": 0.0027092119644640776,
+      "void_threshold": 0.027881507492544907
+    }
+  },
+  {
+    "file": "DexeERC721Multiplier.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\multipliers\\DexeERC721Multiplier.sol",
+    "lines": 97,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.10872367610903831,
+      "min_density": 0.008037377259558876,
+      "void_threshold": 0.030045197005463722
+    }
+  },
+  {
+    "file": "ERC721Multiplier.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\multipliers\\ERC721Multiplier.sol",
+    "lines": 40,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.07327237346225138,
+      "min_density": 0.0036722430828878324,
+      "void_threshold": 0.006356235181936757
+    }
+  },
+  {
+    "file": "AbstractERC721Power.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\powers\\AbstractERC721Power.sol",
+    "lines": 291,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.011673878492927848,
+        "content": "abstract contract AbstractERC721Power is"
+      },
+      {
+        "line": 116,
+        "density": 0.02361641413157062,
+        "content": "function getNftMaxPower(uint256 tokenId) public view virtual returns (uint256);"
+      },
+      {
+        "line": 118,
+        "density": 0.023830279365940055,
+        "content": "function getNftMinPower(uint256 tokenId) public view virtual returns (uint256);"
+      },
+      {
+        "line": 120,
+        "density": 0.024402549577338818,
+        "content": "function getNftPower(uint256 tokenId) public view virtual returns (uint256);"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.1029062962606622,
+      "min_density": 0.0016368952045323986,
+      "void_threshold": 0.02631062227036812
+    }
+  },
+  {
+    "file": "ERC721EquivalentPower.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\powers\\ERC721EquivalentPower.sol",
+    "lines": 79,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.13417525222791704,
+      "min_density": 0.004354253355167679,
+      "void_threshold": 0.012373865142279832
+    }
+  },
+  {
+    "file": "ERC721RawPower.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\ERC721\\powers\\ERC721RawPower.sol",
+    "lines": 64,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.12136548613490931,
+      "min_density": 0.0033324134699973585,
+      "void_threshold": 0.009535092232872544
+    }
+  },
+  {
+    "file": "DistributionProposal.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\proposals\\DistributionProposal.sol",
+    "lines": 138,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.08449670668824133,
+      "min_density": 0.004168074299083667,
+      "void_threshold": 0.01430838432340204
+    }
+  },
+  {
+    "file": "StakingProposal.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\proposals\\StakingProposal.sol",
+    "lines": 306,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.1331216801715467,
+      "min_density": 0.0012733900023963473,
+      "void_threshold": 0.016742877061261277
+    }
+  },
+  {
+    "file": "TokenSaleProposal.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\proposals\\TokenSaleProposal.sol",
+    "lines": 312,
+    "voids": [
+      {
+        "line": 20,
+        "density": 0.013908104093814317,
+        "content": "contract TokenSaleProposal is"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.10881719047133084,
+      "min_density": 0.001499045384487603,
+      "void_threshold": 0.02243168815807966
+    }
+  },
+  {
+    "file": "AbstractValueDistributor.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\proposals\\helpers\\AbstractValueDistributor.sol",
+    "lines": 80,
+    "voids": [
+      {
+        "line": 6,
+        "density": 0.0122963358183298,
+        "content": "abstract contract AbstractValueDistributor {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.08526607346146767,
+      "min_density": 0.0025524177121735024,
+      "void_threshold": 0.022072377960665426
+    }
+  },
+  {
+    "file": "GovSettings.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\settings\\GovSettings.sol",
+    "lines": 137,
+    "voids": [
+      {
+        "line": 10,
+        "density": 0.014727556566542054,
+        "content": "contract GovSettings is IGovSettings, OwnableUpgradeable {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.1119134239632526,
+      "min_density": 0.003419290617272509,
+      "void_threshold": 0.021589555554945263
+    }
+  },
+  {
+    "file": "GovUserKeeper.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\user-keeper\\GovUserKeeper.sol",
+    "lines": 903,
+    "voids": [
+      {
+        "line": 30,
+        "density": 0.016240887863726294,
+        "content": "contract GovUserKeeper is IGovUserKeeper, OwnableUpgradeable, ERC721HolderUpgradeable {"
+      },
+      {
+        "line": 42,
+        "density": 0.026272653157177785,
+        "content": "string constant STAKING_PROPOSAL_NAME = \"STAKING_PROPOSAL\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.16968407151151485,
+      "min_density": 0.0006591947875523601,
+      "void_threshold": 0.03040203977701735
+    }
+  },
+  {
+    "file": "GovValidators.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\validators\\GovValidators.sol",
+    "lines": 277,
+    "voids": [
+      {
+        "line": 17,
+        "density": 0.015054823682452168,
+        "content": "contract GovValidators is IGovValidators, OwnableUpgradeable {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.11307127530536845,
+      "min_density": 0.0017218665854842633,
+      "void_threshold": 0.02206856813888456
+    }
+  },
+  {
+    "file": "GovValidatorsToken.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\validators\\GovValidatorsToken.sol",
+    "lines": 46,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.0936844957385407,
+      "min_density": 0.003503584643723879,
+      "void_threshold": 0.015940361289284437
+    }
+  },
+  {
+    "file": "LinearPower.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\voting\\LinearPower.sol",
+    "lines": 36,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.10497042547544749,
+      "min_density": 0.00432242590584265,
+      "void_threshold": 0.006572072887126045
+    }
+  },
+  {
+    "file": "PolynomialPower.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\gov\\voting\\PolynomialPower.sol",
+    "lines": 234,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.18761997918593662,
+      "min_density": 0.001373115114026498,
+      "void_threshold": 0.010700888093386604
+    }
+  }
+]

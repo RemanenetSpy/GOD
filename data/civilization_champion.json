@@ -1,0 +1,41 @@
+{
+  "step_num": 5,
+  "ca_rule": "Conway (B3/S23)",
+  "grid_shape": [
+    20,
+    20
+  ],
+  "positions": {
+    "classical_prime": [
+      2,
+      3
+    ],
+    "quantum_prime": [
+      13,
+      1
+    ],
+    "modern_prime": [
+      1,
+      18
+    ],
+    "string_meta": [
+      16,
+      19
+    ]
+  },
+  "subroutines": {
+    "sub_1": "def mirror(): pass"
+  },
+  "agent_energies": {
+    "classical_prime": 105.12499999999999,
+    "quantum_prime": 105.12499999999999,
+    "modern_prime": 110.07499999999999,
+    "string_meta": 105.12499999999999
+  },
+  "agent_temperatures": {
+    "classical_prime": 0.1,
+    "quantum_prime": 0.1,
+    "modern_prime": 0.1,
+    "string_meta": 0.1
+  }
+}

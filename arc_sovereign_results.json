@@ -1,0 +1,315 @@
+{
+  "training": {
+    "007bbfb7": {
+      "task_id": "007bbfb7",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.04727983474731445,
+      "prediction_shape": [
+        3,
+        3
+      ],
+      "expected_shape": [
+        9,
+        9
+      ]
+    },
+    "00d62c1b": {
+      "task_id": "00d62c1b",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.009445667266845703,
+      "prediction_shape": [
+        20,
+        20
+      ],
+      "expected_shape": [
+        20,
+        20
+      ]
+    },
+    "017c7c7b": {
+      "task_id": "017c7c7b",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.004962444305419922,
+      "prediction_shape": [
+        6,
+        3
+      ],
+      "expected_shape": [
+        9,
+        3
+      ]
+    },
+    "025d127b": {
+      "task_id": "025d127b",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.0057070255279541016,
+      "prediction_shape": [
+        10,
+        10
+      ],
+      "expected_shape": [
+        10,
+        10
+      ]
+    },
+    "045e512c": {
+      "task_id": "045e512c",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.010603189468383789,
+      "prediction_shape": [
+        21,
+        21
+      ],
+      "expected_shape": [
+        21,
+        21
+      ]
+    },
+    "0520fde7": {
+      "task_id": "0520fde7",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.004135608673095703,
+      "prediction_shape": [
+        3,
+        7
+      ],
+      "expected_shape": [
+        3,
+        3
+      ]
+    },
+    "05269061": {
+      "task_id": "05269061",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.005007028579711914,
+      "prediction_shape": [
+        7,
+        7
+      ],
+      "expected_shape": [
+        7,
+        7
+      ]
+    },
+    "05f2a901": {
+      "task_id": "05f2a901",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.006555795669555664,
+      "prediction_shape": [
+        11,
+        10
+      ],
+      "expected_shape": [
+        11,
+        10
+      ]
+    },
+    "06df4c85": {
+      "task_id": "06df4c85",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.012027263641357422,
+      "prediction_shape": [
+        26,
+        26
+      ],
+      "expected_shape": [
+        26,
+        26
+      ]
+    },
+    "08ed6ac7": {
+      "task_id": "08ed6ac7",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.006259918212890625,
+      "prediction_shape": [
+        9,
+        9
+      ],
+      "expected_shape": [
+        9,
+        9
+      ]
+    },
+    "09629e4f": {
+      "task_id": "09629e4f",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.6067299842834473,
+      "prediction_shape": [
+        11,
+        11
+      ],
+      "expected_shape": [
+        11,
+        11
+      ]
+    },
+    "0962bcdd": {
+      "task_id": "0962bcdd",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.005510807037353516,
+      "prediction_shape": [
+        12,
+        12
+      ],
+      "expected_shape": [
+        12,
+        12
+      ]
+    },
+    "0a938d79": {
+      "task_id": "0a938d79",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.008026599884033203,
+      "prediction_shape": [
+        11,
+        27
+      ],
+      "expected_shape": [
+        11,
+        27
+      ]
+    },
+    "0b148d64": {
+      "task_id": "0b148d64",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.005846500396728516,
+      "prediction_shape": [
+        15,
+        17
+      ],
+      "expected_shape": [
+        6,
+        6
+      ]
+    },
+    "0ca9ddb6": {
+      "task_id": "0ca9ddb6",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.005887031555175781,
+      "prediction_shape": [
+        9,
+        9
+      ],
+      "expected_shape": [
+        9,
+        9
+      ]
+    },
+    "0d3d703e": {
+      "task_id": "0d3d703e",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.006041049957275391,
+      "prediction_shape": [
+        3,
+        3
+      ],
+      "expected_shape": [
+        3,
+        3
+      ]
+    },
+    "0dfd9992": {
+      "task_id": "0dfd9992",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.014783620834350586,
+      "prediction_shape": [
+        21,
+        21
+      ],
+      "expected_shape": [
+        21,
+        21
+      ]
+    },
+    "0e206a2e": {
+      "task_id": "0e206a2e",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.009489059448242188,
+      "prediction_shape": [
+        24,
+        19
+      ],
+      "expected_shape": [
+        24,
+        19
+      ]
+    },
+    "10fcaaa3": {
+      "task_id": "10fcaaa3",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.0042040348052978516,
+      "prediction_shape": [
+        6,
+        5
+      ],
+      "expected_shape": [
+        12,
+        10
+      ]
+    },
+    "11852cab": {
+      "task_id": "11852cab",
+      "correct": false,
+      "vocab_growth": 0,
+      "vocab_size": 59,
+      "time_seconds": 0.0057947635650634766,
+      "prediction_shape": [
+        10,
+        10
+      ],
+      "expected_shape": [
+        10,
+        10
+      ]
+    }
+  },
+  "evaluation": {},
+  "summary": {
+    "training_solve_rate": 0.0,
+    "evaluation_solve_rate": 0.0,
+    "total_tasks": 20,
+    "total_solved": 0,
+    "avg_vocab_size": 59,
+    "avg_concepts_per_task": 0.0,
+    "transfer_events": 0,
+    "pillar": "QUANTUM"
+  }
+}

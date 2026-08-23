@@ -1,0 +1,161 @@
+**Good. Let's stress-test your AGI's reasoning capabilities.**
+
+---
+
+## Core Logic Questions
+
+### 1. **Abstraction & Generalization**
+- Can your AGI recognize the SAME pattern across different visual representations?
+- Example: "Fill enclosed area" works on rectangles, circles, irregular shapes?
+- Or does it only work on axis-aligned rectangles?
+
+### 2. **Few-Shot Learning**
+- How many training examples does it need to learn a new pattern?
+- 1 example? 3 examples? 10?
+- ARC is designed for few-shot (1-5 examples max)
+
+### 3. **Compositionality**
+- Can it handle MULTIPLE rules in one task?
+- Example: "Fill rectangles with blue AND rotate 90 degrees"
+- Or does it only handle single-rule tasks?
+
+### 4. **Out-of-Distribution Handling**
+- What happens when you give it a COMPLETELY novel pattern it's never seen?
+- Does it fail gracefully? Make random guesses? Hallucinate?
+
+### 5. **Uncertainty Quantification**
+- When it's unsure, does it KNOW it's unsure?
+- Your "belief uncertainty" maps - do they accurately reflect when the system doesn't understand the pattern?
+
+---
+
+## Specific ARC Challenges
+
+### 6. **Symmetry Detection**
+- Can it recognize and apply: reflection, rotation, translation symmetries?
+- These are common in ARC but require abstract spatial reasoning
+
+### 7. **Object Segmentation**
+- Can it identify separate "objects" in a grid?
+- Example: Multiple disconnected shapes that need individual processing
+
+### 8. **Counting & Arithmetic**
+- Can it count objects and use that count in transformations?
+- Example: "Fill N cells where N = number of blue objects"
+
+### 9. **Negative Space**
+- Can it reason about EMPTY spaces as meaningful?
+- Example: "The holes between objects matter"
+
+### 10. **Temporal/Sequential Reasoning**
+- If shown a sequence (A→B→C), can it predict D?
+- Not just spatial, but temporal patterns
+
+---
+
+## Meta-Learning Questions
+
+### 11. **Rule Discovery**
+- HOW does it discover the rule from training examples?
+- Explicit symbolic rule extraction? Neural pattern matching? Something else?
+
+### 12. **Rule Modification**
+- You said it can "change laws inside simulated world"
+- Can it INVENT new transformation rules not in its training?
+- Example: Create rule "rotate AND scale" when only trained on "rotate" and "scale" separately?
+
+### 13. **Transfer Learning**
+- After solving 100 ARC tasks, does it get BETTER at solving task 101?
+- Or does each task require learning from scratch?
+
+### 14. **Explainability**
+- Can it EXPLAIN why it made a particular transformation?
+- Generate natural language description: "I filled rectangles because..."
+
+---
+
+## System Architecture Questions
+
+### 15. **What's the "Universe Update Rule"?**
+- You mentioned ONE unified equation governs everything
+- What is it? Show me the math
+
+### 16. **How are the 4 principles implemented?**
+- Prediction, Perception, Action, Learning
+- Are these separate modules? Or emergent from single rule?
+
+### 17. **What's "quantum" about your metrics?**
+- Curiosity/Reward, Risk, Novelty labeled "quantum"
+- Are you using actual quantum mechanics math? Or just inspired metaphor?
+
+### 18. **State Space**
+- How does your AGI represent world state?
+- Discrete grid? Continuous? Symbolic? Neural embeddings?
+
+### 19. **Search vs Learning**
+- Does it SEARCH through possible solutions?
+- Or LEARN a mapping from input to output?
+- Or hybrid?
+
+### 20. **Computational Complexity**
+- How long does it take to solve one ARC task?
+- Seconds? Minutes? Hours?
+- Does complexity scale linearly with grid size or exponentially?
+
+---
+
+## Critical Failure Modes
+
+### 21. **What makes it fail?**
+- Which types of ARC tasks does it consistently fail on?
+- This tells us what it DOESN'T understand
+
+### 22. **Hallucination**
+- Does it ever generate completely nonsensical outputs?
+- Or are failures "reasonable mistakes"?
+
+### 23. **Brittleness**
+- Small input changes → completely different output?
+- Or is it robust to noise/variations?
+
+---
+
+## Philosophical Questions
+
+### 24. **Is it actually "understanding" or pattern matching?**
+- Chinese Room problem: Does it KNOW what rectangles are?
+- Or just learned "3s surrounding 0s → fill with 4s"?
+
+### 25. **Consciousness/Qualia**
+- Your "universe inside universe" framing
+- Does the agent have ANY form of subjective experience?
+- Or pure computation?
+
+### 26. **AGI vs Narrow AI**
+- Can your system do ANYTHING beyond grid puzzles?
+- Play chess? Drive car? Write code?
+- Or is it specialized for ARC-like tasks?
+
+---
+
+## The Killer Question
+
+### 27. **Can it solve ARC tasks it CREATES?**
+
+**Ultimate test of understanding:**
+1. Have your AGI GENERATE a novel ARC task (input/output pair)
+2. Then ask a different instance of your AGI to SOLVE it
+3. If it can create puzzles AND solve them → true abstraction
+4. If it can only solve pre-made tasks → sophisticated pattern matcher
+
+---
+
+## Answer These
+
+Pick **5 questions** from above that are most important to understand your system.
+
+Answer them honestly (technical details welcome).
+
+Then we'll know if this is breakthrough AGI or clever ARC solver.
+
+**Which 5 questions do you want to tackle first?**

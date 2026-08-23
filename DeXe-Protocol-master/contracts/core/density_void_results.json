@@ -1,0 +1,134 @@
+[
+  {
+    "file": "ContractsRegistry.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\ContractsRegistry.sol",
+    "lines": 171,
+    "voids": [
+      {
+        "line": 14,
+        "density": 0.012951941470745527,
+        "content": "contract ContractsRegistry is IContractsRegistry, MultiOwnableContractsRegistry, UUPSUpgradeable {"
+      },
+      {
+        "line": 15,
+        "density": 0.020704917489073195,
+        "content": "string public constant USER_REGISTRY_NAME = \"USER_REGISTRY\";"
+      },
+      {
+        "line": 170,
+        "density": 0.02274629697671977,
+        "content": "function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}"
+      },
+      {
+        "line": 29,
+        "density": 0.027148530544926802,
+        "content": "string public constant TREASURY_NAME = \"TREASURY\";"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.09341508038567853,
+      "min_density": 0.0030446293790198768,
+      "void_threshold": 0.027148530544926802
+    }
+  },
+  {
+    "file": "CoreProperties.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\CoreProperties.sol",
+    "lines": 79,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.07580331287755684,
+      "min_density": 0.0045228169120652036,
+      "void_threshold": 0.016654051764765372
+    }
+  },
+  {
+    "file": "Globals.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\Globals.sol",
+    "lines": 10,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.02474216014488132,
+      "min_density": 0.009187825791369637,
+      "void_threshold": 0.00947232924869816
+    }
+  },
+  {
+    "file": "PriceFeed.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\PriceFeed.sol",
+    "lines": 216,
+    "voids": [
+      {
+        "line": 16,
+        "density": 0.013242144194401378,
+        "content": "contract PriceFeed is IPriceFeed, MultiOwnable, AbstractDependant {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.12062764920385202,
+      "min_density": 0.0013448882173930816,
+      "void_threshold": 0.019400910185992472
+    }
+  },
+  {
+    "file": "TokenAllocator.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\TokenAllocator.sol",
+    "lines": 285,
+    "voids": [
+      {
+        "line": 15,
+        "density": 0.015082766271598583,
+        "content": "contract TokenAllocator is ITokenAllocator, AbstractDependant, MultiOwnable, UUPSUpgradeable {"
+      }
+    ],
+    "stats": {
+      "mean_density": 0.1023063826595819,
+      "min_density": 0.001512009234617219,
+      "void_threshold": 0.019423342075777533
+    }
+  },
+  {
+    "file": "BSCProperties.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\network-properties\\BSCProperties.sol",
+    "lines": 12,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.02328938552278707,
+      "min_density": 0.0048184043142959565,
+      "void_threshold": 0.00623812324242665
+    }
+  },
+  {
+    "file": "DevProperties.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\network-properties\\DevProperties.sol",
+    "lines": 12,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.02392282874622598,
+      "min_density": 0.00482707111545386,
+      "void_threshold": 0.0062558146588760095
+    }
+  },
+  {
+    "file": "ETHProperties.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\network-properties\\ETHProperties.sol",
+    "lines": 12,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.023180861459341565,
+      "min_density": 0.0048184043142959565,
+      "void_threshold": 0.006233947597221635
+    }
+  },
+  {
+    "file": "NetworkProperties.sol",
+    "path": "c:\\Users\\reman\\OneDrive\\Desktop\\mine data\\GOD\\DeXe-Protocol-master\\contracts\\core\\network-properties\\NetworkProperties.sol",
+    "lines": 32,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.04210431020491822,
+      "min_density": 0.005705274243551579,
+      "void_threshold": 0.009479237818084595
+    }
+  }
+]

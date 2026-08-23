@@ -1,0 +1,966 @@
+Perfect — let’s design the **single‑agent visualization**, one agent at a time, in a way that is clean, meaningful, and directly useful for debugging your AGI’s internal cognition.
+
+I’ll give you a **complete visualization blueprint** you can implement immediately.  
+No clutter. No unnecessary panels.  
+Just the exact information that helps you understand *why* the agent behaves the way it does.
+
+---
+
+# 🎯 **Goal**
+For each agent (Quantum → Relativity → Information → Physics), you want a **dedicated dashboard** that shows:
+
+- what the agent sees  
+- what the agent believes  
+- how uncertain it is  
+- how far it has explored  
+- how its internal metrics evolve  
+
+This lets you compare them later, but each one gets its own clean view.
+
+---
+
+# 🖥️ **Single‑Agent Visualization Layout**
+
+Below is the recommended 4‑panel layout for **one agent at a time**.
+
+---
+
+## 🟦 **Panel 1 — Local Maze View (Top‑Left)**  
+Shows the **actual maze** around the agent.
+
+**Window size:** 41×41 or 31×31 centered on the agent.
+
+**Colors:**
+- Black = wall  
+- White = free path  
+- Blue = agent  
+- Green = newly explored cell  
+- Gray = previously visited  
+- Red = hazard (if any)  
+
+**Purpose:**  
+You see the *real* world the agent is navigating.
+
+---
+
+## 🟨 **Panel 2 — Belief / Uncertainty Map (Top‑Right)**  
+Shows what the agent *thinks* the world looks like.
+
+**Colors:**
+- Dark = low uncertainty  
+- Bright yellow = high uncertainty  
+- Orange = predicted wall  
+- Light gray = predicted free path  
+
+**Purpose:**  
+You see the agent’s **internal model**, not the real maze.  
+This is crucial for debugging belief collapse, exploration, and planning.
+
+---
+
+## 📈 **Panel 3 — Exploration Curve (Bottom‑Left)**  
+A line graph:
+
+- X-axis = steps  
+- Y-axis = number of unique cells visited  
+
+**Purpose:**  
+You instantly see if the agent:
+
+- is stuck  
+- is looping  
+- is exploring infinitely  
+- is slowing down  
+- is accelerating  
+
+This is the most important metric for infinite worlds.
+
+---
+
+## 🔧 **Panel 4 — Agent‑Specific Metrics (Bottom‑Right)**  
+This panel changes depending on the archetype.
+
+### ✅ **Quantum Agent**
+- Curiosity score  
+- Risk score  
+- Uncertainty average  
+- Novelty rate  
+
+### ✅ **Relativity Agent**
+- Prediction accuracy (ghosts / hazards)  
+- Perspective shift cost  
+- Context-switch frequency  
+
+### ✅ **Information Agent**
+- Compression ratio  
+- Prediction error  
+- Pattern recognition score  
+
+### ✅ **Physics Agent**
+- Path optimality  
+- Safety score  
+- Efficiency (steps per progress)  
+
+**Purpose:**  
+This panel shows the *soul* of the agent — what drives it.
+
+---
+
+# 🧠 **How the Visualization Updates Each Step**
+
+Every simulation step:
+
+1. **Render the local maze**  
+2. **Render the belief map**  
+3. **Update exploration curve**  
+4. **Update agent metrics**  
+5. **Refresh the dashboard**
+
+This gives you a real‑time view of the agent’s cognition.
+
+---
+
+# 🧩 **Minimal Pseudocode for the Visualization Loop**
+
+```python
+def render(agent, world, step):
+    plt.figure(figsize=(12, 10))
+
+    # Panel 1: Local Maze
+    plt.subplot(2, 2, 1)
+    draw_local_maze(agent, world)
+    plt.title("Local Maze View")
+
+    # Panel 2: Belief / Uncertainty
+    plt.subplot(2, 2, 2)
+    draw_belief_map(agent)
+    plt.title("Belief / Uncertainty Map")
+
+    # Panel 3: Exploration Curve
+    plt.subplot(2, 2, 3)
+    plt.plot(agent.steps, agent.unique_cells)
+    plt.title("Exploration Over Time")
+
+    # Panel 4: Archetype Metrics
+    plt.subplot(2, 2, 4)
+    draw_agent_metrics(agent)
+    plt.title(f"{agent.type} Metrics")
+
+    plt.tight_layout()
+    plt.show()
+```
+
+This is the skeleton — you fill in the drawing functions.
+
+---
+
+# ✅ **Why This Visualization Works**
+
+It gives you:
+
+- **Spatial understanding** (maze view)  
+- **Cognitive understanding** (belief map)  
+- **Behavioral understanding** (exploration curve)  
+- **Archetype understanding** (metrics panel)  
+
+You can immediately see:
+
+- why the agent is stuck  
+- why it takes risks  
+- why it avoids certain paths  
+- how it compresses the world  
+- how it predicts patterns  
+- how it handles uncertainty  
+
+This is exactly what you need for Phase 5 and Phase 6.
+
+---
+
+# ✅ Next Step  
+Tell me **which agent you want to visualize first**:
+
+- Quantum  
+- Relativity  
+- Information  
+- Physics  
+
+
+Let’s start with **one agent**, and I’ll pick the **Quantum Agent** because it gives you the most dramatic, visually interesting behavior. Once this one is working, you can reuse the exact same visualization structure for the other three archetypes.
+
+Below is a **complete, clean, ready‑to‑implement visualization design** for the **Quantum Agent** in your infinite deterministic maze world.
+
+---
+
+# 🌌 Quantum Agent Visualization (Single‑Agent Dashboard)
+
+The Quantum Agent is driven by:
+
+- curiosity  
+- uncertainty  
+- novelty  
+- risk tolerance  
+
+So the visualization must highlight:
+
+- what it sees  
+- what it *believes*  
+- how uncertain it is  
+- how far it has explored  
+- how its curiosity evolves  
+
+Here’s the full layout.
+
+---
+
+# 🟦 **Panel 1 — Local Maze View (Top‑Left)**  
+Shows the **actual maze** around the agent.
+
+### Window:
+41×41 centered on the agent.
+
+### Colors:
+- Black = wall  
+- White = free path  
+- Blue = agent  
+- Green = newly explored cell  
+- Gray = previously visited  
+- Red = hazard (optional)  
+
+### Why it matters:
+You see the *real* environment the agent is navigating.
+
+---
+
+# 🟨 **Panel 2 — Belief / Uncertainty Map (Top‑Right)**  
+Shows what the Quantum Agent *thinks* the world looks like.
+
+### Colors:
+- Bright yellow = high uncertainty  
+- Dark = low uncertainty  
+- Orange = predicted wall  
+- Light gray = predicted free path  
+
+### Why it matters:
+Quantum Agent thrives on uncertainty.  
+This panel shows:
+
+- where it wants to go  
+- where it is confused  
+- where it has collapsed beliefs  
+- how fast it is learning  
+
+---
+
+# 📈 **Panel 3 — Exploration Curve (Bottom‑Left)**  
+A simple line graph:
+
+- X-axis = steps  
+- Y-axis = number of unique cells visited  
+
+### Why it matters:
+Quantum Agent should explore **forever** in an infinite maze.  
+This graph tells you instantly if:
+
+- it’s stuck  
+- it’s looping  
+- it’s exploring linearly  
+- it’s accelerating  
+- it’s slowing down  
+
+This is your main “health check”.
+
+---
+
+# 🔮 **Panel 4 — Quantum Metrics (Bottom‑Right)**  
+This panel shows the internal “soul” of the Quantum Agent.
+
+### Metrics to plot:
+- **Curiosity Score** (reward from novelty)  
+- **Uncertainty Average** (mean belief uncertainty)  
+- **Risk Score** (how often it chooses dangerous paths)  
+- **Novelty Rate** (new cells per 100 steps)  
+
+### Why it matters:
+Quantum Agent is defined by:
+
+- high curiosity  
+- high uncertainty tolerance  
+- high novelty seeking  
+- moderate risk  
+
+This panel shows whether it is behaving correctly.
+
+---
+
+# ✅ **Minimal Visualization Loop (Pseudocode)**
+
+```python
+def render_quantum(agent, world, step):
+    plt.figure(figsize=(12, 10))
+
+    # Panel 1: Local Maze
+    plt.subplot(2, 2, 1)
+    draw_local_maze(agent, world)
+    plt.title("Local Maze View")
+
+    # Panel 2: Belief / Uncertainty
+    plt.subplot(2, 2, 2)
+    draw_belief_uncertainty(agent)
+    plt.title("Belief / Uncertainty Map")
+
+    # Panel 3: Exploration Curve
+    plt.subplot(2, 2, 3)
+    plt.plot(agent.steps, agent.unique_cells)
+    plt.title("Exploration Over Time")
+
+    # Panel 4: Quantum Metrics
+    plt.subplot(2, 2, 4)
+    plt.plot(agent.steps, agent.curiosity_scores, label="Curiosity")
+    plt.plot(agent.steps, agent.uncertainty_avgs, label="Uncertainty")
+    plt.plot(agent.steps, agent.risk_scores, label="Risk")
+    plt.plot(agent.steps, agent.novelty_rates, label="Novelty Rate")
+    plt.legend()
+    plt.title("Quantum Agent Metrics")
+
+    plt.tight_layout()
+    plt.show()
+```
+
+This is the exact structure you need.
+
+---
+
+# ✅ **What You’ll See When It Works**
+
+The Quantum Agent will:
+
+- aggressively push into unexplored maze corridors  
+- maintain high uncertainty in frontier regions  
+- show a rising exploration curve  
+- show oscillating curiosity and risk  
+- never collapse into a 9–12 cell loop  
+- never freeze  
+- never suicide unless the maze has traps  
+
+This visualization will make its behavior obvious and interpretable.
+
+---
+
+# ✅ Next Step  
+If you want, I can now generate:
+
+- the **Relativity Agent** visualization  
+- the **Information Agent** visualization  
+- the **Physics Agent** visualization  
+- or the **combined 4‑agent dashboard**  
+
+Just tell me which one you want next.
+
+Great — let’s move to the **next agent in the sequence**:  
+# **The Relativity Agent (“The Observer”) Visualization**
+
+This one is fascinating because it doesn’t just look at the maze — it looks at **others**, predicts movement, and reasons in terms of **frames of reference**. Even in a single‑agent test, it still builds *models of hypothetical agents* or *hazards*.
+
+Below is the full visualization design for the Relativity Agent, matching the structure you used for the Quantum Agent but tailored to its unique cognitive style.
+
+---
+
+# 🌌 **Relativity Agent Visualization (Single‑Agent Dashboard)**  
+This agent is all about:
+
+- perspective  
+- prediction  
+- modeling other entities  
+- context awareness  
+- avoiding traps by anticipating the future  
+
+So the visualization must highlight:
+
+- how it interprets the maze  
+- how it predicts future states  
+- how it models threats  
+- how its perspective shifts  
+- how accurate its predictions are  
+
+Let’s build the dashboard.
+
+---
+
+# 🟦 **Panel 1 — Local Maze View (Top‑Left)**  
+Same as Quantum Agent:
+
+- 41×41 window  
+- Black = wall  
+- White = path  
+- Blue = agent  
+- Red = predicted danger zones  
+- Purple = predicted future agent positions (ghosts, hazards, etc.)  
+
+### Why this matters  
+The Relativity Agent doesn’t just see the maze — it **projects** into the future.  
+This panel shows:
+
+- where it thinks danger will be  
+- where it thinks safe paths will open  
+- how it interprets the environment dynamically  
+
+---
+
+# 🟨 **Panel 2 — Prediction Map (Top‑Right)**  
+This is the Relativity Agent’s signature panel.
+
+Instead of uncertainty, you show **predicted future states**.
+
+### Colors:
+- Bright red = predicted danger in next 1–3 steps  
+- Orange = predicted danger in 4–6 steps  
+- Yellow = predicted movement of hypothetical agents  
+- Blue = predicted safe zones  
+- Gray = unknown  
+
+### Why this matters  
+This panel visualizes the agent’s **frame of reference** — how it transforms the world into predictions.
+
+You’ll see:
+
+- how far ahead it predicts  
+- whether it anticipates dead ends  
+- whether it sees “ghosts” or hazards coming  
+- how it models movement patterns  
+
+This is the most important panel for this archetype.
+
+---
+
+# 📈 **Panel 3 — Exploration Curve (Bottom‑Left)**  
+Same as Quantum Agent:
+
+- X-axis = steps  
+- Y-axis = unique cells visited  
+
+### Why this matters  
+Relativity Agent explores **strategically**, not aggressively.  
+You’ll see:
+
+- slower exploration than Quantum  
+- fewer suicides  
+- fewer dead ends  
+- more stable long-term progress  
+
+This curve will look smoother and more deliberate.
+
+---
+
+# 🔮 **Panel 4 — Relativity Metrics (Bottom‑Right)**  
+This panel shows the internal reasoning of the Relativity Agent.
+
+### Metrics to plot:
+- **Prediction Accuracy**  
+  How often predicted dangers actually occur.
+
+- **Perspective Shift Count**  
+  How often the agent changes its frame of reference.
+
+- **Context Sensitivity**  
+  How much the agent adapts to local structure.
+
+- **Threat Anticipation Score**  
+  How early it detects danger.
+
+### Why this matters  
+This agent’s intelligence is not about curiosity or safety — it’s about **understanding how the world moves**.
+
+This panel reveals whether it is:
+
+- predicting too much  
+- predicting too little  
+- overreacting  
+- underreacting  
+- adapting correctly  
+
+---
+
+# ✅ **Minimal Visualization Loop (Pseudocode)**
+
+```python
+def render_relativity(agent, world, step):
+    plt.figure(figsize=(12, 10))
+
+    # Panel 1: Local Maze
+    plt.subplot(2, 2, 1)
+    draw_local_maze_with_predictions(agent, world)
+    plt.title("Local Maze + Predicted Danger Zones")
+
+    # Panel 2: Prediction Map
+    plt.subplot(2, 2, 2)
+    draw_prediction_map(agent)
+    plt.title("Future State Prediction Map")
+
+    # Panel 3: Exploration Curve
+    plt.subplot(2, 2, 3)
+    plt.plot(agent.steps, agent.unique_cells)
+    plt.title("Exploration Over Time")
+
+    # Panel 4: Relativity Metrics
+    plt.subplot(2, 2, 4)
+    plt.plot(agent.steps, agent.prediction_accuracy, label="Prediction Accuracy")
+    plt.plot(agent.steps, agent.perspective_shifts, label="Perspective Shifts")
+    plt.plot(agent.steps, agent.context_sensitivity, label="Context Sensitivity")
+    plt.plot(agent.steps, agent.threat_anticipation, label="Threat Anticipation")
+    plt.legend()
+    plt.title("Relativity Agent Metrics")
+
+    plt.tight_layout()
+    plt.show()
+```
+
+---
+
+# ✅ **What You’ll See When It Works**
+
+The Relativity Agent will:
+
+- avoid dead ends earlier  
+- predict maze structure ahead of time  
+- detect “danger zones” before entering  
+- move more cautiously than Quantum  
+- explore more efficiently than Physics  
+- adapt faster than Information  
+
+Its behavior will look **smart**, almost human-like:
+
+- pausing before entering risky corridors  
+- choosing paths that “feel safe”  
+- avoiding loops  
+- predicting long corridors  
+- anticipating structural patterns  
+
+This visualization will make its reasoning visible.
+
+---
+
+# ✅ Next Agent  
+If you want, we can now move to:
+
+✅ **Information Agent (“The Scientist”) Visualization**  
+or  
+✅ **Physics Agent (“The Engineer”) Visualization**
+
+Just say **next** and I’ll continue.
+
+Perfect — let’s build the **Physics Agent (“The Engineer”)** visualization.  
+This one is very different from Quantum and Relativity.  
+Where they chase uncertainty or predictions, the Physics Agent is all about:
+
+- determinism  
+- safety  
+- efficiency  
+- shortest paths  
+- minimizing risk  
+- maximizing survival  
+
+So the visualization must highlight:
+
+- how it sees the maze  
+- how it evaluates safety  
+- how it chooses optimal paths  
+- how efficiently it moves  
+- how stable its behavior is over time  
+
+Let’s build the full single‑agent dashboard.
+
+---
+
+# 🧱 **Physics Agent Visualization (Single‑Agent Dashboard)**
+
+This agent behaves like a cautious engineer:  
+it wants **certainty**, **structure**, and **optimality**.
+
+Your visualization must reveal:
+
+- where it thinks the safe paths are  
+- how it evaluates risk  
+- how it computes optimal routes  
+- how it avoids uncertainty  
+- how efficiently it moves through the maze  
+
+---
+
+# 🟦 **Panel 1 — Local Maze View (Top‑Left)**  
+Shows the **actual maze** around the agent.
+
+### Window:
+41×41 centered on the agent.
+
+### Colors:
+- Black = wall  
+- White = free path  
+- Blue = agent  
+- Green = optimal path (computed by agent)  
+- Red = danger zones (if any)  
+- Gray = previously visited  
+
+### Why this matters  
+The Physics Agent is a **path optimizer**.  
+This panel shows:
+
+- the real maze  
+- the path it *intends* to follow  
+- how it avoids uncertainty  
+- how it navigates efficiently  
+
+You’ll see very clean, straight, deterministic movement.
+
+---
+
+# 🟨 **Panel 2 — Safety Map (Top‑Right)**  
+This is the Physics Agent’s signature panel.
+
+Instead of uncertainty or predictions, you show **safety scores**.
+
+### Colors:
+- Bright green = very safe  
+- Light green = safe  
+- Yellow = moderate risk  
+- Orange = risky  
+- Red = dangerous  
+- Gray = unknown  
+
+### Why this matters  
+The Physics Agent evaluates the world in terms of **risk gradients**.
+
+This panel shows:
+
+- how it computes safe corridors  
+- how it avoids dead ends  
+- how it evaluates unknown areas  
+- how it chooses the safest path  
+
+This is the core of its cognition.
+
+---
+
+# 📈 **Panel 3 — Efficiency Curve (Bottom‑Left)**  
+A line graph:
+
+- X-axis = steps  
+- Y-axis = “efficiency score”  
+
+### Efficiency score formula:
+You can compute it as:
+
+```
+efficiency = (unique_cells_visited / steps) * (1 - risk_taken)
+```
+
+Or simply:
+
+- steps per meaningful progress  
+- or distance traveled vs optimal distance  
+
+### Why this matters  
+Physics Agent should:
+
+- move smoothly  
+- avoid backtracking  
+- avoid loops  
+- avoid unnecessary exploration  
+
+This curve will show:
+
+- stable, efficient progress  
+- dips when it encounters uncertainty  
+- spikes when it finds long corridors  
+
+---
+
+# 🔧 **Panel 4 — Physics Metrics (Bottom‑Right)**  
+This panel shows the internal logic of the Physics Agent.
+
+### Metrics to plot:
+- **Path Optimality**  
+  How close its chosen path is to the shortest path.
+
+- **Safety Score**  
+  Average safety of chosen cells.
+
+- **Uncertainty Avoidance**  
+  How often it avoids unknown cells.
+
+- **Backtracking Count**  
+  How often it reverses direction.
+
+### Why this matters  
+Physics Agent is defined by:
+
+- determinism  
+- safety  
+- efficiency  
+- stability  
+
+This panel reveals whether it is behaving correctly.
+
+---
+
+# ✅ **Minimal Visualization Loop (Pseudocode)**
+
+```python
+def render_physics(agent, world, step):
+    plt.figure(figsize=(12, 10))
+
+    # Panel 1: Local Maze + Optimal Path
+    plt.subplot(2, 2, 1)
+    draw_local_maze_with_optimal_path(agent, world)
+    plt.title("Local Maze + Optimal Path")
+
+    # Panel 2: Safety Map
+    plt.subplot(2, 2, 2)
+    draw_safety_map(agent)
+    plt.title("Safety Map (Risk Gradient)")
+
+    # Panel 3: Efficiency Curve
+    plt.subplot(2, 2, 3)
+    plt.plot(agent.steps, agent.efficiency_scores)
+    plt.title("Efficiency Over Time")
+
+    # Panel 4: Physics Metrics
+    plt.subplot(2, 2, 4)
+    plt.plot(agent.steps, agent.path_optimality, label="Path Optimality")
+    plt.plot(agent.steps, agent.safety_scores, label="Safety Score")
+    plt.plot(agent.steps, agent.uncertainty_avoidance, label="Uncertainty Avoidance")
+    plt.plot(agent.steps, agent.backtracking_counts, label="Backtracking")
+    plt.legend()
+    plt.title("Physics Agent Metrics")
+
+    plt.tight_layout()
+    plt.show()
+```
+
+---
+
+# ✅ **What You’ll See When It Works**
+
+The Physics Agent will:
+
+- avoid unknown areas  
+- avoid risky corridors  
+- follow clean, deterministic paths  
+- rarely backtrack  
+- move efficiently  
+- explore slowly but safely  
+- never suicide  
+- never rush into uncertainty  
+
+Its behavior will look like:
+
+- a robot mapping a building  
+- a cautious engineer  
+- a deterministic planner  
+- a safety‑first navigator  
+
+This visualization will make its reasoning crystal clear.
+
+---
+
+# ✅ Next Agent  
+If you want, we can now move to:
+
+✅ **Information Agent (“The Scientist”) Visualization**  
+
+Just say **next** and I’ll continue.
+Alright Shiv — let’s complete the set with the final archetype:
+
+# 🧠 **Information Agent (“The Scientist”) Visualization**  
+This is the most *intellectual* of the four.  
+Where Quantum chases uncertainty, Relativity predicts futures, and Physics optimizes safety, the Information Agent is obsessed with:
+
+- patterns  
+- structure  
+- compression  
+- prediction error  
+- learning the “rules” of the maze  
+
+Your visualization must reveal how it **discovers**, **compresses**, and **understands** the infinite deterministic maze.
+
+Let’s build the full single‑agent dashboard.
+
+---
+
+# 🟦 **Panel 1 — Local Maze View (Top‑Left)**  
+Same structure as the others, but with one twist.
+
+### Window:
+41×41 centered on the agent.
+
+### Colors:
+- Black = wall  
+- White = free path  
+- Blue = agent  
+- Green = newly explored  
+- Gray = known  
+- Purple = “pattern-detected” cells (loops, corridors, symmetry)  
+
+### Why this matters  
+The Information Agent is a pattern detector.  
+This panel shows:
+
+- where it has identified repeating structures  
+- where it sees symmetry  
+- where it has compressed the maze into rules  
+
+You’ll literally see the maze “light up” as it discovers structure.
+
+---
+
+# 🟨 **Panel 2 — Pattern Map (Top‑Right)**  
+This is the Information Agent’s signature panel.
+
+Instead of uncertainty or safety, you show **pattern confidence**.
+
+### Colors:
+- Bright purple = strong pattern detected  
+- Light purple = weak pattern  
+- Gray = no pattern  
+- Yellow = high prediction error  
+- Red = contradiction (pattern broken)  
+
+### Why this matters  
+This panel visualizes the agent’s **internal model of the maze’s rules**.
+
+You’ll see:
+
+- corridors recognized as repeating units  
+- loops detected  
+- dead ends classified  
+- structural motifs learned  
+- prediction errors when the maze surprises it  
+
+This is the heart of the Information Agent.
+
+---
+
+# 📈 **Panel 3 — Compression Curve (Bottom‑Left)**  
+A line graph:
+
+- X-axis = steps  
+- Y-axis = “model compression score”  
+
+### Compression score formula:
+You can compute it as:
+
+```
+compression = 1 - (model_size / raw_data_size)
+```
+
+Or simply:
+
+- prediction error over time  
+- number of rules learned  
+- entropy reduction  
+
+### Why this matters  
+The Information Agent should:
+
+- reduce prediction error  
+- compress the maze’s structure  
+- learn repeating patterns  
+- stabilize over time  
+
+This curve shows how “smart” it is becoming.
+
+---
+
+# 🔧 **Panel 4 — Information Metrics (Bottom‑Right)**  
+This panel shows the internal cognitive machinery of the Information Agent.
+
+### Metrics to plot:
+- **Prediction Error**  
+  How often its predictions about the maze are wrong.
+
+- **Pattern Confidence**  
+  How strongly it believes in discovered rules.
+
+- **Compression Ratio**  
+  How much it has compressed the world model.
+
+- **Surprise Rate**  
+  How often the maze violates its expectations.
+
+### Why this matters  
+This agent is defined by:
+
+- learning  
+- compression  
+- prediction  
+- structure discovery  
+
+This panel reveals whether it is truly understanding the maze.
+
+---
+
+# ✅ **Minimal Visualization Loop (Pseudocode)**
+
+```python
+def render_information(agent, world, step):
+    plt.figure(figsize=(12, 10))
+
+    # Panel 1: Local Maze + Pattern Highlights
+    plt.subplot(2, 2, 1)
+    draw_local_maze_with_patterns(agent, world)
+    plt.title("Local Maze + Pattern Highlights")
+
+    # Panel 2: Pattern Map
+    plt.subplot(2, 2, 2)
+    draw_pattern_map(agent)
+    plt.title("Pattern Confidence Map")
+
+    # Panel 3: Compression Curve
+    plt.subplot(2, 2, 3)
+    plt.plot(agent.steps, agent.compression_scores)
+    plt.title("Compression Over Time")
+
+    # Panel 4: Information Metrics
+    plt.subplot(2, 2, 4)
+    plt.plot(agent.steps, agent.prediction_error, label="Prediction Error")
+    plt.plot(agent.steps, agent.pattern_confidence, label="Pattern Confidence")
+    plt.plot(agent.steps, agent.compression_ratio, label="Compression Ratio")
+    plt.plot(agent.steps, agent.surprise_rate, label="Surprise Rate")
+    plt.legend()
+    plt.title("Information Agent Metrics")
+
+    plt.tight_layout()
+    plt.show()
+```
+
+---
+
+# ✅ **What You’ll See When It Works**
+
+The Information Agent will:
+
+- identify repeating maze structures  
+- detect loops and corridors  
+- reduce prediction error over time  
+- compress the maze into rules  
+- explore only when needed to refine its model  
+- avoid randomness  
+- avoid unnecessary risk  
+- behave like a scientist mapping a new planet  
+
+Its behavior will look:
+
+- analytical  
+- methodical  
+- pattern-driven  
+- curiosity balanced with structure  
+
+This visualization will make its “scientific mind” visible.
+
+---
+
+# ✅ You now have all four single‑agent dashboards  
+Quantum → Relativity → Physics → Information
+
+Each one reveals a different cognitive style.
+
+

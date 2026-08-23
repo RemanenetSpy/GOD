@@ -1,0 +1,970 @@
+{
+  "total_tasks": 50,
+  "solved_tasks": 0,
+  "partial_solved_tasks": 0,
+  "total_tests": 51,
+  "correct_tests": 0,
+  "details": [
+    {
+      "task_id": "007bbfb7",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            3,
+            3
+          ],
+          "output_shape": [
+            3,
+            3
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "00d62c1b",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 11,
+      "predictions": [
+        {
+          "input_shape": [
+            20,
+            20
+          ],
+          "output_shape": [
+            20,
+            20
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "017c7c7b",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 3,
+      "predictions": [
+        {
+          "input_shape": [
+            6,
+            3
+          ],
+          "output_shape": [
+            6,
+            3
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "025d127b",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "045e512c",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 15,
+      "predictions": [
+        {
+          "input_shape": [
+            21,
+            21
+          ],
+          "output_shape": [
+            21,
+            21
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0520fde7",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            3,
+            7
+          ],
+          "output_shape": [
+            3,
+            7
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "05269061",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 9,
+      "predictions": [
+        {
+          "input_shape": [
+            7,
+            7
+          ],
+          "output_shape": [
+            7,
+            7
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "05f2a901",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 6,
+      "predictions": [
+        {
+          "input_shape": [
+            11,
+            10
+          ],
+          "output_shape": [
+            11,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "06df4c85",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 13,
+      "predictions": [
+        {
+          "input_shape": [
+            26,
+            26
+          ],
+          "output_shape": [
+            26,
+            26
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "08ed6ac7",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            9,
+            9
+          ],
+          "output_shape": [
+            9,
+            9
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "09629e4f",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            11,
+            11
+          ],
+          "output_shape": [
+            11,
+            11
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0962bcdd",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 6,
+      "predictions": [
+        {
+          "input_shape": [
+            12,
+            12
+          ],
+          "output_shape": [
+            12,
+            12
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0a938d79",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 14,
+      "predictions": [
+        {
+          "input_shape": [
+            11,
+            27
+          ],
+          "output_shape": [
+            11,
+            27
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0b148d64",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 33,
+      "predictions": [
+        {
+          "input_shape": [
+            15,
+            17
+          ],
+          "output_shape": [
+            15,
+            17
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0ca9ddb6",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 9,
+      "predictions": [
+        {
+          "input_shape": [
+            9,
+            9
+          ],
+          "output_shape": [
+            9,
+            9
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0d3d703e",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 16,
+      "predictions": [
+        {
+          "input_shape": [
+            3,
+            3
+          ],
+          "output_shape": [
+            3,
+            3
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0dfd9992",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 15,
+      "predictions": [
+        {
+          "input_shape": [
+            21,
+            21
+          ],
+          "output_shape": [
+            21,
+            21
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "0e206a2e",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 11,
+      "predictions": [
+        {
+          "input_shape": [
+            24,
+            19
+          ],
+          "output_shape": [
+            24,
+            19
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "10fcaaa3",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            6,
+            5
+          ],
+          "output_shape": [
+            6,
+            5
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "11852cab",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 11,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1190e5a7",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 29,
+      "predictions": [
+        {
+          "input_shape": [
+            22,
+            22
+          ],
+          "output_shape": [
+            22,
+            22
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "137eaa0f",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 22,
+      "predictions": [
+        {
+          "input_shape": [
+            11,
+            11
+          ],
+          "output_shape": [
+            11,
+            11
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "150deff5",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 2,
+      "predictions": [
+        {
+          "input_shape": [
+            8,
+            11
+          ],
+          "output_shape": [
+            8,
+            11
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "178fcbfb",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 7,
+      "predictions": [
+        {
+          "input_shape": [
+            12,
+            11
+          ],
+          "output_shape": [
+            12,
+            11
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1a07d186",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 15,
+      "predictions": [
+        {
+          "input_shape": [
+            19,
+            26
+          ],
+          "output_shape": [
+            19,
+            26
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1b2d62fb",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 13,
+      "predictions": [
+        {
+          "input_shape": [
+            5,
+            7
+          ],
+          "output_shape": [
+            5,
+            7
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1b60fb0c",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 4,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1bfc4729",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 10,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1c786137",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 52,
+      "predictions": [
+        {
+          "input_shape": [
+            17,
+            16
+          ],
+          "output_shape": [
+            17,
+            16
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1caeab9d",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 19,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1cf80156",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 6,
+      "predictions": [
+        {
+          "input_shape": [
+            12,
+            12
+          ],
+          "output_shape": [
+            12,
+            12
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1e0a9b12",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 19,
+      "predictions": [
+        {
+          "input_shape": [
+            5,
+            5
+          ],
+          "output_shape": [
+            5,
+            5
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1e32b0e9",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 13,
+      "predictions": [
+        {
+          "input_shape": [
+            17,
+            17
+          ],
+          "output_shape": [
+            17,
+            17
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1f0c79e5",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 12,
+      "predictions": [
+        {
+          "input_shape": [
+            9,
+            9
+          ],
+          "output_shape": [
+            9,
+            9
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1f642eb9",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 18,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1f85a75f",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 10,
+      "predictions": [
+        {
+          "input_shape": [
+            30,
+            30
+          ],
+          "output_shape": [
+            30,
+            30
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1f876c06",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 10,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "1fad071e",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 5,
+      "predictions": [
+        {
+          "input_shape": [
+            9,
+            9
+          ],
+          "output_shape": [
+            9,
+            9
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "2013d3e2",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 12,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "2204b7a8",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 13,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "22168020",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 13,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "22233c11",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 3,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "2281f1f4",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 3,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "228f6490",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 26,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "22eb0ac0",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 12,
+      "predictions": [
+        {
+          "input_shape": [
+            10,
+            10
+          ],
+          "output_shape": [
+            10,
+            10
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "234bbc79",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 19,
+      "predictions": [
+        {
+          "input_shape": [
+            3,
+            11
+          ],
+          "output_shape": [
+            3,
+            11
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "23581191",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 5,
+      "predictions": [
+        {
+          "input_shape": [
+            9,
+            9
+          ],
+          "output_shape": [
+            9,
+            9
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "239be575",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 8,
+      "predictions": [
+        {
+          "input_shape": [
+            8,
+            6
+          ],
+          "output_shape": [
+            8,
+            6
+          ],
+          "correct": false
+        },
+        {
+          "input_shape": [
+            8,
+            6
+          ],
+          "output_shape": [
+            8,
+            6
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "23b5c85d",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 31,
+      "predictions": [
+        {
+          "input_shape": [
+            18,
+            18
+          ],
+          "output_shape": [
+            18,
+            18
+          ],
+          "correct": false
+        }
+      ]
+    },
+    {
+      "task_id": "253bf280",
+      "solved": false,
+      "rule_count": 1,
+      "vocab_size": 3,
+      "predictions": [
+        {
+          "input_shape": [
+            12,
+            13
+          ],
+          "output_shape": [
+            12,
+            13
+          ],
+          "correct": false
+        }
+      ]
+    }
+  ]
+}

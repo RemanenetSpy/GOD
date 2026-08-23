@@ -1,0 +1,277 @@
+Here’s a clean, upgraded version of your roadmap with the Four Archetypes built into Phase 5 and reflected in Phase 6.
+
+---
+
+### Phase 5: Multi‑agent layer with four archetypes
+
+In Phase 5, your AGI becomes a society of four specialist agents, each pushing one pillar of your Hybrid ToE to the extreme. They share the same core architecture (state, beliefs, world model, universal update rule), but differ in priorities, parameters, and heuristics.
+
+#### 5.1 The four archetypes
+
+**1. Quantum Agent (“The Prophet”)**  
+- **Core trait:** High uncertainty tolerance, risk-loving, exploration-heavy.  
+- **Behavioral bias:**  
+  - Prefers actions that lead to unknown or high-uncertainty areas.  
+  - Assigns less penalty to risky paths (near ghosts, unknown corridors).  
+- **Objective tweak:**  
+  - Reward function has a strong curiosity term:  
+    - reward += k * novelty – low penalty for danger.  
+- **Role:** Probe unexplored territory, generate hypotheses about the world.
+
+**2. Relativity Agent (“The Observer”)**  
+- **Core trait:** Perspective-aware, models others explicitly.  
+- **Behavioral bias:**  
+  - Maintains internal models of other agents and adversaries (e.g., ghosts).  
+  - Predicts their future positions and intentions.  
+- **Objective tweak:**  
+  - Reward tied to correct predictions of others’ behavior and avoiding predicted danger.  
+- **Role:** Social/strategic layer; best at anticipating threats and allies.
+
+**3. Information Agent (“The Scientist”)**  
+- **Core trait:** Pattern finder, rule learner, map compressor.  
+- **Behavioral bias:**  
+  - Prioritizes visiting states that improve model accuracy and reduce prediction error.  
+  - Focuses on regularity: corridors, loops, repeated layouts.  
+- **Objective tweak:**  
+  - Reward tied to reduction in model uncertainty and compression improvement.  
+- **Role:** Maintains and refines the internal “laws” of the world.
+
+**4. Physics Agent (“The Engineer”)**  
+- **Core trait:** Deterministic, conservative, efficient.  
+- **Behavioral bias:**  
+  - Favors paths with known, reliable outcomes.  
+  - Strongly avoids high-uncertainty areas unless necessary.  
+- **Objective tweak:**  
+  - Reward heavily favors efficiency, safety, shortest path, and survival.  
+- **Role:** Executes safe, optimal behavior in known regions.
+
+---
+
+#### 5.2 Shared core, different parameterizations
+
+All four agents share:
+
+- **Same state structure:**  
+  - \( S_t^i = \{W_t^i, B_t^i, F_t^i\} \)
+
+- **Same universal update skeleton:**  
+  - \( S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i) \)
+
+But differ in:
+
+- Reward weights (curiosity vs safety vs prediction accuracy vs efficiency).  
+- Exploration–exploitation tradeoff.  
+- Planning depth.  
+- Risk tolerance.  
+- How they treat uncertainty in the belief update and action selection.
+
+You can implement this with a simple configuration per agent:
+
+```pseudo
+AgentConfig:
+    curiosity_weight
+    safety_weight
+    prediction_weight
+    efficiency_weight
+    risk_tolerance
+    planning_depth
+```
+
+Each archetype gets its own config.
+
+---
+
+#### 5.3 Communication and belief exchange
+
+Agents communicate via messages:
+
+- **Message types:**
+  - observations (“resource at (x,y)”, “ghost seen at (x,y)”)
+  - predictions (“ghost likely moving up”)
+  - warnings (“danger zone here”)
+  - map segments (local world model snippets)
+
+**Integration rule:**
+
+- Quantum Agent: trusts messages loosely, treats them as hypotheses.  
+- Relativity Agent: uses messages to refine models of others.  
+- Information Agent: uses messages to improve global map and rules.  
+- Physics Agent: trusts messages only if consistent with its prior model.
+
+Pseudocode sketch:
+
+```pseudo
+integrate_messages(agent, messages):
+    for msg in messages:
+        if agent.type == QUANTUM:
+            softly_update_beliefs(agent.belief_state, msg)
+        if agent.type == RELATIVITY:
+            update_other_agents_models(agent, msg)
+        if agent.type == INFORMATION:
+            update_world_patterns(agent.world_model, msg)
+        if agent.type == PHYSICS:
+            if consistent_with_model(agent.world_model, msg):
+                update_world_model(agent.world_model, msg)
+```
+
+---
+
+#### 5.4 Coordination and conflict
+
+You now have several emergent possibilities:
+
+- **Cooperation:**  
+  - Quantum Agent explores, Information Agent formalizes map, Physics Agent uses it to navigate optimally, Relativity Agent predicts threats.
+
+- **Conflict/trade-offs:**  
+  - Quantum Agent pushes into risky unknown; Physics Agent wants to stay safe.  
+  - Information Agent may prefer revisiting patterns; Quantum wants novelty.
+
+You can add a simple **meta-controller** or **voting mechanism** that picks a final action for the “team”:
+
+```pseudo
+team_decide_action(agents_states):
+    proposals = [choose_action(agent_state) for agent_state in agents_states]
+    score_for_each = evaluate_proposals(proposals, agents_states)
+    return argmax(score_for_each)
+```
+
+Or, in Pac-Man/gridworld, you can just let each agent act independently in the same world and study emergent interaction.
+
+---
+
+### Phase 6: Integration and MVP with archetypes
+
+Phase 6 now integrates the Four Archetypes into your final architecture and clarifies how you present and test the system.
+
+#### 6.1 Unified architecture (with archetypes)
+
+Your system now consists of:
+
+- **Environment:**  
+  - Gridworld (or Pac-Man-like world), partial observability, resources, dangers.
+
+- **Four Agent Types:**  
+  - Quantum, Relativity, Information, Physics.  
+  - All share: world model, belief engine, frame, learning, self-modification.  
+  - Differ via configuration and decision bias.
+
+- **Communication Bus:**  
+  - Shared medium where agents publish/subscribe messages.
+
+- **Coordinator (optional):**
+  - Aggregates suggestions if you want a single “team action”.
+
+---
+
+#### 6.2 Unified “God Equation” with archetypes
+
+For each agent \(i\) of a given archetype:
+
+\[
+S_{t+1}^i = U_{\theta_i}(S_t^i, A_t^i, O_t^i, M_t^i) + L_{\theta_i}(S_t^i)
+\]
+
+Where:
+
+- \(\theta_i\) are the parameters defining its archetype (risk, curiosity, etc.).  
+- The functional form of \(U\) and \(L\) is the same; only the weights and policies differ.
+
+At the team level, if you define a combined policy:
+
+\[
+A_t^{team} = F(A_t^{Q}, A_t^{R}, A_t^{I}, A_t^{P})
+\]
+
+Where:
+
+- \(A_t^{Q}\) = Quantum Agent’s proposed action  
+- \(A_t^{R}\) = Relativity Agent’s proposed action  
+- \(A_t^{I}\) = Information Agent’s proposed action  
+- \(A_t^{P}\) = Physics Agent’s proposed action  
+- \(F\) = combination rule (voting, weighted score, priority rules, etc.)
+
+---
+
+#### 6.3 Architecture diagram (updated conceptually)
+
+Textual diagram you can later draw:
+
+```
+                ┌─────────────────────────────────────────┐
+                │          Environment (Grid / Pac-Man)   │
+                └─────────────────────────────────────────┘
+                               ▲                 ▲
+                      Observations         Global State
+
+         ┌───────────────────────────────────────────────────────────┐
+         │                    Communication Bus                      │
+         │        (Messages: observations, predictions, maps)       │
+         └──────────────┬───────────────┬───────────────┬───────────┘
+                        │               │               │
+               ┌────────▼──────┐ ┌──────▼────────┐ ┌────▼─────────┐ ┌────────▼───────┐
+               │ Quantum Agent │ │ Relativity    │ │ Information  │ │ Physics Agent │
+               │  "Prophet"    │ │ Agent         │ │ Agent        │ │  "Engineer"   │
+               └────────┬──────┘ │ "Observer"    │ │ "Scientist"  │ └────────┬───────┘
+                        │        └──────┬────────┘ └──────┬────────┘          │
+                        │               │                 │                   │
+                 Beliefs, Frame, World Model, Learning (Same Core Structure)
+                        │               │                 │                   │
+               ┌────────▼───────────────▼─────────────────▼───────────────────▼───┐
+               │             Universal Update Rule Family U_θ + L_θ               │
+               └──────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+                           (Optional) Team Policy F
+                                      │
+                                      ▼
+                             Team Action to Environment
+```
+
+---
+
+#### 6.4 MVP experiments with archetypes
+
+For a concrete MVP, you can design a few small, clear experiments:
+
+**Experiment 1: Exploration vs Safety**
+
+- Environment: grid with hazards and resources.  
+- Compare:
+  - Quantum Agent alone vs Physics Agent alone vs combined team.  
+- Measure:
+  - Resources collected.  
+  - Deaths/hits.  
+  - Uncertainty over time.
+
+**Experiment 2: Pattern learning**
+
+- Environment: repeating corridor structures, loops.  
+- Information Agent should learn shortcuts and patterns faster.  
+- Physics Agent exploits them once mapped.  
+- Quantum Agent supplies exploration; Relativity Agent predicts threats.
+
+**Experiment 3: Social prediction (if ghosts/other agents exist)**
+
+- Add adversarial agents (ghosts).  
+- Relativity Agent scores based on prediction accuracy of their behavior.  
+- Measure:
+  - Survival time with vs without Relativity Agent.  
+  - Quality of threat prediction.
+
+---
+
+#### 6.5 Presentation and documentation
+
+When you package this:
+
+- **Concept:** A Hybrid ToE-Inspired AGI made of four archetype agents, each instantiating one pillar (quantum, relativity, information theory, computational physics).  
+- **Math:** One universal update rule with parameterized variants.  
+- **Code:** Shared core, different configs per archetype.  
+- **Results:** Plots of:
+  - exploration vs safety,  
+  - uncertainty vs time,  
+  - cumulative reward,  
+  - role-based contributions of each archetype.
+
+-

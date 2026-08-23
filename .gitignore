@@ -1,0 +1,17 @@
+# Environment and Credentials
+.env
+.env.*
+.secrets/
+secrets.json
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+.kaggle-venv/

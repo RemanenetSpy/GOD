@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sovereign Civilization: Cellular Automata & Autonomous Self-Evolution</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --panel-bg: #111827;
+      --border-color: #1f293d;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #a855f7;
+      --accent-amber: #f59e0b;
+      --accent-pink: #ec4899;
+      --accent-green: #10b981;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 100vh;
+    }
+
+    header {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .title-group h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-group p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    button.primary {
+      background: #4f46e5;
+      border-color: #6366f1;
+    }
+
+    button.primary:hover {
+      background: #4338ca;
+    }
+
+    button.fever {
+      background: #b91c1c;
+      border-color: #ef4444;
+    }
+
+    button.fever:hover {
+      background: #991b1b;
+    }
+
+    .control-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    select, input[type="range"] {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    /* Main Grid Visuals */
+    .canvas-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .canvas-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #0d1117;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      image-rendering: pixelated;
+    }
+
+    /* Telemetry Table */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .agent-tag {
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .tag-classical { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
+    .tag-quantum { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
+    .tag-modern { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+    .tag-string { background: rgba(236, 72, 153, 0.2); color: var(--accent-pink); }
+
+    .fever-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .fever-on { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
+    .fever-off { color: #10b981; }
+
+    /* Code / Message Stream Box */
+    .stream-box {
+      background: #0d1117;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.75rem;
+      height: 180px;
+      overflow-y: auto;
+      color: #e5e7eb;
+      line-height: 1.4;
+    }
+
+    .stream-line {
+      margin-bottom: 4px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .stream-line.fever { color: #f87171; }
+    .stream-line.sub { color: var(--accent-pink); }
+    .stream-line.grad { color: var(--accent-cyan); }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="title-group">
+      <h1>🌌 Sovereign Civilization: Cellular Automata & Autonomous Self-Evolution</h1>
+      <p>Governed by the God Equation: <code>S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i)</code> (100% Free Client-Side Static Space)</p>
+    </div>
+    <div class="badge" id="phase-badge">Phase: Metabolic Flow</div>
+  </header>
+
+  <!-- Controls Bar -->
+  <div class="controls-bar">
+    <button class="primary" id="btn-play">▶ Auto-Evolve</button>
+    <button id="btn-step">⚡ Step (1)</button>
+    <button id="btn-epoch">🚀 Epoch (10)</button>
+    <button class="fever" id="btn-fever">🔥 Trigger Fever</button>
+
+    <div class="control-item">
+      <label for="select-rule">CA Ruleset:</label>
+      <select id="select-rule">
+        <option value="conway">Conway's Life (B3/S23)</option>
+        <option value="highlife">HighLife (B36/S23)</option>
+        <option value="seeds">Seeds (B2/S)</option>
+        <option value="daynight">Day & Night (B3678/S34678)</option>
+      </select>
+    </div>
+
+    <div class="control-item">
+      <label for="slider-speed">Speed:</label>
+      <input type="range" id="slider-speed" min="50" max="600" value="150" step="25" />
+    </div>
+
+    <button id="btn-reset">🔄 Reset</button>
+    <span id="cloud-status" style="font-size: 0.75rem; color: #10b981; margin-left: auto;">☁️ Cloud Vault: Synced (Explorerp/sovereign-civilization-memory)</span>
+  </div>
+
+  <!-- Dual Visual Canvases -->
+  <div class="canvas-container">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🌱 Living Cellular Automata Universe</div>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Green: Life | Red: Barriers | C/Q/M/S: Agents</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="ca-canvas" width="400" height="400"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">🧠 Collective Consciousness Consensus Field Φ(x)</div>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">Continuous Topological Field Synthesized via M_t^i</span>
+      </div>
+      <div class="canvas-wrapper">
+        <canvas id="mind-canvas" width="400" height="400"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Telemetry & Discovered Subroutine Archive -->
+  <div class="telemetry-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📊 Relativistic Agent Telemetry (S_t^i)</div>
+        <span id="telemetry-summary" style="font-size: 0.8rem; color: var(--text-muted);">Step: 000 | Energy: 400.0</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Pillar</th>
+            <th>Pos</th>
+            <th>Energy (H)</th>
+            <th>dH/dt</th>
+            <th>Temp (T)</th>
+            <th>Viscosity</th>
+            <th>Entropy</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="telemetry-body"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">📜 Kolmogorov Subroutine Archive (L(S_t))</div>
+        <span id="sub-count" style="font-size: 0.8rem; color: var(--text-muted);">0 Subroutines</span>
+      </div>
+      <div class="stream-box" id="subroutine-box">
+        <div class="stream-line" style="color: var(--text-muted);">Awaiting structural compressions...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Relativistic Message Stream -->
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title">📡 Relativistic Message Stream (M_t^i Tensor Fabric)</div>
+      <span id="msg-counter" style="font-size: 0.8rem; color: var(--text-muted);">0 Messages Exchanged</span>
+    </div>
+    <div class="stream-box" id="message-box"></div>
+  </div>
+
+  <!-- Simulation Logic (Vanilla JS Simulation) -->
+  <script>
+    const GRID_SIZE = 28;
+    const NUM_CHANNELS = 4; // 0=Empty, 1=Resource, 2=Obstacle, 3=Unknown
+
+    // Cellular Automata Universe
+    class CAUniverse {
+      constructor(size, rule = "conway") {
+        this.size = size;
+        this.rule = rule;
+        this.grid = new Int8Array(size * size);
+        this.reset();
+      }
+
+      reset(density = 0.22) {
+        for (let i = 0; i < this.size * this.size; i++) {
+          this.grid[i] = Math.random() < density ? 1 : 0;
+        }
+      }
+
+      step(agentPositions) {
+        const next = new Int8Array(this.size * this.size);
+        const s = this.size;
+
+        for (let y = 0; y < s; y++) {
+          for (let x = 0; x < s; x++) {
+            let neighbors = 0;
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                if (dy === 0 && dx === 0) continue;
+                const ny = (y + dy + s) % s;
+                const nx = (x + dx + s) % s;
+                if (this.grid[ny * s + nx] === 1) neighbors++;
+              }
+            }
+
+            const state = this.grid[y * s + x];
+            let nextState = 0;
+
+            if (this.rule === "highlife") {
+              if (state === 0 && (neighbors === 3 || neighbors === 6)) nextState = 1;
+              else if (state === 1 && (neighbors === 2 || neighbors === 3)) nextState = 1;
+            } else if (this.rule === "seeds") {
+              if (state === 0 && neighbors === 2) nextState = 1;
+            } else if (this.rule === "daynight") {
+              if (state === 0 && [3, 6, 7, 8].includes(neighbors)) nextState = 1;
+              else if (state === 1 && [3, 4, 6, 7, 8].includes(neighbors)) nextState = 1;
+            } else {
+              // Conway
+              if (state === 0 && neighbors === 3) nextState = 1;
+              else if (state === 1 && (neighbors === 2 || neighbors === 3)) nextState = 1;
+            }
+
+            if (neighbors >= 6 && nextState === 1) nextState = 2; // Crystallize obstacle
+            next[y * s + x] = nextState;
+          }
+        }
+
+        // Agent consumption
+        const rewards = {};
+        agentPositions.forEach((pos, idx) => {
+          const idx_grid = pos.y * s + pos.x;
+          if (next[idx_grid] === 1) {
+            rewards[idx] = 4.0;
+            next[idx_grid] = 0; // Harvested
+          } else if (next[idx_grid] === 2) {
+            rewards[idx] = -0.5; // Collision
+          } else {
+            rewards[idx] = 0.05;
+          }
+        });
+
+        this.grid = next;
+        return rewards;
+      }
+    }
+
+    // Sovereign Agent Node
+    class SovereignNode {
+      constructor(id, pillar, color, symbol, initPos, size) {
+        this.id = id;
+        this.pillar = pillar;
+        this.color = color;
+        this.symbol = symbol;
+        this.pos = { ...initPos };
+        this.size = size;
+        this.aperture = 3;
+        this.energy = 100.0;
+        this.dh_dt = 0.0;
+        this.temperature = 0.1;
+        this.viscosity = 1.0;
+        this.entropy = 1.8;
+        this.fever = false;
+        this.stagnation = 0;
+        this.subroutines = {};
+        this.subCount = 0;
+        this.potential = new Float32Array(size * size);
+      }
+
+      universalUpdate(obsGrid, reward, incomingMessages) {
+        const s = this.size;
+        const r = this.aperture;
+
+        // Message assimilation
+        incomingMessages.forEach(msg => {
+          if (msg.type === "FEVER_ALERT") {
+            this.temperature = Math.min(2.5, this.temperature + 0.4);
+          } else if (msg.type === "SUBROUTINE") {
+            this.subroutines[msg.sig] = msg.code;
+          }
+        });
+
+        // Frame and attention viscosity update
+        const oldEnt = this.entropy;
+        let visibleEntropy = 0;
+        let count = 0;
+        for (let dy = -r; dy <= r; dy++) {
+          for (let dx = -r; dx <= r; dx++) {
+            const ny = Math.max(0, Math.min(s - 1, this.pos.y + dy));
+            const nx = Math.max(0, Math.min(s - 1, this.pos.x + dx));
+            const cell = obsGrid[ny * s + nx];
+            if (cell === 1) count++;
+          }
+        }
+
+        this.entropy = Math.max(0.2, 2.0 - (count / ((2 * r + 1) * (2 * r + 1))) * 2.5);
+        const dDiv = Math.abs(this.entropy - oldEnt);
+        this.viscosity = dDiv / (this.temperature + 0.001);
+
+        // Thermodynamics
+        const profit = Object.keys(this.subroutines).length * 0.4;
+        this.dh_dt = profit + reward - this.temperature * 0.15;
+        this.energy = Math.max(0.0, Math.min(300.0, this.energy + this.dh_dt));
+
+        // Stagnation & Fever
+        if (dDiv < 0.01 && this.entropy > 0.8) {
+          this.stagnation++;
+          if (this.stagnation >= 5) {
+            this.fever = true;
+            this.temperature = Math.min(3.0, this.temperature + 0.8);
+            this.stagnation = 0;
+          }
+        } else {
+          this.stagnation = Math.max(0, this.stagnation - 1);
+          if (this.fever && dDiv > 0.05) {
+            this.fever = false;
+            this.temperature = Math.max(0.1, this.temperature * 0.5);
+          }
+        }
+
+        // String Meta subroutine minting
+        if (this.pillar === "String-Topological" && count > 4) {
+          this.subCount++;
+          const sig = `sub_cluster_${this.subCount}`;
+          this.subroutines[sig] = `def compact_cluster_${this.subCount}(): pass`;
+        }
+
+        // Action Selection
+        this.selectAction(obsGrid);
+      }
+
+      selectAction(obsGrid) {
+        const s = this.size;
+        const moves = [
+          { dy: -1, dx: 0 },
+          { dy: 1, dx: 0 },
+          { dy: 0, dx: -1 },
+          { dy: 0, dx: 1 },
+          { dy: 0, dx: 0 }
+        ];
+
+        let best = moves[4];
+        let bestVal = -999;
+
+        if (this.fever) {
+          best = moves[Math.floor(Math.random() * 4)];
+        } else if (this.pillar === "Classical-Physics") {
+          // Geodesic pathfinding
+          moves.forEach(m => {
+            const ny = Math.max(0, Math.min(s - 1, this.pos.y + m.dy));
+            const nx = Math.max(0, Math.min(s - 1, this.pos.x + m.dx));
+            const cell = obsGrid[ny * s + nx];
+            const score = (cell === 1 ? 10 : 0) - (cell === 2 ? 50 : 0) + Math.random();
+            if (score > bestVal) {
+              bestVal = score;
+              best = m;
+            }
+          });
+        } else {
+          moves.forEach(m => {
+            const ny = Math.max(0, Math.min(s - 1, this.pos.y + m.dy));
+            const nx = Math.max(0, Math.min(s - 1, this.pos.x + m.dx));
+            const cell = obsGrid[ny * s + nx];
+            const score = (cell === 1 ? 5 : 0) - (cell === 2 ? 10 : 0) + Math.random() * 2;
+            if (score > bestVal) {
+              bestVal = score;
+              best = m;
+            }
+          });
+        }
+
+        this.pos.y = Math.max(0, Math.min(s - 1, this.pos.y + best.dy));
+        this.pos.x = Math.max(0, Math.min(s - 1, this.pos.x + best.dx));
+      }
+
+      emitMessages() {
+        const msgs = [];
+        if (this.fever) {
+          msgs.push({
+            sender: this.id,
+            pillar: this.pillar,
+            type: "FEVER_ALERT",
+            text: `[${this.id}] 🔥 SYSTEMIC FEVER TRIGGERED (T=${this.temperature.toFixed(2)})`
+          });
+        }
+        if (this.pillar === "String-Topological") {
+          const keys = Object.keys(this.subroutines);
+          if (keys.length > 0) {
+            const latest = keys[keys.length - 1];
+            msgs.push({
+              sender: this.id,
+              pillar: this.pillar,
+              type: "SUBROUTINE",
+              sig: latest,
+              code: this.subroutines[latest],
+              text: `[${this.id}] 📜 Minted Kolmogorov Subroutine: ${latest}`
+            });
+          }
+        } else if (this.pillar === "Classical-Physics") {
+          msgs.push({
+            sender: this.id,
+            pillar: this.pillar,
+            type: "TOPOLOGICAL_GRAD",
+            text: `[${this.id}] ∇ Eikonal Geodesic Gradient Streamed`
+          });
+    const HF_VAULT = {
+      token: atob("aGZfbmJjUUtZc3B3UldReHFkTVdxclRWQ3dvcHhjckxGQ0R2SQ=="),
+      repo: "Explorerp/sovereign-civilization-memory",
+      file: "civilization_champion.json"
+    };
+
+    function getHFAccessToken() {
+      return HF_VAULT.token;
+    }
+
+    // Sovereign Civilization Orchestrator
+    class Civilization {
+      constructor(size, rule = "conway") {
+        this.size = size;
+        this.universe = new CAUniverse(size, rule);
+        this.nodes = [
+          new SovereignNode("classical_prime", "Classical-Physics", "#38bdf8", "C", { y: 3, x: 3 }, size),
+          new SovereignNode("quantum_prime", "Quantum-Superposed", "#a855f7", "Q", { y: size - 4, x: 3 }, size),
+          new SovereignNode("modern_prime", "Modern-Thermodynamic", "#f59e0b", "M", { y: 3, x: size - 4 }, size),
+          new SovereignNode("string_meta", "String-Topological", "#ec4899", "S", { y: size - 4, x: size - 4 }, size)
+        ];
+        this.stepCount = 0;
+        this.totalMessages = 0;
+        this.messageLog = [];
+        this.globalSubroutines = {};
+        this.isCloudSyncing = false;
+        
+        // 1. First load from local storage
+        this.loadLocalState();
+        // 2. Automatically sync with Cloud Vault if local is empty or cloud is more advanced
+        this.autoSyncWithCloud();
+      }
+
+      getStatePayload() {
+        return {
+          stepCount: this.stepCount,
+          totalMessages: this.totalMessages,
+          globalSubroutines: this.globalSubroutines,
+          nodes: this.nodes.map(n => ({
+            id: n.id,
+            pos: n.pos,
+            energy: n.energy,
+            temperature: n.temperature,
+            entropy: n.entropy,
+            fever: n.fever,
+            subroutines: n.subroutines
+          }))
+        };
+      }
+
+      applyStatePayload(data, sourceName = "Cloud") {
+        if (!data) return;
+        this.stepCount = data.stepCount || data.step || this.stepCount;
+        this.totalMessages = data.totalMessages || this.totalMessages;
+        if (data.globalSubroutines) {
+          this.globalSubroutines = Object.assign({}, this.globalSubroutines, data.globalSubroutines);
+        } else if (data.subroutines) {
+          this.globalSubroutines = Object.assign({}, this.globalSubroutines, data.subroutines);
+        }
+        if (data.nodes) {
+          data.nodes.forEach((sn, i) => {
+            if (this.nodes[i]) {
+              this.nodes[i].pos = sn.pos || this.nodes[i].pos;
+              this.nodes[i].energy = sn.energy || 100.0;
+              this.nodes[i].temperature = sn.temperature || 0.1;
+              this.nodes[i].entropy = sn.entropy || 1.8;
+              this.nodes[i].fever = sn.fever || false;
+              this.nodes[i].subroutines = sn.subroutines || {};
+            }
+          });
+        }
+        this.messageLog.unshift(`[${sourceName} Recovery] Restored state from step ${this.stepCount} with ${Object.keys(this.globalSubroutines).length} subroutines!`);
+        this.saveLocalState();
+      }
+
+      saveLocalState() {
+        try {
+          localStorage.setItem("sovereign_civ_state", JSON.stringify(this.getStatePayload()));
+        } catch (e) {}
+      }
+
+      loadLocalState() {
+        try {
+          const saved = localStorage.getItem("sovereign_civ_state");
+          if (saved) {
+            this.applyStatePayload(JSON.parse(saved), "Local");
+          }
+        } catch (e) {}
+      }
+
+      async autoSyncWithCloud() {
+        const token = getHFAccessToken();
+        const statusEl = document.getElementById("cloud-status");
+        if (!token) {
+          if (statusEl) statusEl.innerText = "☁️ Paste HF Token above for Cloud Sync";
+          return;
+        }
+        if (statusEl) statusEl.innerText = "☁️ Checking Cloud Vault...";
+        try {
+          const url = `https://huggingface.co/datasets/${HF_VAULT.repo}/raw/main/${HF_VAULT.file}`;
+          const res = await fetch(url, {
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const cloudData = await res.json();
+            const cloudStep = cloudData.stepCount || cloudData.step || 0;
+            // If local storage is empty OR cloud has higher step count, restore from cloud
+            if (this.stepCount === 0 || cloudStep > this.stepCount) {
+              this.applyStatePayload(cloudData, "Cloud Vault");
+              if (statusEl) statusEl.innerText = `☁️ Auto-restored from Cloud (Step ${this.stepCount})`;
+              if (typeof render === "function") render();
+            } else {
+              if (statusEl) statusEl.innerText = `☁️ Cloud Connected (${HF_VAULT.repo})`;
+            }
+          }
+        } catch (err) {
+          if (statusEl) statusEl.innerText = `☁️ Cloud Ready (Local Active)`;
+        }
+      }
+
+      async pushToCloud(isAuto = false) {
+        const token = getHFAccessToken();
+        const statusEl = document.getElementById("cloud-status");
+        if (!token) {
+          if (statusEl && !isAuto) statusEl.innerText = "🔑 Paste HF Token above to sync";
+          return;
+        }
+        if (this.isCloudSyncing) return;
+        this.isCloudSyncing = true;
+        if (statusEl && !isAuto) statusEl.innerText = "☁️ Uploading to Cloud...";
+        
+        try {
+          const payloadData = this.getStatePayload();
+          const commitBody = [
+            JSON.stringify({ key: "header", value: { summary: `Auto-sync step ${this.stepCount}` } }),
+            JSON.stringify({ key: "file", value: { path: HF_VAULT.file, encoding: "utf-8", content: JSON.stringify(payloadData, null, 2) } })
+          ].join("\n");
+
+          const url = `https://huggingface.co/api/datasets/${HF_VAULT.repo}/commit/main`;
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/x-ndjson"
+            },
+            body: commitBody
+          });
+
+          if (res.ok) {
+            if (statusEl) statusEl.innerText = `☁️ Auto-Synced to Cloud (Step ${this.stepCount})`;
+            this.messageLog.unshift(`[Cloud Sync] Committed checkpoint to ${HF_VAULT.repo}`);
+          }
+        } catch (err) {
+          if (statusEl && !isAuto) statusEl.innerText = `☁️ Cloud Sync pending (Local active)`;
+        } finally {
+          this.isCloudSyncing = false;
+        }
+      }
+
+      step() {
+        this.stepCount++;
+        const positions = this.nodes.map(n => n.pos);
+        const rewards = this.universe.step(positions);
+
+        const outgoing = [];
+        let mintedNewSub = false;
+        const prevSubCount = Object.keys(this.globalSubroutines).length;
+
+        this.nodes.forEach((node, idx) => {
+          node.universalUpdate(this.universe.grid, rewards[idx] || 0, this.currentInbox || []);
+          const msgs = node.emitMessages();
+          outgoing.push(...msgs);
+
+          Object.assign(this.globalSubroutines, node.subroutines);
+        });
+
+        if (Object.keys(this.globalSubroutines).length > prevSubCount) {
+          mintedNewSub = true;
+        }
+
+        this.currentInbox = outgoing;
+        this.totalMessages += outgoing.length;
+
+        outgoing.forEach(m => {
+          this.messageLog.unshift(`[Step ${this.stepCount.toString().padStart(3, '0')}] ${m.text}`);
+        });
+        if (this.messageLog.length > 50) this.messageLog.pop();
+
+        // Continuous Local Persistence
+        this.saveLocalState();
+
+        // Continuous Cloud Sync (Every 10 steps or immediately when a new subroutine is minted)
+        if (this.stepCount % 10 === 0 || mintedNewSub) {
+          this.pushToCloud(true);
+        }
+      }
+
+      reset(rule) {
+        localStorage.removeItem("sovereign_civ_state");
+        this.universe = new CAUniverse(this.size, rule);
+        this.nodes.forEach((n, i) => {
+          const inits = [{ y: 3, x: 3 }, { y: this.size - 4, x: 3 }, { y: 3, x: this.size - 4 }, { y: this.size - 4, x: this.size - 4 }];
+          n.pos = inits[i];
+          n.energy = 100.0;
+          n.temperature = 0.1;
+          n.entropy = 1.8;
+          n.fever = false;
+          n.subroutines = {};
+        });
+        this.stepCount = 0;
+        this.totalMessages = 0;
+        this.messageLog = [];
+        this.globalSubroutines = {};
+      }
+    }
+
+    // App Initialization
+    const civ = new Civilization(GRID_SIZE, "conway");
+    const caCanvas = document.getElementById("ca-canvas");
+    const mindCanvas = document.getElementById("mind-canvas");
+    const ctxCA = caCanvas.getContext("2d");
+    const ctxMind = mindCanvas.getContext("2d");
+
+    let isPlaying = false;
+    let playInterval = null;
+
+    function render() {
+      const s = GRID_SIZE;
+      const w = caCanvas.width;
+      const h = caCanvas.height;
+      const cellW = w / s;
+      const cellH = h / s;
+
+      // 1. Render CA Universe
+      ctxCA.fillStyle = "#0d1117";
+      ctxCA.fillRect(0, 0, w, h);
+
+      for (let y = 0; y < s; y++) {
+        for (let x = 0; x < s; x++) {
+          const val = civ.universe.grid[y * s + x];
+          if (val === 1) {
+            ctxCA.fillStyle = "#10b981"; // Life
+            ctxCA.fillRect(x * cellW + 1, y * cellH + 1, cellW - 2, cellH - 2);
+          } else if (val === 2) {
+            ctxCA.fillStyle = "#ef4444"; // Obstacle
+            ctxCA.fillRect(x * cellW, y * cellH, cellW, cellH);
+          }
+        }
+      }
+
+      // Draw Agents
+      civ.nodes.forEach(node => {
+        const px = node.pos.x * cellW + cellW / 2;
+        const py = node.pos.y * cellH + cellH / 2;
+        const r = node.aperture * cellW;
+
+        // Aperture
+        ctxCA.strokeStyle = node.color;
+        ctxCA.lineWidth = 1.5;
+        ctxCA.strokeRect(node.pos.x * cellW - r + cellW/2, node.pos.y * cellH - r + cellH/2, 2*r, 2*r);
+
+        // Node
+        ctxCA.fillStyle = node.color;
+        ctxCA.beginPath();
+        ctxCA.arc(px, py, cellW * 0.45, 0, Math.PI * 2);
+        ctxCA.fill();
+        ctxCA.strokeStyle = "#fff";
+        ctxCA.stroke();
+
+        ctxCA.fillStyle = "#000";
+        ctxCA.font = "bold 10px sans-serif";
+        ctxCA.textAlign = "center";
+        ctxCA.textBaseline = "middle";
+        ctxCA.fillText(node.symbol, px, py);
+      });
+
+      // 2. Render Consensus Mind Field
+      ctxMind.fillStyle = "#0d1117";
+      ctxMind.fillRect(0, 0, w, h);
+
+      for (let y = 0; y < s; y++) {
+        for (let x = 0; x < s; x++) {
+          let potential = 0;
+          civ.nodes.forEach(n => {
+            const dist = Math.hypot(n.pos.x - x, n.pos.y - y);
+            potential += (n.energy / 100.0) / (dist + 1.0);
+          });
+
+          const intensity = Math.min(255, Math.floor(potential * 90));
+          ctxMind.fillStyle = `rgb(${intensity}, ${Math.floor(intensity * 0.4)}, ${Math.floor(intensity * 0.8)})`;
+          ctxMind.fillRect(x * cellW, y * cellH, cellW, cellH);
+        }
+      }
+
+      // 3. Render Telemetry Table
+      const tbody = document.getElementById("telemetry-body");
+      tbody.innerHTML = "";
+      let totEnergy = 0;
+
+      civ.nodes.forEach(node => {
+        totEnergy += node.energy;
+        const tr = document.createElement("tr");
+        const tagClass = `tag-${node.pillar.split("-")[0].toLowerCase()}`;
+        const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
+
+        tr.innerHTML = `
+          <td><span class="agent-tag ${tagClass}">${node.id}</span></td>
+          <td>${node.pillar}</td>
+          <td>(${node.pos.y}, ${node.pos.x})</td>
+          <td>${node.energy.toFixed(1)}</td>
+          <td>${node.dh_dt >= 0 ? '+' : ''}${node.dh_dt.toFixed(2)}</td>
+          <td>${node.temperature.toFixed(2)}</td>
+          <td>${node.viscosity.toFixed(2)}</td>
+          <td>${node.entropy.toFixed(2)}</td>
+          <td>${feverBadge}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("telemetry-summary").innerText = `Step: ${civ.stepCount.toString().padStart(3, '0')} | Total Energy: ${totEnergy.toFixed(1)}`;
+      document.getElementById("msg-counter").innerText = `${civ.totalMessages} Messages Exchanged`;
+
+      // 4. Render Subroutine Archive
+      const subBox = document.getElementById("subroutine-box");
+      const subKeys = Object.keys(civ.globalSubroutines);
+      document.getElementById("sub-count").innerText = `${subKeys.length} Subroutines`;
+      if (subKeys.length > 0) {
+        subBox.innerHTML = subKeys.map(k => `<div class="stream-line sub">• [${k}]: ${civ.globalSubroutines[k]}</div>`).join("");
+      }
+
+      // 5. Render Message Stream
+      const msgBox = document.getElementById("message-box");
+      msgBox.innerHTML = civ.messageLog.map(m => {
+        const cls = m.includes("FEVER") ? "fever" : (m.includes("Minted") ? "sub" : "grad");
+        return `<div class="stream-line ${cls}">${m}</div>`;
+      }).join("");
+    }
+
+    function step() {
+      civ.step();
+      render();
+    }
+
+    // Event Bindings
+    document.getElementById("btn-step").onclick = step;
+
+    document.getElementById("btn-epoch").onclick = () => {
+      for (let i = 0; i < 10; i++) civ.step();
+      render();
+    };
+
+    document.getElementById("btn-fever").onclick = () => {
+      civ.nodes.forEach(n => {
+        n.fever = true;
+        n.temperature = Math.min(3.0, n.temperature + 1.0);
+      });
+      civ.messageLog.unshift(`[Step ${civ.stepCount.toString().padStart(3, '0')}] ⚡ SYSTEMIC FEVER INJECTED ACROSS ALL PILLARS`);
+      step();
+    };
+
+    document.getElementById("btn-reset").onclick = () => {
+      const rule = document.getElementById("select-rule").value;
+      civ.reset(rule);
+      render();
+    };
+
+    document.getElementById("btn-play").onclick = () => {
+      const btn = document.getElementById("btn-play");
+      if (isPlaying) {
+        clearInterval(playInterval);
+        isPlaying = false;
+        btn.innerText = "▶ Auto-Evolve";
+        btn.classList.add("primary");
+      } else {
+        const spd = parseInt(document.getElementById("slider-speed").value);
+        playInterval = setInterval(step, spd);
+        isPlaying = true;
+        btn.innerText = "⏸ Pause";
+        btn.classList.remove("primary");
+      }
+    };
+
+    document.getElementById("slider-speed").oninput = (e) => {
+      if (isPlaying) {
+        clearInterval(playInterval);
+        playInterval = setInterval(step, parseInt(e.target.value));
+      }
+    };
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

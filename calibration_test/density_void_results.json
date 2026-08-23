@@ -1,0 +1,24 @@
+[
+  {
+    "file": "patched.cpp",
+    "path": "calibration_test\\patched.cpp",
+    "lines": 9,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.06132818827389582,
+      "min_density": 0.009947751604407449,
+      "void_threshold": 0.010537652088238605
+    }
+  },
+  {
+    "file": "vulnerable.cpp",
+    "path": "calibration_test\\vulnerable.cpp",
+    "lines": 11,
+    "voids": [],
+    "stats": {
+      "mean_density": 0.06661170118264498,
+      "min_density": 0.009261493216430692,
+      "void_threshold": 0.009749710390549468
+    }
+  }
+]
