@@ -2,10 +2,12 @@
 ========================================================================================
 SOVEREIGN CIVILIZATION 24/7 CLOUD SERVER & TRI-UNIVERSE PARALLEL LABORATORY
 ========================================================================================
-Runs 3 Independent Parallel Civilizations Simultaneously:
-1. 🌍 Universe A: Continuous Archive (100% Rule Retention, 30+ Laws baseline).
+Runs 3 Independent Parallel Civilizations Simultaneously with Modular Environments:
+1. 🌍 Universe A: Continuous Archive (100% Rule Retention, Seasonal Scarcity).
 2. 🌌 Universe B: Cyclic Pruner (Mathematical FIFO Pruning on Stagnation).
 3. 🔥 Universe C: Unbounded Darwin (Malthusian Population + Cyclic Pruning).
+
+Powered by Plug-and-Play Substrate Registry (Epoch 1 Classic CA & Epoch 2 Seasonal CA).
 ========================================================================================
 """
 
@@ -21,8 +23,9 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'environments'))
 
-from ca_universe import CellularAutomataUniverse
+from environments.registry import SubstrateRegistry
 from civilization import (
     SovereignCivilization,
     Observation,
@@ -42,6 +45,7 @@ class ContinuousEvolutionRunner:
         self,
         universe_id: str,
         mode_name: str,
+        substrate_name: str = "seasonal_scarcity",
         enable_pruning: bool = False,
         max_pop: int = 10,
         grid_size: int = 25,
@@ -50,12 +54,18 @@ class ContinuousEvolutionRunner:
     ):
         self.universe_id = universe_id
         self.mode_name = mode_name
+        self.substrate_name = substrate_name
         self.grid_size = grid_size
         self.grid_shape = (grid_size, grid_size)
         self.ca_rule = ca_rule
         self.vault_file = vault_file
         
-        self.universe = CellularAutomataUniverse(grid_shape=self.grid_shape, ca_rule=ca_rule)
+        # Instantiate environment from modular plug-and-play registry
+        self.universe = SubstrateRegistry.get_substrate(
+            name=substrate_name,
+            grid_shape=self.grid_shape,
+            ca_rule=ca_rule
+        )
         self.civ = SovereignCivilization(
             grid_shape=self.grid_shape,
             max_population=max_pop,
@@ -93,7 +103,7 @@ class ContinuousEvolutionRunner:
             print(f"[Render Engine Warning] Recovery error for {self.universe_id}: {e}")
 
     def _evolution_loop(self):
-        print(f"[Render Engine] [{self.mode_name}] 24/7 Sovereign Evolution Loop STARTED!")
+        print(f"[Render Engine] [{self.mode_name}] 24/7 Sovereign Evolution Loop STARTED on Substrate '{self.substrate_name}'!")
         while self.running:
             try:
                 with self.lock:
@@ -112,28 +122,29 @@ class ContinuousEvolutionRunner:
                         if pos_id not in self.civ.nodes:
                             del self.positions[pos_id]
                     
-                    # 1. Step Universe with current agent positions
+                    # 1. Fetch real-time Climate Telemetry
+                    climate = self.universe.get_climate_telemetry()
+                    
+                    # 2. Step Universe Physics with current agent positions
                     rewards = self.universe.step(self.positions)
                     
-                    # 2. Build local sensory observations
+                    # 3. Build local sensory observations
                     observations: Dict[str, Observation] = {}
                     h, w = self.grid_shape
                     for aid, node in self.civ.nodes.items():
                         py, px = self.positions.get(aid, (0, 0))
-                        r = node.aperture
-                        y_min, y_max = max(0, py - r), min(h, py + r + 1)
-                        x_min, x_max = max(0, px - r), min(w, px + r + 1)
-                        vis = self.universe.grid[y_min:y_max, x_min:x_max]
+                        vis = self.universe.get_observation(py, px, node.aperture)
                         observations[aid] = Observation(
                             visible_cells=vis,
                             position=(py, px),
                             reward=rewards.get(aid, 0.0)
                         )
                         
-                    # 3. Step master civilization
-                    actions = self.civ.step(observations)
+                    # 4. Step Master Civilization with Climate Awareness
+                    actions = self.civ.step(observations, climate_telemetry=climate)
                     
-                    # 4. Move agents
+                    # 5. Move agents & Execute Energy Caching in Surplus Seasons
+                    season = climate.get("season", "")
                     for aid, act in actions.items():
                         if aid not in self.positions:
                             continue
@@ -143,16 +154,24 @@ class ContinuousEvolutionRunner:
                         elif act == Action.MOVE_LEFT: px = max(0, px - 1)
                         elif act == Action.MOVE_RIGHT: px = min(w - 1, px + 1)
                         self.positions[aid] = (py, px)
-                    
-                    # 5. Throttled Cloud Commit
+
+                        # Construct energy cache if surplus (H >= 260) in Summer/Autumn
+                        node = self.civ.nodes.get(aid)
+                        if node and node.state.energy >= 260.0 and season in ["Summer", "Autumn"]:
+                            if self.universe.deposit_energy_cache(py, px, amount=15.0):
+                                node.state.energy -= 15.0
+
+                    # 6. Throttled Cloud Commit
                     now = time.time()
                     if now - self.last_saved_time >= 90.0:
                         self.last_saved_time = now
                         state_dict = {
                             "universe_id": self.universe_id,
                             "mode_name": self.mode_name,
+                            "substrate_name": self.substrate_name,
                             "step_num": self.step_count,
                             "ca_rule": self.ca_rule,
+                            "climate": climate,
                             "population": len(self.civ.nodes),
                             "subroutines": self.civ.global_subroutine_archive,
                             "total_subroutines": len(self.civ.global_subroutine_archive)
@@ -179,7 +198,11 @@ class ContinuousEvolutionRunner:
     def reset(self, rule: str = "Conway (B3/S23)"):
         with self.lock:
             self.ca_rule = rule
-            self.universe = CellularAutomataUniverse(grid_shape=self.grid_shape, ca_rule=rule)
+            self.universe = SubstrateRegistry.get_substrate(
+                name=self.substrate_name,
+                grid_shape=self.grid_shape,
+                ca_rule=rule
+            )
             self.civ = SovereignCivilization(
                 grid_shape=self.grid_shape,
                 max_population=self.civ.max_population,
@@ -241,10 +264,12 @@ class ContinuousEvolutionRunner:
             return {
                 "universe_id": self.universe_id,
                 "mode_name": self.mode_name,
+                "substrate_name": self.substrate_name,
                 "step": self.step_count,
                 "ca_rule": self.ca_rule,
                 "grid_size": self.grid_size,
                 "population": len(self.civ.nodes),
+                "climate": self.universe.get_climate_telemetry(),
                 "grid": self.universe.grid.tolist(),
                 "mind_field": mind_intensity,
                 "nodes": nodes_data,
@@ -262,25 +287,28 @@ class ContinuousEvolutionRunner:
             }
 
 
-# Spawn Tri-Universe Runners Concurrently
+# Spawn Tri-Universe Runners Concurrently with Modular Seasonal Scarcity Substrate
 runners: Dict[str, ContinuousEvolutionRunner] = {
     "a": ContinuousEvolutionRunner(
         universe_id="a",
-        mode_name="Universe A (Continuous Archive)",
+        mode_name="Universe A (Continuous Archive + Seasonal Scarcity)",
+        substrate_name="seasonal_scarcity",
         enable_pruning=False,
         max_pop=10,
         vault_file="civilization_universe_a.json"
     ),
     "b": ContinuousEvolutionRunner(
         universe_id="b",
-        mode_name="Universe B (Cyclic Pruner)",
+        mode_name="Universe B (Cyclic Pruner + Seasonal Scarcity)",
+        substrate_name="seasonal_scarcity",
         enable_pruning=True,
         max_pop=10,
         vault_file="civilization_universe_b.json"
     ),
     "c": ContinuousEvolutionRunner(
         universe_id="c",
-        mode_name="Universe C (Unbounded Darwin)",
+        mode_name="Universe C (Unbounded Darwin + Seasonal Scarcity)",
+        substrate_name="seasonal_scarcity",
         enable_pruning=True,
         max_pop=35,
         vault_file="civilization_universe_c.json"
@@ -396,6 +424,27 @@ def visual_dashboard():
       border-color: #3b82f6;
       color: #fff;
       box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .climate-bar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: linear-gradient(90deg, #111827 0%, #1e1b4b 100%);
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #3b82f6;
+      flex-wrap: wrap;
+    }
+
+    .season-badge {
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
     }
 
     .controls-bar {
@@ -538,6 +587,16 @@ def visual_dashboard():
     <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian Ecology</button>
   </div>
 
+  <!-- DYNAMIC SEASONAL CLIMATE STATUS BAR -->
+  <div class="climate-bar">
+    <span id="season-badge" class="season-badge">🌸 Spring</span>
+    <span id="climate-solar" style="font-size:0.8rem; color:#9ca3af;">☀️ Solar Cycle: 0%</span>
+    <span id="climate-temp" style="font-size:0.8rem; color:#f59e0b;">🌡️ Ambient Temp: 1.00</span>
+    <span id="climate-regrowth" style="font-size:0.8rem; color:#10b981;">🌱 Regrowth: 15%</span>
+    <span id="climate-caches" style="font-size:0.8rem; color:#38bdf8;">💎 Energy Caches: 0</span>
+    <span id="climate-famine" style="font-size:0.8rem; font-weight:800; color:#ef4444; display:none;">❄️ WINTER FAMINE ACTIVE</span>
+  </div>
+
   <div class="controls-bar">
     <button class="fever" id="btn-fever">🔥 Trigger Fever</button>
     <button id="btn-reset">🔄 Reset Universe</button>
@@ -550,7 +609,7 @@ def visual_dashboard():
     <div class="panel">
       <div class="panel-header">
         <div class="panel-title">🌱 Living Cellular Automata Universe</div>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Green: Life | Red: Barriers | C/Q/M/S/H: Organisms</span>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Green: Life | Cyan: Energy Caches | Red: Barriers | C/Q/M/S/H: Organisms</span>
       </div>
       <div class="canvas-wrapper">
         <canvas id="ca-canvas" width="400" height="400"></canvas>
@@ -655,8 +714,36 @@ def visual_dashboard():
     }
 
     function render(data) {
-      document.getElementById("universe-subtitle").innerText = `Viewing ${data.mode_name} | God Equation: S_{t+1}^i = U(...) + L(...)`;
+      document.getElementById("universe-subtitle").innerText = `Viewing ${data.mode_name} | Substrate: ${data.substrate_name} | God Equation: S_{t+1}^i = U(...) + L(...)`;
       
+      // Update Climate Telemetry
+      if (data.climate) {
+        const c = data.climate;
+        const badge = document.getElementById("season-badge");
+        badge.innerText = `${c.season_icon} ${c.season}`;
+        if (c.season === "Winter") {
+          badge.style.borderColor = "#ef4444";
+          badge.style.color = "#f87171";
+          badge.style.background = "rgba(239, 68, 68, 0.2)";
+          document.getElementById("climate-famine").style.display = "inline";
+        } else if (c.season === "Summer") {
+          badge.style.borderColor = "#f59e0b";
+          badge.style.color = "#fbbf24";
+          badge.style.background = "rgba(245, 158, 11, 0.2)";
+          document.getElementById("climate-famine").style.display = "none";
+        } else {
+          badge.style.borderColor = "#38bdf8";
+          badge.style.color = "#38bdf8";
+          badge.style.background = "rgba(56, 189, 248, 0.2)";
+          document.getElementById("climate-famine").style.display = "none";
+        }
+
+        document.getElementById("climate-solar").innerText = `☀️ Solar Cycle: ${(c.solar_phase * 100).toFixed(1)}%`;
+        document.getElementById("climate-temp").innerText = `🌡️ Temp: ${c.ambient_temp.toFixed(2)}`;
+        document.getElementById("climate-regrowth").innerText = `🌱 Regrowth: ${(c.regrowth_rate * 100).toFixed(0)}%`;
+        document.getElementById("climate-caches").innerText = `💎 Caches: ${c.cache_count}`;
+      }
+
       const s = data.grid_size || 25;
       const w = canvasCA.width;
       const h = canvasCA.height;
@@ -676,6 +763,12 @@ def visual_dashboard():
           } else if (val === 2) {
             ctxCA.fillStyle = "#ef4444";
             ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
+          } else if (val === 3) {
+            // Energy Cache Crystalline Deposit
+            ctxCA.fillStyle = "#38bdf8";
+            ctxCA.fillRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
+            ctxCA.strokeStyle = "#ffffff";
+            ctxCA.strokeRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
           }
         }
       }
@@ -728,7 +821,6 @@ def visual_dashboard():
       const tbody = document.getElementById("telemetry-body");
       let totEnergy = 0;
 
-      // Update rows smoothly
       const rows = tbody.querySelectorAll("tr");
       if (rows.length !== data.nodes.length) {
         tbody.innerHTML = "";

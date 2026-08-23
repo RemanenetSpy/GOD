@@ -102,14 +102,14 @@ class RelativisticMessageFabric:
     def fetch_inbox(self, node_id: str) -> List[Message]:
         if node_id not in self.inboxes:
             return []
-        msgs = self.inboxes[node_id][:]
-        self.inboxes[node_id].clear()
+        msgs = self.inboxes[node_id]
+        self.inboxes[node_id] = []
         return msgs
 
 
 @dataclass
 class Observation:
-    visible_cells: np.ndarray
+    visible_cells: np.ndarray # Local sensory window
     position: Tuple[int, int]
     reward: float = 0.0
 
@@ -120,32 +120,31 @@ class AgentState:
     pillar: PillarArchetype
     position: Tuple[int, int]
     energy: float = 100.0
+    temperature: float = 0.5
+    viscosity: float = 0.5
     dh_dt: float = 0.0
-    temperature: float = 0.1
-    viscosity: float = 1.0
-    belief_entropy: float = 1.0
     fever_active: bool = False
+    belief_entropy: float = 0.0
     subroutine_library: Dict[str, str] = field(default_factory=dict)
-    cognitive_10d: Dict[str, Any] = field(default_factory=dict)
+    cognitive_10d: Dict[str, float] = field(default_factory=dict)
 
 
 class BaseSovereignNode:
-    """Universal Sovereign Agent governed by God Equation."""
+    """Core autonomous node implementing the God Equation."""
     def __init__(
         self,
         node_id: str,
         pillar: PillarArchetype,
         grid_shape: Tuple[int, int] = (25, 25),
         aperture: int = 3,
-        initial_energy: float = 120.0
+        initial_energy: float = 100.0
     ):
         self.node_id = node_id
         self.pillar = pillar
-        self.grid_shape = grid_shape
         self.h, self.w = grid_shape
         self.aperture = aperture
         
-        # Core Engines
+        # Engines
         self.belief_engine = QuantumBeliefEngine(grid_shape=grid_shape)
         self.kolmogorov_engine = KolmogorovEngine(agent_id=node_id)
         self.fever_engine = FeverProtocol(agent_id=node_id)
@@ -167,7 +166,8 @@ class BaseSovereignNode:
         action: Action,
         observation: Observation,
         inbox: List[Message],
-        step: int
+        step: int,
+        climate_telemetry: Optional[Dict[str, Any]] = None
     ):
         """
         THE GOD EQUATION OPERATOR:
@@ -219,7 +219,11 @@ class BaseSovereignNode:
         compression_profit = sum(p.compression_gain for p in new_programs)
 
         # 4. Thermodynamic Homeostasis Update (dH/dt = (Sigma * Omega) - Lambda)
-        friction = 0.05 # Sustainable metabolic base burn (2000 steps baseline)
+        friction_mult = 1.0
+        if climate_telemetry is not None:
+            friction_mult = float(climate_telemetry.get("friction_mult", 1.0))
+            
+        friction = 0.05 * friction_mult # Dynamic climate-scaled basal friction
         feeding_energy = max(0.0, observation.reward)
         sigma = 1.0 + len(self.kolmogorov_engine.program_library) * 0.05
         omega = info_gain + (compression_profit * 0.5)
@@ -366,7 +370,11 @@ class SovereignCivilization:
         for nid in self.nodes:
             self.fabric.register_node(nid)
 
-    def step(self, observations: Optional[Dict[str, Observation]] = None) -> Dict[str, Action]:
+    def step(
+        self,
+        observations: Optional[Dict[str, Observation]] = None,
+        climate_telemetry: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Action]:
         self.step_count += 1
         actions: Dict[str, Action] = {}
         out_msgs: List[Message] = []
@@ -383,8 +391,8 @@ class SovereignCivilization:
             obs = observations.get(aid, Observation(np.zeros((3, 3)), node.state.position))
             inbox = self.fabric.fetch_inbox(aid)
             
-            # Universal Update
-            node.universal_update(node._last_action, obs, inbox, self.step_count)
+            # Universal Update with Climate Awareness
+            node.universal_update(node._last_action, obs, inbox, self.step_count, climate_telemetry=climate_telemetry)
             act = node.select_action(obs)
             node._last_action = act
             actions[aid] = act

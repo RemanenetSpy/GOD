@@ -7,8 +7,9 @@ KOLMOGOROV PROGRAM SYNTHESIS & CAUSAL INDUCTION ENGINE (ARCHITECTURES 3 & 9)
 1. Inspects temporal transitions (O_{t-1} -> O_t) to discover causal physical laws.
 2. Induces Cellular Automata neighbor transition functions (birth/survival physics).
 3. Identifies geometric invariances (rotations, translations, symmetries, clusters).
-4. Strictly deduplicates discovered programs via semantic content hashing.
-5. Computes genuine Kolmogorov compression profit: dH/dt = K(raw_diff) - K(program).
+4. Induces dynamic environmental laws (Energy Caching / Storage, Seasonal Torpor).
+5. Strictly deduplicates discovered programs via semantic content hashing.
+6. Computes genuine Kolmogorov compression profit: dH/dt = K(raw_diff) - K(program).
 ========================================================================================
 """
 
@@ -44,7 +45,6 @@ class KolmogorovEngine:
 
     def _hash_code(self, code_str: str) -> str:
         """Produces a deterministic semantic hash for program deduplication."""
-        # Normalize whitespace
         cleaned = "".join(code_str.split())
         return hashlib.sha256(cleaned.encode('utf-8')).hexdigest()[:12]
 
@@ -94,8 +94,7 @@ class KolmogorovEngine:
                         newly_discovered.append(prog)
             return newly_discovered
 
-        # 2. Local Moore Neighborhood Causal Induction
-        # For every cell that changed or lived, inspect its 8-neighbor count
+        # 2. Local Moore Neighborhood Causal Induction (for Living Cells)
         neighbor_kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
         from scipy.signal import convolve2d
         
@@ -158,7 +157,33 @@ class KolmogorovEngine:
                         self.program_library[sig] = prog
                         newly_discovered.append(prog)
 
-        # Check for Geometric Invariances (Rotational / Horizontal Reflection Symmetry)
+        # 3. Energy Caching / Storage Stigmergy Law Induction (Cell Type 3)
+        caches_in_view = (curr_obs == 3)
+        if np.any(caches_in_view):
+            h_key = "hyp_cache_storage"
+            self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
+            if self.hypothesis_counts[h_key] >= 4:
+                code = (
+                    "def rule_energy_cache_storage(cell):\n"
+                    "    # Persistent crystalline energy cache: immune to winter freeze\n"
+                    "    if cell == 3:\n"
+                    "        return 20.0 # Yields 20.0 H surplus on harvest\n"
+                    "    return 0.0"
+                )
+                sig = f"prog_cache_storage_{self._hash_code(code)}"
+                if sig not in self.program_library:
+                    prog = DiscoveredProgram(
+                        signature=sig,
+                        code_str=code,
+                        program_type="ENERGY_STORAGE_STIGMERGY",
+                        compression_gain=15.0,
+                        description="Energy Cache Conservation: Static crystalline reservoir yields 20.0 H",
+                        discovery_step=step
+                    )
+                    self.program_library[sig] = prog
+                    newly_discovered.append(prog)
+
+        # 4. Check for Geometric Invariances (Rotational / Horizontal Reflection Symmetry)
         if np.array_equal(curr_obs, np.fliplr(curr_obs)):
             h_key = "sym_h"
             self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
@@ -204,7 +229,7 @@ class KolmogorovEngine:
                     self.program_library[sig] = prog
                     newly_discovered.append(prog)
 
-        # Check for Connected Component Cluster Synthesis
+        # 5. Check for Connected Component Cluster Synthesis
         from scipy.ndimage import label
         labeled_array, num_features = label(curr_obs == 1)
         if 2 <= num_features <= 8:
