@@ -1,11 +1,23 @@
 import sys
+import os
 import urllib.request
 import json
 
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
-import os
+# Helper to load from local gitignored .env if present
+def load_env():
+    env_path = os.path.abspath(".env")
+    if os.path.exists(env_path):
+        with open(env_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if '=' in line and not line.startswith('#'):
+                    k, v = line.strip().split('=', 1)
+                    if k not in os.environ:
+                        os.environ[k] = v
+
+load_env()
 
 token = os.environ.get("HF_TOKEN", "")
 base_url = 'https://huggingface.co/datasets/Explorerp/sovereign-civilization-memory/raw/main/'

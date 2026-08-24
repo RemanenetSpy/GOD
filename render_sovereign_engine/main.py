@@ -34,6 +34,16 @@ from civilization import (
 )
 from hf_dataset_memory import HFDatasetMemoryVault
 
+# Load local gitignored .env if present
+env_file = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(env_file):
+    with open(env_file, 'r', encoding='utf-8') as f:
+        for line in f:
+            if '=' in line and not line.startswith('#'):
+                k, v = line.strip().split('=', 1)
+                if k not in os.environ:
+                    os.environ[k] = v
+
 HF_TOKEN = os.environ.get("HF_TOKEN", "")
 HF_REPO = os.environ.get("HF_DATASET_REPO", "Explorerp/sovereign-civilization-memory")
 
