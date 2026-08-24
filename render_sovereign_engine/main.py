@@ -49,7 +49,7 @@ class ContinuousEvolutionRunner:
         enable_pruning: bool = False,
         max_pop: int = 10,
         grid_size: int = 25,
-        ca_rule: str = "Conway (B3/S23)",
+        physics_model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)",
         vault_file: str = "civilization_champion.json"
     ):
         self.universe_id = universe_id
@@ -57,14 +57,13 @@ class ContinuousEvolutionRunner:
         self.substrate_name = substrate_name
         self.grid_size = grid_size
         self.grid_shape = (grid_size, grid_size)
-        self.ca_rule = ca_rule
+        self.physics_model = physics_model
         self.vault_file = vault_file
         
         # Instantiate environment from modular plug-and-play registry
         self.universe = SubstrateRegistry.get_substrate(
             name=substrate_name,
-            grid_shape=self.grid_shape,
-            ca_rule=ca_rule
+            grid_shape=self.grid_shape
         )
         self.civ = SovereignCivilization(
             grid_shape=self.grid_shape,
@@ -164,7 +163,7 @@ class ContinuousEvolutionRunner:
                             "mode_name": self.mode_name,
                             "substrate_name": self.substrate_name,
                             "step_num": self.step_count,
-                            "ca_rule": self.ca_rule,
+                            "physics_model": self.physics_model,
                             "climate": climate,
                             "population": len(self.civ.nodes),
                             "subroutines": self.civ.global_subroutine_archive,
@@ -189,13 +188,12 @@ class ContinuousEvolutionRunner:
                 n.state.fever_active = True
                 n.state.temperature = min(3.0, n.state.temperature + 1.5)
 
-    def reset(self, rule: str = "Conway (B3/S23)"):
+    def reset(self, physics_model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)"):
         with self.lock:
-            self.ca_rule = rule
+            self.physics_model = physics_model
             self.universe = SubstrateRegistry.get_substrate(
                 name=self.substrate_name,
-                grid_shape=self.grid_shape,
-                ca_rule=rule
+                grid_shape=self.grid_shape
             )
             self.civ = SovereignCivilization(
                 grid_shape=self.grid_shape,
@@ -260,7 +258,7 @@ class ContinuousEvolutionRunner:
                 "mode_name": self.mode_name,
                 "substrate_name": self.substrate_name,
                 "step": self.step_count,
-                "ca_rule": self.ca_rule,
+                "physics_model": self.physics_model,
                 "grid_size": self.grid_size,
                 "population": len(self.civ.nodes),
                 "climate": self.universe.get_climate_telemetry(),
@@ -323,9 +321,9 @@ def api_fever(u: str = "a"):
     return {"status": "FEVER_TRIGGERED", "universe": u}
 
 @app.post("/api/action/reset")
-def api_reset(u: str = "a", rule: str = "Conway (B3/S23)"):
+def api_reset(u: str = "a", model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)"):
     target_runner = runners.get(u.lower(), runners["a"])
-    target_runner.reset(rule)
+    target_runner.reset(model)
     return {"status": "RESET_OK", "universe": u}
 
 @app.api_route("/ping", methods=["GET", "HEAD"])
