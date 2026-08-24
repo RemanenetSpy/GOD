@@ -5,14 +5,17 @@ import json
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
-token = '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'
+import os
+
+token = os.environ.get("HF_TOKEN", "")
 base_url = 'https://huggingface.co/datasets/Explorerp/sovereign-civilization-memory/raw/main/'
 files = ['civilization_universe_a.json', 'civilization_universe_b.json', 'civilization_universe_c.json']
 
 data = {}
 for f in files:
     url = base_url + f
-    req = urllib.request.Request(url, headers={'Authorization': f'Bearer {token}'})
+    headers = {'Authorization': f'Bearer {token}'} if token else {}
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=10) as response:
         data[f] = json.loads(response.read().decode('utf-8'))
 

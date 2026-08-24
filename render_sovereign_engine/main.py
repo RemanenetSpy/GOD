@@ -34,7 +34,7 @@ from civilization import (
 )
 from hf_dataset_memory import HFDatasetMemoryVault
 
-HF_TOKEN = os.environ.get("HF_TOKEN", "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")
+HF_TOKEN = os.environ.get("HF_TOKEN", "")
 HF_REPO = os.environ.get("HF_DATASET_REPO", "Explorerp/sovereign-civilization-memory")
 
 vault = HFDatasetMemoryVault(repo_id=HF_REPO, token=HF_TOKEN)
