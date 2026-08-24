@@ -3,11 +3,11 @@
 SOVEREIGN CIVILIZATION 24/7 CLOUD SERVER & TRI-UNIVERSE PARALLEL LABORATORY
 ========================================================================================
 Runs 3 Independent Parallel Civilizations Simultaneously with Modular Environments:
-1. 🌍 Universe A: Continuous Archive (100% Rule Retention, Seasonal Scarcity).
-2. 🌌 Universe B: Cyclic Pruner (Mathematical FIFO Pruning on Stagnation).
-3. 🔥 Universe C: Unbounded Darwin (Malthusian Population + Cyclic Pruning).
+1. 🌍 Universe A: Ancient Migrants (30 Laws Archive Migrated into Continuous Lenia).
+2. 🌌 Universe B: Newborn Pioneers (Clean Slate in Continuous Lenia).
+3. 🔥 Universe C: Unbounded Darwinian Lenia Colony (Malthusian Continuous Ecology).
 
-Powered by Plug-and-Play Substrate Registry (Epoch 1 Classic CA & Epoch 2 Seasonal CA).
+Powered by Modular SubstrateRegistry (Classic CA, Seasonal Scarcity, Continuous Lenia).
 ========================================================================================
 """
 
@@ -45,7 +45,7 @@ class ContinuousEvolutionRunner:
         self,
         universe_id: str,
         mode_name: str,
-        substrate_name: str = "seasonal_scarcity",
+        substrate_name: str = "lenia",
         enable_pruning: bool = False,
         max_pop: int = 10,
         grid_size: int = 25,
@@ -84,8 +84,9 @@ class ContinuousEvolutionRunner:
         self.last_saved_time = time.time()
         self.lock = threading.Lock()
         
-        # Recover latest state from cloud
-        self.load_from_cloud()
+        # Recover latest state from cloud (only Universe A inherits prior archive for migration test)
+        if self.universe_id == "a":
+            self.load_from_cloud()
         
         # Start continuous evolution background worker thread
         self.thread = threading.Thread(target=self._evolution_loop, daemon=True)
@@ -122,7 +123,7 @@ class ContinuousEvolutionRunner:
                         if pos_id not in self.civ.nodes:
                             del self.positions[pos_id]
                     
-                    # 1. Fetch real-time Climate Telemetry
+                    # 1. Fetch real-time Climate / Wave Telemetry
                     climate = self.universe.get_climate_telemetry()
                     
                     # 2. Step Universe Physics with current agent positions
@@ -140,11 +141,10 @@ class ContinuousEvolutionRunner:
                             reward=rewards.get(aid, 0.0)
                         )
                         
-                    # 4. Step Master Civilization with Climate Awareness
+                    # 4. Step Master Civilization with Climate / Wave Awareness
                     actions = self.civ.step(observations, climate_telemetry=climate)
                     
-                    # 5. Move agents & Execute Energy Caching in Surplus Seasons
-                    season = climate.get("season", "")
+                    # 5. Move agents
                     for aid, act in actions.items():
                         if aid not in self.positions:
                             continue
@@ -154,12 +154,6 @@ class ContinuousEvolutionRunner:
                         elif act == Action.MOVE_LEFT: px = max(0, px - 1)
                         elif act == Action.MOVE_RIGHT: px = min(w - 1, px + 1)
                         self.positions[aid] = (py, px)
-
-                        # Construct energy cache if surplus (H >= 260) in Summer/Autumn
-                        node = self.civ.nodes.get(aid)
-                        if node and node.state.energy >= 260.0 and season in ["Summer", "Autumn"]:
-                            if self.universe.deposit_energy_cache(py, px, amount=15.0):
-                                node.state.energy -= 15.0
 
                     # 6. Throttled Cloud Commit
                     now = time.time()
@@ -287,28 +281,28 @@ class ContinuousEvolutionRunner:
             }
 
 
-# Spawn Tri-Universe Runners Concurrently with Modular Seasonal Scarcity Substrate
+# Spawn Tri-Universe Runners Concurrently on Continuous Lenia Substrate (Universe 3)
 runners: Dict[str, ContinuousEvolutionRunner] = {
     "a": ContinuousEvolutionRunner(
         universe_id="a",
-        mode_name="Universe A (Continuous Archive + Seasonal Scarcity)",
-        substrate_name="seasonal_scarcity",
+        mode_name="Universe A (Ancient Migrants in Continuous Lenia)",
+        substrate_name="lenia",
         enable_pruning=False,
         max_pop=10,
         vault_file="civilization_universe_a.json"
     ),
     "b": ContinuousEvolutionRunner(
         universe_id="b",
-        mode_name="Universe B (Cyclic Pruner + Seasonal Scarcity)",
-        substrate_name="seasonal_scarcity",
+        mode_name="Universe B (Newborn Pioneers in Continuous Lenia)",
+        substrate_name="lenia",
         enable_pruning=True,
         max_pop=10,
         vault_file="civilization_universe_b.json"
     ),
     "c": ContinuousEvolutionRunner(
         universe_id="c",
-        mode_name="Universe C (Unbounded Darwin + Seasonal Scarcity)",
-        substrate_name="seasonal_scarcity",
+        mode_name="Universe C (Unbounded Darwinian Lenia Colony)",
+        substrate_name="lenia",
         enable_pruning=True,
         max_pop=35,
         vault_file="civilization_universe_c.json"
@@ -513,7 +507,7 @@ def visual_dashboard():
       width: 100%;
       height: 100%;
       display: block;
-      image-rendering: pixelated;
+      image-rendering: auto;
     }
 
     .telemetry-grid {
@@ -575,26 +569,25 @@ def visual_dashboard():
   <header>
     <div class="title-group">
       <h1>🌌 Sovereign Civilization: Tri-Universe Parallel Engine</h1>
-      <p id="universe-subtitle">Viewing Universe A (Continuous Archive) | 100% Real Python 3.11 Runtime</p>
+      <p id="universe-subtitle">Viewing Universe A | Substrate: Continuous Lenia | 100% Real Python 3.11 Runtime</p>
     </div>
     <div class="badge">● 3 PARALLEL UNIVERSES RUNNING 24/7</div>
   </header>
 
   <!-- 3-WAY UNIVERSE TOGGLE TABS -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Continuous Archive</button>
-    <button class="tab-btn" id="tab-b" onclick="switchUniverse('b')">🌌 Universe B: Cyclic Pruner (Forced Rediscovery)</button>
-    <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian Ecology</button>
+    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Ancient Migrants (Lenia)</button>
+    <button class="tab-btn" id="tab-b" onclick="switchUniverse('b')">🌌 Universe B: Newborn Pioneers (Lenia)</button>
+    <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian (Lenia)</button>
   </div>
 
-  <!-- DYNAMIC SEASONAL CLIMATE STATUS BAR -->
+  <!-- DYNAMIC CONTINUOUS WAVE STATUS BAR -->
   <div class="climate-bar">
-    <span id="season-badge" class="season-badge">🌸 Spring</span>
-    <span id="climate-solar" style="font-size:0.8rem; color:#9ca3af;">☀️ Solar Cycle: 0%</span>
-    <span id="climate-temp" style="font-size:0.8rem; color:#f59e0b;">🌡️ Ambient Temp: 1.00</span>
-    <span id="climate-regrowth" style="font-size:0.8rem; color:#10b981;">🌱 Regrowth: 15%</span>
-    <span id="climate-caches" style="font-size:0.8rem; color:#38bdf8;">💎 Energy Caches: 0</span>
-    <span id="climate-famine" style="font-size:0.8rem; font-weight:800; color:#ef4444; display:none;">❄️ WINTER FAMINE ACTIVE</span>
+    <span id="season-badge" class="season-badge">🌊 Continuous Lenia</span>
+    <span id="climate-solar" style="font-size:0.8rem; color:#9ca3af;">🌊 Mean Biomass: 0.12</span>
+    <span id="climate-temp" style="font-size:0.8rem; color:#f59e0b;">🌡️ Ambient Temp: 1.50</span>
+    <span id="climate-regrowth" style="font-size:0.8rem; color:#10b981;">🌱 Biomass Pool: 14.2</span>
+    <span id="climate-caches" style="font-size:0.8rem; color:#38bdf8;">✨ Max Density: 0.85</span>
   </div>
 
   <div class="controls-bar">
@@ -608,8 +601,8 @@ def visual_dashboard():
   <div class="canvas-container">
     <div class="panel">
       <div class="panel-header">
-        <div class="panel-title">🌱 Living Cellular Automata Universe</div>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Green: Life | Cyan: Energy Caches | Red: Barriers | C/Q/M/S/H: Organisms</span>
+        <div class="panel-title">🌊 Living Continuous Lenia Wave Field ψ(x,y)</div>
+        <span style="font-size: 0.75rem; color: var(--text-muted);">Bioluminescent Field: Cyan/Emerald Solitons | C/Q/M/S/H: Organisms</span>
       </div>
       <div class="canvas-wrapper">
         <canvas id="ca-canvas" width="400" height="400"></canvas>
@@ -716,32 +709,19 @@ def visual_dashboard():
     function render(data) {
       document.getElementById("universe-subtitle").innerText = `Viewing ${data.mode_name} | Substrate: ${data.substrate_name} | God Equation: S_{t+1}^i = U(...) + L(...)`;
       
-      // Update Climate Telemetry
+      // Update Climate / Wave Telemetry
       if (data.climate) {
         const c = data.climate;
         const badge = document.getElementById("season-badge");
         badge.innerText = `${c.season_icon} ${c.season}`;
-        if (c.season === "Winter") {
-          badge.style.borderColor = "#ef4444";
-          badge.style.color = "#f87171";
-          badge.style.background = "rgba(239, 68, 68, 0.2)";
-          document.getElementById("climate-famine").style.display = "inline";
-        } else if (c.season === "Summer") {
-          badge.style.borderColor = "#f59e0b";
-          badge.style.color = "#fbbf24";
-          badge.style.background = "rgba(245, 158, 11, 0.2)";
-          document.getElementById("climate-famine").style.display = "none";
-        } else {
-          badge.style.borderColor = "#38bdf8";
-          badge.style.color = "#38bdf8";
-          badge.style.background = "rgba(56, 189, 248, 0.2)";
-          document.getElementById("climate-famine").style.display = "none";
-        }
+        badge.style.borderColor = "#38bdf8";
+        badge.style.color = "#38bdf8";
+        badge.style.background = "rgba(56, 189, 248, 0.2)";
 
-        document.getElementById("climate-solar").innerText = `☀️ Solar Cycle: ${(c.solar_phase * 100).toFixed(1)}%`;
+        document.getElementById("climate-solar").innerText = `🌊 Mean Biomass: ${(c.solar_phase * 100).toFixed(1)}%`;
         document.getElementById("climate-temp").innerText = `🌡️ Temp: ${c.ambient_temp.toFixed(2)}`;
-        document.getElementById("climate-regrowth").innerText = `🌱 Regrowth: ${(c.regrowth_rate * 100).toFixed(0)}%`;
-        document.getElementById("climate-caches").innerText = `💎 Caches: ${c.cache_count}`;
+        document.getElementById("climate-regrowth").innerText = `🌱 Biomass Pool: ${c.total_biomass || (c.regrowth_rate * 100).toFixed(0)}`;
+        document.getElementById("climate-caches").innerText = `✨ Max Density: ${c.max_density || c.cache_count}`;
       }
 
       const s = data.grid_size || 25;
@@ -750,25 +730,33 @@ def visual_dashboard():
       const cellW = w / s;
       const cellH = h / s;
 
-      // 1. Render Living Grid
-      ctxCA.fillStyle = "#000000";
+      // 1. Render Living Lenia Wave Field
+      ctxCA.fillStyle = "#030712";
       ctxCA.fillRect(0, 0, w, h);
 
       for (let y = 0; y < s; y++) {
         for (let x = 0; x < s; x++) {
           const val = data.grid[y][x];
-          if (val === 1) {
-            ctxCA.fillStyle = "#10b981";
-            ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
-          } else if (val === 2) {
-            ctxCA.fillStyle = "#ef4444";
-            ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
-          } else if (val === 3) {
-            // Energy Cache Crystalline Deposit
-            ctxCA.fillStyle = "#38bdf8";
-            ctxCA.fillRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
-            ctxCA.strokeStyle = "#ffffff";
-            ctxCA.strokeRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
+          if (typeof val === 'number') {
+            if (val > 0.05 && val <= 1.0) {
+              // Smooth Continuous Bioluminescence Spectral Map
+              const r = Math.floor(val * 35);
+              const g = Math.floor(Math.sin(val * Math.PI) * 220 + val * 35);
+              const b = Math.floor(Math.pow(val, 0.6) * 255);
+              ctxCA.fillStyle = `rgb(${r},${g},${b})`;
+              ctxCA.fillRect(x * cellW, y * cellH, cellW + 0.5, cellH + 0.5);
+            } else if (val === 1) {
+              ctxCA.fillStyle = "#10b981";
+              ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
+            } else if (val === 2) {
+              ctxCA.fillStyle = "#ef4444";
+              ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
+            } else if (val === 3) {
+              ctxCA.fillStyle = "#38bdf8";
+              ctxCA.fillRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
+              ctxCA.strokeStyle = "#ffffff";
+              ctxCA.strokeRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
+            }
           }
         }
       }

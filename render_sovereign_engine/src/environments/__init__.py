@@ -7,11 +7,13 @@ sys.path.insert(0, os.path.dirname(__file__))
 from base_substrate import BaseSubstrateUniverse
 from classic_ca import ClassicCellularAutomataUniverse
 from seasonal_scarcity_ca import SeasonalScarcityCAUniverse
+from lenia_substrate import LeniaContinuousUniverse
 from registry import SubstrateRegistry
 
 __all__ = [
     "BaseSubstrateUniverse",
     "ClassicCellularAutomataUniverse",
     "SeasonalScarcityCAUniverse",
+    "LeniaContinuousUniverse",
     "SubstrateRegistry"
 ]

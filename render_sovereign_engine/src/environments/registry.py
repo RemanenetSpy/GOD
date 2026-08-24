@@ -12,12 +12,15 @@ from typing import Dict, Type, Any, List
 from base_substrate import BaseSubstrateUniverse
 from classic_ca import ClassicCellularAutomataUniverse
 from seasonal_scarcity_ca import SeasonalScarcityCAUniverse
+from lenia_substrate import LeniaContinuousUniverse
 
 
 class SubstrateRegistry:
     _registry: Dict[str, Type[BaseSubstrateUniverse]] = {
         "classic_ca": ClassicCellularAutomataUniverse,
         "seasonal_scarcity": SeasonalScarcityCAUniverse,
+        "lenia": LeniaContinuousUniverse,
+        "continuous_lenia": LeniaContinuousUniverse,
     }
 
     @classmethod
@@ -26,13 +29,12 @@ class SubstrateRegistry:
         cls._registry[name.lower()] = substrate_cls
 
     @classmethod
-    def get_substrate(cls, name: str = "seasonal_scarcity", **kwargs) -> BaseSubstrateUniverse:
+    def get_substrate(cls, name: str = "lenia", **kwargs) -> BaseSubstrateUniverse:
         """Instantiate a plug-in substrate by name."""
         key = name.lower().replace("-", "_").replace(" ", "_")
         if key not in cls._registry:
-            # Fallback to classic_ca if unrecognized
-            print(f"[SubstrateRegistry Warning] Unknown substrate '{name}', falling back to 'classic_ca'")
-            key = "classic_ca"
+            print(f"[SubstrateRegistry Warning] Unknown substrate '{name}', falling back to 'lenia'")
+            key = "lenia"
         return cls._registry[key](**kwargs)
 
     @classmethod

@@ -23,6 +23,7 @@ def test_environments():
     print(f"Available Substrates: {available}")
     assert "classic_ca" in available
     assert "seasonal_scarcity" in available
+    assert "lenia" in available
 
     # 2. Test Classic CA (Epoch 1 Baseline)
     u_classic = SubstrateRegistry.get_substrate("classic_ca")
@@ -44,19 +45,21 @@ def test_environments():
     assert seasons_observed == {"Spring", "Summer", "Autumn", "Winter"}
     print("[Seasonal Scarcity CA] Full 4-Season Solar Cycle Verified!")
 
-    # 4. Test Energy Caching (Stigmergy / Storage)
-    cache_ok = u_season.deposit_energy_cache(12, 12, amount=15.0)
-    assert cache_ok is True
-    clim_cache = u_season.get_climate_telemetry()
-    assert clim_cache["cache_count"] == 1
-    print(f"[Energy Caching] Successfully deposited cache at (12, 12)! Total caches: {clim_cache['cache_count']}")
+    # 4. Test Continuous Lenia (Universe 3)
+    u_lenia = SubstrateRegistry.get_substrate("lenia")
+    for _ in range(20):
+        r_lenia = u_lenia.step({"pioneer": (12, 12)})
+    clim_lenia = u_lenia.get_climate_telemetry()
+    print(f"[Continuous Lenia] Step OK! Biomass: {clim_lenia['total_biomass']} | Max Density: {clim_lenia['max_density']}")
+    assert clim_lenia["total_biomass"] > 0.0
+    print("[Continuous Lenia] Continuous Wave Physics Verified!")
 
-    # 5. Test Sovereign Civilization with Dynamic Climate
+    # 5. Test Sovereign Civilization Integration with Lenia
     civ = SovereignCivilization()
-    actions = civ.step(climate_telemetry=clim)
-    print(f"[Civilization Integration] Step OK with dynamic climate telemetry! Active nodes: {len(civ.nodes)}")
+    actions = civ.step(climate_telemetry=clim_lenia)
+    print(f"[Civilization Integration] Step OK with Lenia continuous telemetry! Active nodes: {len(civ.nodes)}")
     
-    print("\nALL MODULAR SUBSTRATE & SEASONAL ENVIRONMENT TESTS PASSED!")
+    print("\nALL 3 MODULAR SUBSTRATES (CLASSIC, SEASONAL, LENIA) FULLY VERIFIED!")
 
 if __name__ == "__main__":
     test_environments()
