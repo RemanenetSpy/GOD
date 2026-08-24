@@ -93,9 +93,8 @@ class ContinuousEvolutionRunner:
         self.last_saved_time = time.time()
         self.lock = threading.Lock()
         
-        # Recover latest state from cloud (only Universe A inherits prior archive for migration test)
-        if self.universe_id == "a":
-            self.load_from_cloud()
+        # Recover latest state from cloud for all universes on server start
+        self.load_from_cloud()
         
         # Start continuous evolution background worker thread
         self.thread = threading.Thread(target=self._evolution_loop, daemon=True)
@@ -106,7 +105,7 @@ class ContinuousEvolutionRunner:
             cloud_data = vault.load_checkpoint(filename=self.vault_file)
             if cloud_data:
                 self.step_count = cloud_data.get("step_num", cloud_data.get("stepCount", 0))
-                if "subroutines" in cloud_data and not self.civ.enable_cyclic_pruning:
+                if "subroutines" in cloud_data:
                     self.civ.global_subroutine_archive.update(cloud_data["subroutines"])
                 print(f"[Render Engine] [{self.mode_name}] Recovered at Step {self.step_count} with {len(self.civ.global_subroutine_archive)} subroutines!")
         except Exception as e:
