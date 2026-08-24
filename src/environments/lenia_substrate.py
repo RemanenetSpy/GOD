@@ -1,4 +1,4 @@
-"""
+r"""
 ========================================================================================
 ENVIRONMENT PLUG-IN 3: CONTINUOUS WAVE LENIA (UNIVERSE 3)
 ========================================================================================
@@ -28,9 +28,12 @@ class LeniaContinuousUniverse(BaseSubstrateUniverse):
         T: float = 10.0,
         mu: float = 0.15,
         sigma: float = 0.015,
-        seed: int = 42
+        seed: int = 42,
+        ca_rule: str = "Lenia-Continuous",
+        **kwargs: Any
     ):
         super().__init__(grid_shape=grid_shape, name="Continuous-Lenia")
+        self.ca_rule = ca_rule
         self.R = R
         self.dt = 1.0 / T
         self.mu = mu
@@ -61,7 +64,7 @@ class LeniaContinuousUniverse(BaseSubstrateUniverse):
             kernel /= total_sum
         return kernel
 
-    def reset(self, initial_droplets: int = 3):
+    def reset(self, initial_droplets: int = 3, **kwargs: Any):
         """Initializes continuous fluid field with localized Gaussian soliton seeds."""
         h, w = self.grid_shape
         self.grid = np.zeros(self.grid_shape, dtype=np.float32)
