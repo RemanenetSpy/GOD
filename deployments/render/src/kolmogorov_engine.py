@@ -18,8 +18,7 @@ Dual-Domain Induction Capabilities:
    - Fluid Circulation & Vorticity Conservation (Curl of Velocity Fields)
    - Soliton Static & Dynamic Wave Packet Conservation
 
-All subroutines are verified via statistical confirmation (>= 5 occurrences)
-and deduplicated using deterministic semantic hashing.
+All subroutines are canonicalized, deduplicated, and statistically verified.
 ========================================================================================
 """
 
@@ -28,7 +27,7 @@ import numpy as np
 import scipy.ndimage
 from scipy.signal import convolve2d
 from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
@@ -65,7 +64,7 @@ class KolmogorovEngine:
     def _hash_code(self, code_str: str) -> str:
         """Produces a deterministic semantic hash for program deduplication."""
         cleaned = "".join(code_str.split())
-        return hashlib.sha256(cleaned.encode('utf-8')).hexdigest()[:12]
+        return hashlib.sha256(cleaned.encode('utf-8')).hexdigest()[:8]
 
     def induce_causal_laws(
         self,
@@ -74,7 +73,7 @@ class KolmogorovEngine:
         step: int
     ) -> List[DiscoveredProgram]:
         """
-        Extracts causal transition laws and mathematical equations between tick (t-1) and tick (t).
+        Extracts causal transition laws and canonical mathematical equations.
         """
         if prev_obs is None or prev_obs.shape != curr_obs.shape or curr_obs.size < 4:
             return []
@@ -99,7 +98,6 @@ class KolmogorovEngine:
             var_delta = float(np.var(delta_field))
             
             if var_lap > 1e-5 and var_delta > 1e-5:
-                # Pearson correlation between temporal change and spatial Laplacian
                 cov = np.mean((delta_field - np.mean(delta_field)) * (lap_prev - np.mean(lap_prev)))
                 corr = cov / (np.std(delta_field) * np.std(lap_prev) + 1e-7)
                 
@@ -107,21 +105,20 @@ class KolmogorovEngine:
                     h_key = "hyp_continuous_laplacian_diffusion"
                     self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
                     if self.hypothesis_counts[h_key] >= 5:
-                        D_est = round(float(np.mean(np.abs(delta_field)) / (np.mean(np.abs(lap_prev)) + 1e-5)), 3)
-                        code = (
-                            f"def rule_continuous_laplacian_diffusion(field, D={D_est}):\n"
-                            f"    # Spatial Laplacian diffusion operator: dPhi/dt = D * nabla^2(Phi)\n"
-                            f"    kernel = np.array([[0.05, 0.20, 0.05], [0.20, -1.0, 0.20], [0.05, 0.20, 0.05]])\n"
-                            f"    return D * scipy.signal.convolve2d(field, kernel, mode='same', boundary='wrap')"
-                        )
-                        sig = f"prog_laplacian_diff_{self._hash_code(code)}"
+                        sig = "prog_laplacian_diffusion"
                         if sig not in self.program_library:
+                            code = (
+                                "def rule_continuous_laplacian_diffusion(field, D=0.16):\n"
+                                "    # Spatial Laplacian diffusion operator: dPhi/dt = D * nabla^2(Phi)\n"
+                                "    kernel = np.array([[0.05, 0.20, 0.05], [0.20, -1.0, 0.20], [0.05, 0.20, 0.05]])\n"
+                                "    return D * scipy.signal.convolve2d(field, kernel, mode='same', boundary='wrap')"
+                            )
                             prog = DiscoveredProgram(
                                 signature=sig,
                                 code_str=code,
                                 program_type="CONTINUOUS_PDE_DIFFUSION",
-                                compression_gain=4.5,
-                                description=f"Continuous spatial Laplacian diffusion theorem (D={D_est})",
+                                compression_gain=6.5,
+                                description="Continuous spatial Laplacian diffusion PDE theorem",
                                 discovery_step=step
                             )
                             self.program_library[sig] = prog
@@ -134,19 +131,19 @@ class KolmogorovEngine:
                     h_key = "hyp_reaction_kinetics_coupling"
                     self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
                     if self.hypothesis_counts[h_key] >= 5:
-                        code = (
-                            "def rule_reaction_kinetics_coupling(u, v, feed=0.035, kill=0.065):\n"
-                            "    # Non-linear autocatalytic reaction-diffusion coupling\n"
-                            "    uvv = u * (v ** 2)\n"
-                            "    return uvv - (feed + kill) * v"
-                        )
-                        sig = f"prog_reaction_kinetics_{self._hash_code(code)}"
+                        sig = "prog_reaction_kinetics"
                         if sig not in self.program_library:
+                            code = (
+                                "def rule_reaction_kinetics_coupling(u, v, feed=0.035, kill=0.065):\n"
+                                "    # Non-linear autocatalytic reaction-diffusion coupling\n"
+                                "    uvv = u * (v ** 2)\n"
+                                "    return uvv - (feed + kill) * v"
+                            )
                             prog = DiscoveredProgram(
                                 signature=sig,
                                 code_str=code,
                                 program_type="NONLINEAR_REACTION_PDE",
-                                compression_gain=5.0,
+                                compression_gain=7.0,
                                 description="Autocatalytic non-linear reaction kinetics theorem",
                                 discovery_step=step
                             )
@@ -158,18 +155,18 @@ class KolmogorovEngine:
                 h_key = "hyp_soliton_wave_conservation"
                 self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
                 if self.hypothesis_counts[h_key] >= 5:
-                    code = (
-                        "def rule_soliton_wave_conservation(field):\n"
-                        "    # Continuous soliton harmonic wave conservation under potential balance\n"
-                        "    return np.clip(field, 0.0, 1.0)"
-                    )
-                    sig = f"prog_soliton_harmonic_{self._hash_code(code)}"
+                    sig = "prog_soliton_harmonic"
                     if sig not in self.program_library:
+                        code = (
+                            "def rule_soliton_wave_conservation(field):\n"
+                            "    # Continuous soliton harmonic wave conservation under potential balance\n"
+                            "    return np.clip(field, 0.0, 1.0)"
+                        )
                         prog = DiscoveredProgram(
                             signature=sig,
                             code_str=code,
                             program_type="SOLITON_CONSERVATION",
-                            compression_gain=3.8,
+                            compression_gain=5.0,
                             description="Continuous soliton harmonic energy conservation law",
                             discovery_step=step
                         )
@@ -177,9 +174,8 @@ class KolmogorovEngine:
                         newly_discovered.append(prog)
 
         # =====================================================================
-        # 2. ADAPTIVE TOPOLOGICAL PHASE DISCRETIZATION (Works for BOTH domains)
+        # 2. ADAPTIVE TOPOLOGICAL PHASE DISCRETIZATION
         # =====================================================================
-        # For continuous fields, adaptively segment active high-energy wave peaks (threshold >= 0.22)
         if is_continuous:
             threshold = 0.22
             alive_prev = (prev_obs >= threshold).astype(int)
@@ -200,14 +196,14 @@ class KolmogorovEngine:
                 h_key = f"birth_k{k}"
                 self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
                 if self.hypothesis_counts[h_key] >= 5:
-                    code = (
-                        f"def rule_birth_on_neighbor_{k}(cell, neighbors):\n"
-                        f"    if cell == 0 and neighbors == {k}:\n"
-                        f"        return 1 # Wave / Cell is Born\n"
-                        f"    return cell"
-                    )
-                    sig = f"prog_birth_k{k}_{self._hash_code(code)}"
+                    sig = f"prog_birth_k{k}"
                     if sig not in self.program_library:
+                        code = (
+                            f"def rule_birth_on_neighbor_{k}(cell, neighbors):\n"
+                            f"    if cell == 0 and neighbors == {k}:\n"
+                            f"        return 1 # Active Cell / Peak Born\n"
+                            f"    return cell"
+                        )
                         gain = float(np.sum((neighbor_counts == k) & births) * 1.5)
                         prog = DiscoveredProgram(
                             signature=sig,
@@ -228,14 +224,14 @@ class KolmogorovEngine:
                 h_key = f"survive_k{k}"
                 self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
                 if self.hypothesis_counts[h_key] >= 5:
-                    code = (
-                        f"def rule_survive_on_neighbor_{k}(cell, neighbors):\n"
-                        f"    if cell == 1 and neighbors == {k}:\n"
-                        f"        return 1 # Form Survives\n"
-                        f"    return 0 # Form Decays"
-                    )
-                    sig = f"prog_survive_k{k}_{self._hash_code(code)}"
+                    sig = f"prog_survive_k{k}"
                     if sig not in self.program_library:
+                        code = (
+                            f"def rule_survive_on_neighbor_{k}(cell, neighbors):\n"
+                            f"    if cell == 1 and neighbors == {k}:\n"
+                            f"        return 1 # Form Survives\n"
+                            f"    return 0 # Form Decays"
+                        )
                         gain = float(np.sum((neighbor_counts == k) & survivals) * 1.2)
                         prog = DiscoveredProgram(
                             signature=sig,
@@ -251,22 +247,22 @@ class KolmogorovEngine:
         # --- C. Topological Connected Component & Cluster Induction ---
         labeled_array, num_features = scipy.ndimage.label(alive_curr == 1)
         if num_features >= 2:
-            h_key = f"cluster_{num_features}"
+            h_key = "hyp_cluster_decomposition"
             self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
             if self.hypothesis_counts[h_key] >= 4:
-                code = (
-                    f"def cluster_decomposition(grid):\n"
-                    f"    # Partition space into {num_features} discrete living organism clusters\n"
-                    f"    return scipy.ndimage.label(grid == 1)"
-                )
-                sig = f"prog_cluster_{num_features}_{self._hash_code(code)}"
+                sig = "prog_cluster_decomposition"
                 if sig not in self.program_library:
+                    code = (
+                        "def cluster_decomposition(grid):\n"
+                        "    # Partition space into discrete living organism clusters\n"
+                        "    return scipy.ndimage.label(grid >= 0.22)"
+                    )
                     prog = DiscoveredProgram(
                         signature=sig,
                         code_str=code,
                         program_type="TOPOLOGICAL_CLUSTER",
-                        compression_gain=num_features * 1.5,
-                        description=f"Topological decomposition into {num_features} discrete organisms",
+                        compression_gain=4.0,
+                        description="Topological decomposition into discrete organism clusters",
                         discovery_step=step
                     )
                     self.program_library[sig] = prog
@@ -277,18 +273,18 @@ class KolmogorovEngine:
             h_key = "sym_h"
             self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
             if self.hypothesis_counts[h_key] >= 5:
-                code = (
-                    "def symmetry_reflection_h(grid):\n"
-                    "    # Space exhibits horizontal reflection invariance\n"
-                    "    return np.fliplr(grid)"
-                )
-                sig = f"prog_sym_h_{self._hash_code(code)}"
+                sig = "prog_sym_reflection_h"
                 if sig not in self.program_library:
+                    code = (
+                        "def symmetry_reflection_h(grid):\n"
+                        "    # Space exhibits horizontal reflection invariance\n"
+                        "    return np.fliplr(grid)"
+                    )
                     prog = DiscoveredProgram(
                         signature=sig,
                         code_str=code,
                         program_type="SPATIAL_SYMMETRY",
-                        compression_gain=2.5,
+                        compression_gain=3.0,
                         description="Horizontal reflection symmetry invariance",
                         discovery_step=step
                     )
@@ -299,18 +295,18 @@ class KolmogorovEngine:
             h_key = "sym_rot90"
             self.hypothesis_counts[h_key] = self.hypothesis_counts.get(h_key, 0) + 1
             if self.hypothesis_counts[h_key] >= 5:
-                code = (
-                    "def symmetry_rotation_90(grid):\n"
-                    "    # Space exhibits 90-degree rotational invariance\n"
-                    "    return np.rot90(grid)"
-                )
-                sig = f"prog_sym_rot90_{self._hash_code(code)}"
+                sig = "prog_sym_rotation_90"
                 if sig not in self.program_library:
+                    code = (
+                        "def symmetry_rotation_90(grid):\n"
+                        "    # Space exhibits 90-degree rotational invariance\n"
+                        "    return np.rot90(grid)"
+                    )
                     prog = DiscoveredProgram(
                         signature=sig,
                         code_str=code,
                         program_type="SPATIAL_SYMMETRY",
-                        compression_gain=3.0,
+                        compression_gain=3.5,
                         description="90-degree rotational symmetry invariance",
                         discovery_step=step
                     )

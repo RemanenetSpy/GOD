@@ -125,8 +125,21 @@ class UniverseInstance:
             if cloud_data:
                 self.step_count = cloud_data.get("step_num", cloud_data.get("stepCount", 0))
                 if "subroutines" in cloud_data:
-                    self.civ.global_subroutine_archive.update(cloud_data["subroutines"])
-                print(f"[Render Engine] [{self.mode_name}] Recovered at Step {self.step_count} with {len(self.civ.global_subroutine_archive)} subroutines!")
+                    raw_subs = cloud_data["subroutines"]
+                    clean_subs = {}
+                    for sig, code in raw_subs.items():
+                        if "laplacian_diff" in sig:
+                            clean_subs["prog_laplacian_diffusion"] = code
+                        elif "cluster_" in sig:
+                            clean_subs["prog_cluster_decomposition"] = code
+                        elif "reaction_kinetics" in sig:
+                            clean_subs["prog_reaction_kinetics"] = code
+                        elif "soliton" in sig:
+                            clean_subs["prog_soliton_harmonic"] = code
+                        else:
+                            clean_subs[sig] = code
+                    self.civ.global_subroutine_archive = clean_subs
+                print(f"[Render Engine] [{self.mode_name}] Recovered at Step {self.step_count} with {len(self.civ.global_subroutine_archive)} canonical subroutines!")
         except Exception as e:
             print(f"[Render Engine Warning] Recovery error for {self.universe_id}: {e}")
 
@@ -220,9 +233,8 @@ class UniverseInstance:
                 "dim_10d": len(node.state.cognitive_10d)
             })
             
-        subroutines = []
-        for sig, code in self.civ.global_subroutine_archive.items():
-            subroutines.append({"signature": sig, "code": code})
+        all_subs = list(self.civ.global_subroutine_archive.items())
+        recent_subs = [{"signature": sig, "code": code} for sig, code in all_subs[-10:]]
 
         recent_msgs = [m.summary() for m in self.civ.fabric.history[-8:]]
         
@@ -240,7 +252,8 @@ class UniverseInstance:
             "grid": grid_list,
             "consciousness": consciousness_heatmap,
             "nodes": nodes_data,
-            "subroutines": subroutines,
+            "subroutines": recent_subs,
+            "total_laws": len(all_subs),
             "messages": recent_msgs,
             "events": {
                 "births": self.civ.mitosis_engine.birth_events[-5:],
@@ -1102,7 +1115,8 @@ HTML_CONTENT = """
       const currentKeys = subs.map(s => s.signature).join(",");
       if (currentKeys !== lastSubroutineKeys) {
         lastSubroutineKeys = currentKeys;
-        document.getElementById("sub-count").innerText = `${subs.length} Discovered Laws`;
+        const count = data.total_laws !== undefined ? data.total_laws : subs.length;
+        document.getElementById("sub-count").innerText = `${count} Discovered Laws`;
         const subBox = document.getElementById("subroutine-box");
         if (subs.length > 0) {
           subBox.innerHTML = subs.map(item => `
