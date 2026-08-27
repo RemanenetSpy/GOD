@@ -1,13 +1,20 @@
 """
 ========================================================================================
-SOVEREIGN CIVILIZATION 24/7 CLOUD SERVER & TRI-UNIVERSE PARALLEL LABORATORY
+SOVEREIGN MULTIVERSE 24/7 ENGINE: 21 PARALLEL LIVING UNIVERSES (7 REALMS x 3 BRANCHES)
 ========================================================================================
-Runs 3 Independent Parallel Civilizations Simultaneously with Modular Environments:
-1. 🌍 Universe A: Ancient Migrants (30 Laws Archive Migrated into Continuous Lenia).
-2. 🌌 Universe B: Newborn Pioneers (Clean Slate in Continuous Lenia).
-3. 🔥 Universe C: Unbounded Darwinian Lenia Colony (Malthusian Continuous Ecology).
+Runs 21 Independent Parallel Civilizations Simultaneously across 7 Substrate Paradigms:
+1. 🏛️ Realm 1: Classic Discrete CA (Conway B3/S23 & Wolfram)
+2. 🍂 Realm 2: Non-Stationary Seasonal Scarcity CA (Solar Cycles & Winter Famine)
+3. 🌊 Realm 3: Continuous Wave Lenia (Soliton Physics & Vortices)
+4. 🧬 Realm 4: Reaction-Diffusion (Gray-Scott Turing Morphogenesis)
+5. ⚡ Realm 5: Multi-State Wireworld (Digital Logic Gates & Circuits)
+6. 💨 Realm 6: Lattice Gas Hydrodynamics (FHP Momentum Conservation)
+7. ⚔️ Realm 7: Red Queen Co-Evolution Arena (Predator-Prey Warfare)
 
-Powered by Modular SubstrateRegistry (Classic CA, Seasonal Scarcity, Continuous Lenia).
+Each Realm runs 3 branches:
+- 🟢 Universe A: Ancient Stasis (10 Pop, Permanent Memory Vault)
+- 🟡 Universe B: Newborn Pioneers (10 Pop, Cyclic Saturation Pruning)
+- 🔴 Universe C: Darwinian Colony (35 Pop, High-Density Ecological Pressure)
 ========================================================================================
 """
 
@@ -21,7 +28,7 @@ from typing import Dict, Any, List, Tuple
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, JSONResponse
 
-# Add src to path
+# Add src and src/environments to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src', 'environments'))
 
@@ -59,7 +66,7 @@ class ContinuousEvolutionRunner:
         enable_pruning: bool = False,
         max_pop: int = 10,
         grid_size: int = 25,
-        physics_model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)",
+        physics_model: str = "Continuous Physics",
         vault_file: str = "civilization_champion.json"
     ):
         self.universe_id = universe_id
@@ -89,7 +96,7 @@ class ContinuousEvolutionRunner:
         }
         self.step_count = 0
         self.running = True
-        self.speed_ms = int(os.environ.get("STEP_SPEED_MS", 8))
+        self.speed_ms = int(os.environ.get("STEP_SPEED_MS", 15))
         self.last_saved_time = time.time()
         self.lock = threading.Lock()
         
@@ -112,11 +119,12 @@ class ContinuousEvolutionRunner:
             print(f"[Render Engine Warning] Recovery error for {self.universe_id}: {e}")
 
     def _evolution_loop(self):
-        print(f"[Render Engine] [{self.mode_name}] 24/7 Sovereign Evolution Loop STARTED on Substrate '{self.substrate_name}'!")
+        print(f"[Render Engine] [{self.mode_name}] 24/7 Evolution Loop STARTED on '{self.substrate_name}'!")
         while self.running:
             try:
                 with self.lock:
                     self.step_count += 1
+                    h, w = self.grid_shape
                     
                     # Ensure all active nodes have coordinates
                     for aid in list(self.civ.nodes.keys()):
@@ -131,7 +139,7 @@ class ContinuousEvolutionRunner:
                         if pos_id not in self.civ.nodes:
                             del self.positions[pos_id]
                     
-                    # 1. Fetch real-time Climate / Wave Telemetry
+                    # 1. Fetch real-time Climate / Substrate Telemetry
                     climate = self.universe.get_climate_telemetry()
                     
                     # 2. Step Universe Physics with current agent positions
@@ -139,14 +147,14 @@ class ContinuousEvolutionRunner:
                     
                     # 3. Build local sensory observations
                     observations: Dict[str, Observation] = {}
-                    h, w = self.grid_shape
                     for aid, node in self.civ.nodes.items():
-                        py, px = self.positions.get(aid, (0, 0))
-                        vis = self.universe.get_observation(py, px, node.aperture)
+                        py, px = self.positions[aid]
+                        patch = self.universe.get_observation(py, px, node.aperture)
+                        rew = rewards.get(aid, 0.0)
                         observations[aid] = Observation(
-                            visible_cells=vis,
+                            visible_cells=patch,
                             position=(py, px),
-                            reward=rewards.get(aid, 0.0)
+                            reward=rew
                         )
                         
                     # 4. Step Master Civilization with Climate / Wave Awareness
@@ -163,7 +171,7 @@ class ContinuousEvolutionRunner:
                         elif act == Action.MOVE_RIGHT: px = min(w - 1, px + 1)
                         self.positions[aid] = (py, px)
 
-                    # 6. Throttled Cloud Commit
+                    # 6. Throttled Cloud Commit (Every 90s)
                     now = time.time()
                     if now - self.last_saved_time >= 90.0:
                         self.last_saved_time = now
@@ -181,7 +189,7 @@ class ContinuousEvolutionRunner:
                         vault.save_checkpoint(
                             state_dict,
                             filename=self.vault_file,
-                            commit_msg=f"Continuous 24/7 {self.mode_name} step {self.step_count}",
+                            commit_msg=f"24/7 {self.mode_name} step {self.step_count}",
                             async_upload=True
                         )
 
@@ -197,9 +205,8 @@ class ContinuousEvolutionRunner:
                 n.state.fever_active = True
                 n.state.temperature = min(3.0, n.state.temperature + 1.5)
 
-    def reset(self, physics_model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)"):
+    def reset(self):
         with self.lock:
-            self.physics_model = physics_model
             self.universe = SubstrateRegistry.get_substrate(
                 name=self.substrate_name,
                 grid_shape=self.grid_shape
@@ -219,62 +226,56 @@ class ContinuousEvolutionRunner:
 
     def get_live_payload(self) -> Dict[str, Any]:
         with self.lock:
-            h, w = self.grid_shape
-            mind_potential = np.zeros((h, w), dtype=np.float32)
+            climate = self.universe.get_climate_telemetry()
             
-            for aid, n in self.civ.nodes.items():
-                py, px = self.positions.get(aid, (0, 0))
-                energy_scale = max(0.5, n.state.energy / 100.0)
-                temp_scale = 1.0 + (n.state.temperature * 0.4)
-                for y in range(h):
-                    for x in range(w):
-                        dist = np.hypot(py - y, px - x)
-                        wave = (energy_scale * temp_scale * 3.0) / (dist + 1.2)
-                        belief_mod = 1.0 + float(n.belief_engine.belief_tensor[y, x, 1]) * 1.5
-                        mind_potential[y, x] += wave * belief_mod
-
-            p_min, p_max = float(mind_potential.min()), float(mind_potential.max())
-            if p_max > p_min:
-                mind_intensity = (((mind_potential - p_min) / (p_max - p_min)) * 230.0 + 25.0).astype(int).tolist()
-            else:
-                mind_intensity = (mind_potential * 40.0).clip(20, 255).astype(int).tolist()
+            # Serialize grid as nested float list
+            grid_list = np.round(self.universe.grid.astype(float), 3).tolist()
             
+            # Serialize agents
             nodes_data = []
-            for aid, n in self.civ.nodes.items():
+            for aid, node in self.civ.nodes.items():
+                py, px = self.positions.get(aid, (0, 0))
                 nodes_data.append({
                     "id": aid,
-                    "pillar": n.pillar.value,
-                    "pos": list(self.positions.get(aid, (0, 0))),
-                    "energy": float(n.state.energy),
-                    "dh_dt": float(n.state.dh_dt),
-                    "temperature": float(n.state.temperature),
-                    "viscosity": float(n.state.viscosity),
-                    "entropy": float(n.state.belief_entropy),
-                    "fever": bool(n.state.fever_active),
-                    "dim_10d": n.state.cognitive_10d.get("unfolded_dimensions", 4),
-                    "sub_count": len(n.kolmogorov_engine.program_library)
+                    "pillar": node.pillar.value,
+                    "pos": [py, px],
+                    "energy": round(float(node.state.energy), 1),
+                    "temperature": round(float(node.state.temperature), 2),
+                    "viscosity": round(float(node.state.viscosity), 2),
+                    "dh_dt": round(float(node.state.dh_dt), 2),
+                    "fever": bool(node.state.fever_active),
+                    "entropy": round(float(node.state.belief_entropy), 3),
+                    "sub_count": len(node.kolmogorov_engine.program_library),
+                    "dim_10d": len(node.state.cognitive_10d)
                 })
                 
-            recent_msgs = [m.summary() for m in self.civ.fabric.history[-20:]]
-            recent_msgs.reverse()
-            
-            subroutine_items = []
+            # Discovered subroutines
+            subroutines = []
             for sig, code in self.civ.global_subroutine_archive.items():
-                subroutine_items.append({"signature": sig, "code": code})
+                subroutines.append({
+                    "signature": sig,
+                    "code": code
+                })
+
+            # Messages
+            recent_msgs = [m.summary() for m in self.civ.fabric.history[-8:]]
+            
+            # Synthesize 2D Consciousness Tensor Heatmap
+            consensus_tensor = self.civ.synthesize_consensus()
+            consciousness_heatmap = np.round(np.mean(consensus_tensor, axis=-1), 3).tolist()
 
             return {
                 "universe_id": self.universe_id,
                 "mode_name": self.mode_name,
                 "substrate_name": self.substrate_name,
                 "step": self.step_count,
-                "physics_model": self.physics_model,
-                "grid_size": self.grid_size,
                 "population": len(self.civ.nodes),
-                "climate": self.universe.get_climate_telemetry(),
-                "grid": self.universe.grid.tolist(),
-                "mind_field": mind_intensity,
+                "climate": climate,
+                "physics_model": self.physics_model,
+                "grid": grid_list,
+                "consciousness": consciousness_heatmap,
                 "nodes": nodes_data,
-                "subroutines": subroutine_items,
+                "subroutines": subroutines,
                 "messages": recent_msgs,
                 "events": {
                     "births": self.civ.mitosis_engine.birth_events[-5:],
@@ -288,546 +289,572 @@ class ContinuousEvolutionRunner:
             }
 
 
-# Spawn Tri-Universe Runners Concurrently on Continuous Lenia Substrate (Universe 3)
-runners: Dict[str, ContinuousEvolutionRunner] = {
-    "a": ContinuousEvolutionRunner(
-        universe_id="a",
-        mode_name="Universe A (Ancient Migrants in Continuous Lenia)",
-        substrate_name="lenia",
+# --- 21-UNIVERSE MULTIVERSE REGISTRY SETUP (7 REALMS x 3 BRANCHES) ---
+REALMS = [
+    {
+        "id": "r1",
+        "name": "Realm 1: Classic Discrete CA",
+        "icon": "🏛️",
+        "substrate": "classic_ca",
+        "physics": "Conway Discrete Life (B3/S23)"
+    },
+    {
+        "id": "r2",
+        "name": "Realm 2: Seasonal Scarcity CA",
+        "icon": "🍂",
+        "substrate": "seasonal_scarcity",
+        "physics": "4-Season Solar Energy Scarcity & Famine"
+    },
+    {
+        "id": "r3",
+        "name": "Realm 3: Continuous Wave Lenia",
+        "icon": "🌊",
+        "substrate": "lenia",
+        "physics": "Continuous Wave Lenia (μ=0.15, σ=0.015)"
+    },
+    {
+        "id": "r4",
+        "name": "Realm 4: Reaction-Diffusion",
+        "icon": "🧬",
+        "substrate": "reaction_diffusion",
+        "physics": "Gray-Scott Turing Morphogenesis Field"
+    },
+    {
+        "id": "r5",
+        "name": "Realm 5: Wireworld Digital Circuit",
+        "icon": "⚡",
+        "substrate": "wireworld",
+        "physics": "4-State Wireworld Digital Circuit & Logic"
+    },
+    {
+        "id": "r6",
+        "name": "Realm 6: Lattice Gas Hydrodynamics",
+        "icon": "💨",
+        "substrate": "lattice_gas",
+        "physics": "FHP Discrete Momentum & Particle Streaming"
+    },
+    {
+        "id": "r7",
+        "name": "Realm 7: Red Queen Co-Evolution Arena",
+        "icon": "⚔️",
+        "substrate": "red_queen",
+        "physics": "Co-Evolutionary Predator-Prey Ecological Arms Race"
+    }
+]
+
+runners: Dict[str, ContinuousEvolutionRunner] = {}
+
+for r in REALMS:
+    rid = r["id"]
+    rname = r["name"]
+    ricon = r["icon"]
+    sub = r["substrate"]
+    phys = r["physics"]
+    
+    # Branch A: Ancient Stasis (10 Pop, No Pruning)
+    runners[f"{rid}_a"] = ContinuousEvolutionRunner(
+        universe_id=f"{rid}_a",
+        mode_name=f"{ricon} {rname} [Universe A - Ancient Stasis]",
+        substrate_name=sub,
         enable_pruning=False,
         max_pop=10,
-        vault_file="civilization_universe_a.json"
-    ),
-    "b": ContinuousEvolutionRunner(
-        universe_id="b",
-        mode_name="Universe B (Newborn Pioneers in Continuous Lenia)",
-        substrate_name="lenia",
+        physics_model=phys,
+        vault_file=f"civilization_{rid}_a.json"
+    )
+    # Branch B: Newborn Pioneers (10 Pop, Cyclic Pruning)
+    runners[f"{rid}_b"] = ContinuousEvolutionRunner(
+        universe_id=f"{rid}_b",
+        mode_name=f"{ricon} {rname} [Universe B - Pioneers (Pruned)]",
+        substrate_name=sub,
         enable_pruning=True,
         max_pop=10,
-        vault_file="civilization_universe_b.json"
-    ),
-    "c": ContinuousEvolutionRunner(
-        universe_id="c",
-        mode_name="Universe C (Unbounded Darwinian Lenia Colony)",
-        substrate_name="lenia",
+        physics_model=phys,
+        vault_file=f"civilization_{rid}_b.json"
+    )
+    # Branch C: Darwinian Colony (35 Pop, High-Density Swarm)
+    runners[f"{rid}_c"] = ContinuousEvolutionRunner(
+        universe_id=f"{rid}_c",
+        mode_name=f"{ricon} {rname} [Universe C - Darwinian Colony (35 Pop)]",
+        substrate_name=sub,
         enable_pruning=True,
         max_pop=35,
-        vault_file="civilization_universe_c.json"
-    ),
-}
+        physics_model=phys,
+        vault_file=f"civilization_{rid}_c.json"
+    )
 
-app = FastAPI(title="Sovereign Civilization 24/7 Tri-Universe Engine")
+app = FastAPI(title="Sovereign Multiverse 24/7 Engine (21 Universes)")
 
 @app.api_route("/api/state", methods=["GET", "HEAD"])
-def api_state(u: str = "a"):
-    target_runner = runners.get(u.lower(), runners["a"])
+def api_state(u: str = "r3_a"):
+    target_runner = runners.get(u.lower(), runners.get("r3_a", next(iter(runners.values()))))
     return target_runner.get_live_payload()
 
 @app.post("/api/action/fever")
-def api_fever(u: str = "a"):
-    target_runner = runners.get(u.lower(), runners["a"])
-    target_runner.trigger_fever()
+def api_fever(u: str = "r3_a"):
+    target_runner = runners.get(u.lower(), runners.get("r3_a"))
+    if target_runner:
+        target_runner.trigger_fever()
     return {"status": "FEVER_TRIGGERED", "universe": u}
 
 @app.post("/api/action/reset")
-def api_reset(u: str = "a", model: str = "Lenia Continuous Wave (μ=0.15, σ=0.015)"):
-    target_runner = runners.get(u.lower(), runners["a"])
-    target_runner.reset(model)
-    return {"status": "RESET_OK", "universe": u}
+def api_reset(u: str = "r3_a"):
+    target_runner = runners.get(u.lower(), runners.get("r3_a"))
+    if target_runner:
+        target_runner.reset()
+    return {"status": "UNIVERSE_RESET", "universe": u}
 
-@app.api_route("/ping", methods=["GET", "HEAD"])
-def ping():
-    return JSONResponse(content={
-        "status": "OK",
-        "steps": {k: r.step_count for k, r in runners.items()}
-    })
 
-@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
-def visual_dashboard():
-    return """
+HTML_CONTENT = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🌌 Sovereign Civilization Tri-Universe Parallel Engine</title>
+  <meta charset="UTF-8">
+  <title>Sovereign Multiverse 24/7 — 21 Living Universes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    :root {
-      --bg-main: #0a0e17;
-      --bg-panel: #111827;
-      --border-color: #1f2937;
-      --accent-cyan: #38bdf8;
-      --accent-purple: #a855f7;
-      --accent-amber: #f59e0b;
-      --accent-pink: #ec4899;
-      --accent-green: #10b981;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 16px;
+      background-color: #030712;
+      color: #f3f4f6;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
+      min-height: 100vh;
     }
-
     header {
+      background: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 1px solid #374151;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .header-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-color);
       flex-wrap: wrap;
       gap: 8px;
     }
-
-    .title-group h1 { font-size: 1.35rem; color: #fff; font-weight: 700; }
-    .title-group p { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
-    .badge {
-      background: rgba(16, 185, 129, 0.2);
-      color: #10b981;
-      border: 1px solid #10b981;
-      padding: 6px 14px;
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .tab-bar {
-      display: flex;
-      gap: 12px;
-      background: var(--bg-panel);
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      flex-wrap: wrap;
-    }
-
-    .tab-btn {
-      background: #1f2937;
-      color: var(--text-muted);
-      border: 1px solid #374151;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.82rem;
-      transition: all 0.2s;
-    }
-    .tab-btn:hover { background: #374151; color: #fff; }
-    .tab-btn.active {
-      background: #2563eb;
-      border-color: #3b82f6;
-      color: #fff;
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
-    }
-
-    .climate-bar {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      background: linear-gradient(90deg, #111827 0%, #1e1b4b 100%);
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: 1px solid #3b82f6;
-      flex-wrap: wrap;
-    }
-
-    .season-badge {
+    .title-box h1 {
+      font-size: 1.25rem;
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #f43f5e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       font-weight: 800;
-      font-size: 0.95rem;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid var(--accent-cyan);
-      color: var(--accent-cyan);
     }
-
-    .controls-bar {
+    .title-box p { font-size: 0.75rem; color: #9ca3af; }
+    
+    /* 2-Tier Selector */
+    .selector-container {
       display: flex;
-      gap: 10px;
-      align-items: center;
-      background: var(--bg-panel);
-      padding: 10px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
     }
-
-    button {
+    .realm-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .realm-btn {
       background: #1f2937;
-      color: #fff;
+      color: #9ca3af;
       border: 1px solid #374151;
-      padding: 6px 14px;
+      padding: 5px 10px;
       border-radius: 6px;
-      cursor: pointer;
+      font-size: 0.72rem;
       font-weight: 600;
-      font-size: 0.82rem;
+      cursor: pointer;
       transition: all 0.2s;
     }
-    button:hover { background: #374151; }
-    button.fever { background: #7f1d1d; border-color: #ef4444; color: #fca5a5; }
-    button.fever:hover { background: #991b1b; }
+    .realm-btn:hover { background: #374151; color: #fff; }
+    .realm-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+    
+    .branch-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .branch-btn {
+      background: #111827;
+      color: #9ca3af;
+      border: 1px solid #374151;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .branch-btn:hover { background: #1f2937; color: #fff; }
+    .branch-btn.active {
+      background: #4f46e5;
+      color: #ffffff;
+      border-color: #818cf8;
+      box-shadow: 0 0 8px rgba(129, 140, 248, 0.4);
+    }
 
-    .canvas-container {
+    .main-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      grid-template-columns: 340px 1fr;
+      gap: 12px;
+      align-items: start;
     }
-    @media (max-width: 850px) {
-      .canvas-container { grid-template-columns: 1fr; }
+    @media (max-width: 1024px) {
+      .main-grid { grid-template-columns: 1fr; }
     }
-
-    .panel {
-      background: var(--bg-panel);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
+    .card {
+      background-color: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
       padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
-
-    .panel-header {
+    .card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid #1f2937;
+      padding-bottom: 6px;
     }
-
-    .panel-title { font-weight: 600; font-size: 0.92rem; }
-
-    .canvas-wrapper {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background: #000;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-      image-rendering: auto;
-    }
-
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 16px;
-    }
-    @media (max-width: 900px) {
-      .telemetry-grid { grid-template-columns: 1fr; }
-    }
-
-    table { width: 100%; border-collapse: collapse; font-size: 0.78rem; font-family: monospace; }
-    th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
-    th { color: var(--text-muted); font-weight: 600; font-family: sans-serif; font-size: 0.75rem; }
-
-    .agent-tag { font-weight: 700; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; }
-    .tag-classical { background: rgba(56, 189, 248, 0.2); color: var(--accent-cyan); }
-    .tag-quantum { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
-    .tag-modern { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
-    .tag-string { background: rgba(236, 72, 153, 0.2); color: var(--accent-pink); }
-    .tag-hybrid { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-
-    .fever-badge { font-size: 0.7rem; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
-    .fever-on { background: rgba(239, 68, 68, 0.25); color: #f87171; border: 1px solid #ef4444; }
-    .fever-off { color: #10b981; }
-
-    .stream-box {
-      background: #000;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      height: 180px;
-      overflow-y: auto;
-      padding: 8px;
-      font-family: Consolas, Monaco, "Courier New", monospace;
-      font-size: 0.72rem;
+    .canvas-container {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: center;
+      gap: 8px;
+      position: relative;
     }
-
-    pre {
-      font-family: Consolas, Monaco, "Courier New", monospace;
+    canvas {
+      image-rendering: pixelated;
+      background: #000;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+      max-width: 100%;
+    }
+    .telemetry-table {
+      width: 100%;
+      border-collapse: collapse;
       font-size: 0.72rem;
-      line-height: 1.35;
-      color: #93c5fd;
-      white-space: pre-wrap;
-      margin-top: 2px;
     }
-
-    .stream-line.fever { color: #f87171; }
-    .stream-line.sub { color: var(--accent-pink); }
-    .stream-line.grad { color: var(--accent-cyan); }
-    .stream-line.mitosis { color: var(--accent-green); }
-    .stream-line.prune { color: #fbbf24; }
+    .telemetry-table th, .telemetry-table td {
+      padding: 4px 6px;
+      text-align: left;
+      border-bottom: 1px solid #1f2937;
+    }
+    .telemetry-table th { color: #6b7280; font-weight: 600; }
+    .agent-tag {
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.68rem;
+    }
+    .tag-classical { background: #1e3a8a; color: #93c5fd; }
+    .tag-quantum { background: #581c87; color: #d8b4fe; }
+    .tag-modern { background: #713f12; color: #fde047; }
+    .tag-string { background: #831843; color: #f9a8d4; }
+    .tag-hybrid { background: #064e3b; color: #6ee7b7; }
+    .fever-badge {
+      font-size: 0.65rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 800;
+    }
+    .fever-on { background: #dc2626; color: #fff; animation: pulse 1s infinite; }
+    .fever-off { background: #1f2937; color: #6b7280; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+    
+    .stream-box {
+      background: #030712;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      height: 120px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .stream-line { border-left: 2px solid #374151; padding-left: 5px; }
+    .stream-line.sub { border-left-color: #ec4899; color: #f472b6; }
+    .stream-line.fever { border-left-color: #ef4444; color: #f87171; }
+    .stream-line.prune { border-left-color: #eab308; color: #fde047; }
+    .stream-line.mitosis { border-left-color: #10b981; color: #6ee7b7; }
+    .stream-line.grad { border-left-color: #3b82f6; color: #93c5fd; }
+    
+    .btn-group { display: flex; gap: 6px; }
+    .action-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #f3f4f6;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { background: #374151; border-color: #4b5563; }
+    .action-btn.fever-btn { border-color: #dc2626; color: #f87171; }
+    .action-btn.fever-btn:hover { background: #7f1d1d; color: #fff; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="title-group">
-      <h1>🌌 Sovereign Civilization: Tri-Universe Parallel Engine</h1>
-      <p id="universe-subtitle">Viewing Universe A | Substrate: Continuous Lenia | 100% Real Python 3.11 Runtime</p>
+    <div class="header-top">
+      <div class="title-box">
+        <h1 id="multiverse-title">🌌 Sovereign Multiverse 24/7 — 21 Living Universes</h1>
+        <p id="universe-subtitle">7 Physical Substrates x 3 Evolution Branches | True God Equation S_{t+1}^i = U + L</p>
+      </div>
+      <div class="btn-group">
+        <button id="btn-fever" class="action-btn fever-btn">🔥 Trigger Multiverse Fever</button>
+        <button id="btn-reset" class="action-btn">🔄 Reset Current Universe</button>
+      </div>
     </div>
-    <div class="badge">● 3 PARALLEL UNIVERSES RUNNING 24/7</div>
+    
+    <!-- 2-Tier Selector -->
+    <div class="selector-container">
+      <div class="realm-bar">
+        <button class="realm-btn" data-realm="r1">🏛️ 1. Classic CA</button>
+        <button class="realm-btn" data-realm="r2">🍂 2. Seasonal CA</button>
+        <button class="realm-btn active" data-realm="r3">🌊 3. Lenia Waves</button>
+        <button class="realm-btn" data-realm="r4">🧬 4. Turing Morph</button>
+        <button class="realm-btn" data-realm="r5">⚡ 5. Wireworld</button>
+        <button class="realm-btn" data-realm="r6">💨 6. Lattice Gas</button>
+        <button class="realm-btn" data-realm="r7">⚔️ 7. Red Queen</button>
+      </div>
+      <div class="branch-bar">
+        <button class="branch-btn active" data-branch="a">🟢 Universe A: Ancient Stasis (10 Pop)</button>
+        <button class="branch-btn" data-branch="b">🟡 Universe B: Pioneers (Pruning)</button>
+        <button class="branch-btn" data-branch="c">🔴 Universe C: Darwinian Colony (35 Pop)</button>
+      </div>
+    </div>
   </header>
 
-  <!-- 3-WAY UNIVERSE TOGGLE TABS -->
-  <div class="tab-bar">
-    <button class="tab-btn active" id="tab-a" onclick="switchUniverse('a')">🌍 Universe A: Ancient Migrants (Lenia)</button>
-    <button class="tab-btn" id="tab-b" onclick="switchUniverse('b')">🌌 Universe B: Newborn Pioneers (Lenia)</button>
-    <button class="tab-btn" id="tab-c" onclick="switchUniverse('c')">🔥 Universe C: Unbounded Darwinian (Lenia)</button>
-  </div>
-
-  <!-- DYNAMIC CONTINUOUS WAVE STATUS BAR -->
-  <div class="climate-bar">
-    <span id="season-badge" class="season-badge">🌊 Continuous Lenia</span>
-    <span id="climate-solar" style="font-size:0.8rem; color:#9ca3af;">🌊 Mean Biomass: 0.12</span>
-    <span id="climate-temp" style="font-size:0.8rem; color:#f59e0b;">🌡️ Ambient Temp: 1.50</span>
-    <span id="climate-regrowth" style="font-size:0.8rem; color:#10b981;">🌱 Biomass Pool: 14.2</span>
-    <span id="climate-caches" style="font-size:0.8rem; color:#38bdf8;">✨ Max Density: 0.85</span>
-  </div>
-
-  <div class="controls-bar">
-    <button class="fever" id="btn-fever">🔥 Trigger Fever</button>
-    <button id="btn-reset">🔄 Reset Universe</button>
-    <span id="pop-counter" style="font-weight: 700; font-size: 0.85rem; color: #38bdf8;">👥 Population: 4</span>
-    <span id="stagnation-status" style="font-size: 0.8rem; color: #fbbf24; margin-left: 12px;">🔄 Saturation: 0 / 1500</span>
-    <span id="cloud-status" style="font-size: 0.75rem; color: #10b981; margin-left: auto;">☁️ Cloud Vault: Connected</span>
-  </div>
-
-  <div class="canvas-container">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">🌊 Living Continuous Lenia Wave Field ψ(x,y)</div>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">Bioluminescent Field: Cyan/Emerald Solitons | C/Q/M/S/H: Organisms</span>
+  <div class="main-grid">
+    <!-- Left Column: Canvas & Substrate Telemetry -->
+    <div class="card">
+      <div class="card-title">
+        <span id="canvas-label">🌊 Continuous Physics Canvas (25x25)</span>
+        <span id="step-counter" style="color:#38bdf8; font-family:monospace;">Step: 000</span>
       </div>
-      <div class="canvas-wrapper">
-        <canvas id="ca-canvas" width="400" height="400"></canvas>
+      <div class="canvas-container">
+        <canvas id="substrate-canvas" width="300" height="300"></canvas>
+      </div>
+      <div id="climate-card" style="font-size:0.7rem; color:#9ca3af; background:#030712; padding:6px; border-radius:6px; border:1px solid #1f2937;">
+        <span id="climate-text">Loading telemetry...</span>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">🧠 Collective Consciousness Consensus Field Φ(x)</div>
-        <span style="font-size: 0.75rem; color: var(--text-muted);">True Quantum Belief Tensors Synthesized via M_t^i</span>
+    <!-- Right Column: Agents, Laws & Event Stream -->
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <!-- Agent Telemetry -->
+      <div class="card">
+        <div class="card-title">
+          <span>👥 Living Cognitive Society</span>
+          <span id="telemetry-summary" style="color:#a78bfa; font-family:monospace;">Pop: 4</span>
+        </div>
+        <div style="max-height: 180px; overflow-y: auto;">
+          <table class="telemetry-table">
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Pillar</th>
+                <th>Pos</th>
+                <th>Energy (H)</th>
+                <th>dH/dt</th>
+                <th>Temp</th>
+                <th>10D</th>
+                <th>Laws</th>
+                <th>State</th>
+              </tr>
+            </thead>
+            <tbody id="agent-tbody"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="canvas-wrapper">
-        <canvas id="mind-canvas" width="400" height="400"></canvas>
-      </div>
-    </div>
-  </div>
 
-  <div class="telemetry-grid">
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">📊 Real-Time Relativistic Agent Telemetry (S_t^i)</div>
-        <span id="telemetry-summary" style="font-size: 0.78rem; color: var(--text-muted);">Step: 000 | Total Energy: 1200.0</span>
+      <!-- Discovered Laws Archive -->
+      <div class="card">
+        <div class="card-title">
+          <span>📜 Kolmogorov Discovered Laws (L(S_t^i))</span>
+          <span id="sub-count" style="color:#ec4899; font-weight:bold;">0 Unique Laws</span>
+        </div>
+        <div id="subroutine-box" class="stream-box" style="height: 110px;">
+          <div style="color:#6b7280;">Inducing verified causal transition laws...</div>
+        </div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Agent</th>
-            <th>Pillar</th>
-            <th>Pos</th>
-            <th>Energy (H)</th>
-            <th>dH/dt</th>
-            <th>Temp (T)</th>
-            <th>10D Dim</th>
-            <th>Subroutines</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="telemetry-body"></tbody>
-      </table>
-    </div>
 
-    <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title">📜 Kolmogorov Program Library (L(S_t^i) Causal Induction)</div>
-        <span id="sub-count" style="font-size: 0.78rem; color: var(--text-muted);">0 Unique Laws</span>
+      <!-- Message & Mitosis Stream -->
+      <div class="card">
+        <div class="card-title">
+          <span>⚡ Relativistic Fabric (M_t^i) & Evolution Stream</span>
+          <span id="msg-counter" style="color:#60a5fa;">0 Messages</span>
+        </div>
+        <div id="message-box" class="stream-box" style="height: 90px;"></div>
       </div>
-      <div class="stream-box" id="subroutine-box"></div>
     </div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-header">
-      <div class="panel-title">📡 Relativistic Message Stream (M_t^i Fabric & Pruning Events)</div>
-      <span id="msg-counter" style="font-size: 0.78rem; color: var(--text-muted);">0 Messages Exchanged</span>
-    </div>
-    <div class="stream-box" id="message-box"></div>
   </div>
 
   <script>
-    let activeUniverse = 'a';
-    let lastSubroutineCount = -1;
+    let activeRealm = "r3";
+    let activeBranch = "a";
     let lastSubroutineKeys = "";
-    let lastMessageCount = -1;
+    let lastMessageCount = 0;
 
-    const canvasCA = document.getElementById("ca-canvas");
-    const ctxCA = canvasCA.getContext("2d");
-    const canvasMind = document.getElementById("mind-canvas");
-    const ctxMind = canvasMind.getContext("2d");
+    // Selector Handlers
+    document.querySelectorAll(".realm-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".realm-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeRealm = btn.getAttribute("data-realm");
+        lastSubroutineKeys = "";
+        fetchState();
+      };
+    });
 
-    const AGENT_COLORS = {
-      "classical_prime": "#38bdf8",
-      "quantum_prime": "#a855f7",
-      "modern_prime": "#f59e0b",
-      "string_meta": "#ec4899",
-      "hybrid": "#10b981"
-    };
+    document.querySelectorAll(".branch-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".branch-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeBranch = btn.getAttribute("data-branch");
+        lastSubroutineKeys = "";
+        fetchState();
+      };
+    });
 
-    const AGENT_SYMBOLS = {
-      "classical_prime": "C",
-      "quantum_prime": "Q",
-      "modern_prime": "M",
-      "string_meta": "S"
-    };
-
-    function switchUniverse(u) {
-      activeUniverse = u;
-      lastSubroutineCount = -1;
-      lastSubroutineKeys = "";
-      lastMessageCount = -1;
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      document.getElementById(`tab-${u}`).classList.add("active");
-      fetchState();
+    function getActiveUniverseKey() {
+      return `${activeRealm}_${activeBranch}`;
     }
 
     async function fetchState() {
       try {
-        const res = await fetch(`/api/state?u=${activeUniverse}`);
+        const uKey = getActiveUniverseKey();
+        const res = await fetch(`/api/state?u=${uKey}`);
         if (!res.ok) return;
         const data = await res.json();
-        render(data);
-      } catch (e) {}
+        renderDashboard(data);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
     }
 
-    function render(data) {
-      document.getElementById("universe-subtitle").innerText = `Viewing ${data.mode_name} | Substrate: ${data.substrate_name} | God Equation: S_{t+1}^i = U(...) + L(...)`;
+    function renderDashboard(data) {
+      document.getElementById("universe-subtitle").innerText = `${data.mode_name} | Substrate: ${data.substrate_name} | Vault: ${data.cloud_vault}`;
+      document.getElementById("step-counter").innerText = `Step: ${data.step.toLocaleString()}`;
+      document.getElementById("canvas-label").innerText = `${data.climate.season_icon || '🌌'} ${data.climate.environment_name} (${data.grid.length}x${data.grid[0].length})`;
       
-      // Update Climate / Wave Telemetry
-      if (data.climate) {
-        const c = data.climate;
-        const badge = document.getElementById("season-badge");
-        badge.innerText = `${c.season_icon} ${c.season}`;
-        badge.style.borderColor = "#38bdf8";
-        badge.style.color = "#38bdf8";
-        badge.style.background = "rgba(56, 189, 248, 0.2)";
+      const c = data.climate;
+      document.getElementById("climate-text").innerHTML = `
+        <strong>${c.season_icon || '🌌'} ${c.season}</strong> | 
+        Biomass: <span style="color:#38bdf8;">${c.total_biomass || 0}</span> | 
+        Ambient Temp: <span style="color:#f87171;">${c.ambient_temp || 1.0}</span> | 
+        Max Density: <span>${c.max_density || 1.0}</span>
+      `;
 
-        document.getElementById("climate-solar").innerText = `🌊 Mean Biomass: ${(c.solar_phase * 100).toFixed(1)}%`;
-        document.getElementById("climate-temp").innerText = `🌡️ Temp: ${c.ambient_temp.toFixed(2)}`;
-        document.getElementById("climate-regrowth").innerText = `🌱 Biomass Pool: ${c.total_biomass || (c.regrowth_rate * 100).toFixed(0)}`;
-        document.getElementById("climate-caches").innerText = `✨ Max Density: ${c.max_density || c.cache_count}`;
-      }
+      // 1. Draw Canvas
+      const canvas = document.getElementById("substrate-canvas");
+      const ctx = canvas.getContext("2d");
+      const grid = data.grid;
+      const h = grid.length;
+      const w = grid[0].length;
+      const cellW = canvas.width / w;
+      const cellH = canvas.height / h;
 
-      const s = data.grid_size || 25;
-      const w = canvasCA.width;
-      const h = canvasCA.height;
-      const cellW = w / s;
-      const cellH = h / s;
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Render Living Lenia Wave Field
-      ctxCA.fillStyle = "#030712";
-      ctxCA.fillRect(0, 0, w, h);
-
-      for (let y = 0; y < s; y++) {
-        for (let x = 0; x < s; x++) {
-          const val = data.grid[y][x];
-          if (typeof val === 'number') {
-            if (val > 0.05 && val <= 1.0) {
-              // Smooth Continuous Bioluminescence Spectral Map
-              const r = Math.floor(val * 35);
-              const g = Math.floor(Math.sin(val * Math.PI) * 220 + val * 35);
-              const b = Math.floor(Math.pow(val, 0.6) * 255);
-              ctxCA.fillStyle = `rgb(${r},${g},${b})`;
-              ctxCA.fillRect(x * cellW, y * cellH, cellW + 0.5, cellH + 0.5);
-            } else if (val === 1) {
-              ctxCA.fillStyle = "#10b981";
-              ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
-            } else if (val === 2) {
-              ctxCA.fillStyle = "#ef4444";
-              ctxCA.fillRect(x * cellW, y * cellH, cellW - 1, cellH - 1);
-            } else if (val === 3) {
-              ctxCA.fillStyle = "#38bdf8";
-              ctxCA.fillRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
-              ctxCA.strokeStyle = "#ffffff";
-              ctxCA.strokeRect(x * cellW + 2, y * cellH + 2, cellW - 5, cellH - 5);
+      // Render physical field
+      for (let r = 0; r < h; r++) {
+        for (let col = 0; col < w; col++) {
+          const val = grid[r][col];
+          if (val > 0.01) {
+            // Adaptive palette based on realm
+            if (activeRealm === "r5") {
+              // Wireworld colors
+              if (val === 1) ctx.fillStyle = "#38bdf8"; // Head (Cyan)
+              else if (val === 2) ctx.fillStyle = "#ef4444"; // Tail (Red)
+              else if (val === 3) ctx.fillStyle = "#eab308"; // Conductor (Yellow)
+            } else if (activeRealm === "r4") {
+              // Turing morphogen (Purple to Emerald)
+              const g = Math.floor(val * 255);
+              ctx.fillStyle = `rgb(${Math.floor(val * 100)}, ${g}, ${255 - g})`;
+            } else if (activeRealm === "r7") {
+              // Red Queen (Green veg, red apex)
+              if (val >= 0.9) ctx.fillStyle = "#ef4444";
+              else if (val >= 0.5) ctx.fillStyle = "#38bdf8";
+              else ctx.fillStyle = `rgba(34, 197, 94, ${val})`;
+            } else {
+              // Lenia / Classic Blue-Green wave
+              const intensity = Math.min(1.0, val);
+              const b = Math.floor(intensity * 255);
+              const g = Math.floor(intensity * 200);
+              ctx.fillStyle = `rgb(0, ${g}, ${b})`;
             }
+            ctx.fillRect(col * cellW, r * cellH, cellW, cellH);
           }
         }
       }
 
       // Render Agents
       data.nodes.forEach(node => {
-        const [py_idx, px_idx] = node.pos;
-        const color = AGENT_COLORS[node.id] || (node.id.includes("child") ? "#10b981" : "#38bdf8");
-        const sym = AGENT_SYMBOLS[node.id] || (node.id.includes("child") ? "H" : "A");
+        const [py, px] = node.pos;
+        const cx = px * cellW + cellW / 2;
+        const cy = py * cellH + cellH / 2;
 
-        // Draw Aperture Box
-        ctxCA.strokeStyle = color;
-        ctxCA.lineWidth = 1.5;
-        const r = 2;
-        ctxCA.strokeRect((px_idx - r) * cellW, (py_idx - r) * cellH, (r * 2 + 1) * cellW, (r * 2 + 1) * cellH);
+        let col = "#38bdf8";
+        if (node.pillar.includes("Quantum")) col = "#c084fc";
+        else if (node.pillar.includes("Modern")) col = "#facc15";
+        else if (node.pillar.includes("String")) col = "#f43f5e";
+        else if (node.pillar.includes("Hybrid")) col = "#34d399";
 
-        // Draw Agent Circle
-        const px = px_idx * cellW + cellW / 2;
-        const py = py_idx * cellH + cellH / 2;
-        ctxCA.beginPath();
-        ctxCA.arc(px, py, cellW * 0.45, 0, Math.PI * 2);
-        ctxCA.fillStyle = color;
-        ctxCA.fill();
-        ctxCA.strokeStyle = "#fff";
-        ctxCA.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy, cellW * 0.75, 0, Math.PI * 2);
+        ctx.fillStyle = col;
+        ctx.fill();
+        ctx.strokeStyle = node.fever ? "#dc2626" : "#ffffff";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
-        ctxCA.fillStyle = "#000";
-        ctxCA.font = "bold 10px sans-serif";
-        ctxCA.textAlign = "center";
-        ctxCA.textBaseline = "middle";
-        ctxCA.fillText(sym, px, py);
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 9px monospace";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(node.id.substring(0, 2).toUpperCase(), cx, cy);
       });
 
-      // 2. Render Consensus Mind Field
-      ctxMind.fillStyle = "#0a0a14";
-      ctxMind.fillRect(0, 0, w, h);
+      // 2. Render Agent Table
+      const tbody = document.getElementById("agent-tbody");
+      tbody.innerHTML = data.nodes.map(node => {
+        let tagCls = "tag-classical";
+        if (node.pillar.includes("Quantum")) tagCls = "tag-quantum";
+        else if (node.pillar.includes("Modern")) tagCls = "tag-modern";
+        else if (node.pillar.includes("String")) tagCls = "tag-string";
+        else if (node.pillar.includes("Hybrid")) tagCls = "tag-hybrid";
 
-      for (let y = 0; y < s; y++) {
-        for (let x = 0; x < s; x++) {
-          const val = data.mind_field[y][x];
-          const r = Math.min(255, val);
-          const g = Math.floor(val * 0.28);
-          const b = Math.min(255, Math.floor(val * 0.75 + 15));
-          ctxMind.fillStyle = `rgb(${r}, ${g}, ${b})`;
-          ctxMind.fillRect(x * cellW, y * cellH, cellW - 0.5, cellH - 0.5);
-        }
-      }
-
-      // 3. Render Telemetry Table smoothly
-      const tbody = document.getElementById("telemetry-body");
-      let totEnergy = 0;
-
-      const rows = tbody.querySelectorAll("tr");
-      if (rows.length !== data.nodes.length) {
-        tbody.innerHTML = "";
-        data.nodes.forEach(node => {
-          totEnergy += node.energy;
-          const tr = document.createElement("tr");
-          const pillarPrefix = node.pillar.split("-")[0].toLowerCase();
-          const tagClass = `tag-${pillarPrefix}`;
-          const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
-
-          tr.innerHTML = `
-            <td><span class="agent-tag ${tagClass}">${node.id}</span></td>
+        const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
+        return `
+          <tr>
+            <td><span class="agent-tag ${tagCls}">${node.id}</span></td>
             <td>${node.pillar}</td>
             <td>(${node.pos[0]}, ${node.pos[1]})</td>
             <td>${node.energy.toFixed(1)}</td>
@@ -836,40 +863,18 @@ def visual_dashboard():
             <td>D${node.dim_10d}</td>
             <td>${node.sub_count}</td>
             <td>${feverBadge}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } else {
-        data.nodes.forEach((node, idx) => {
-          totEnergy += node.energy;
-          const tr = rows[idx];
-          const feverBadge = node.fever ? `<span class="fever-badge fever-on">🔥 FEVER</span>` : `<span class="fever-badge fever-off">❄️ STABLE</span>`;
-          const cells = tr.querySelectorAll("td");
-          if (cells.length >= 9) {
-            cells[2].textContent = `(${node.pos[0]}, ${node.pos[1]})`;
-            cells[3].textContent = node.energy.toFixed(1);
-            cells[4].textContent = `${node.dh_dt >= 0 ? '+' : ''}${node.dh_dt.toFixed(2)}`;
-            cells[5].textContent = node.temperature.toFixed(2);
-            cells[6].textContent = `D${node.dim_10d}`;
-            cells[7].textContent = node.sub_count;
-            cells[8].innerHTML = feverBadge;
-          }
-        });
-      }
+          </tr>
+        `;
+      }).join("");
 
-      document.getElementById("telemetry-summary").innerText = `Step: ${data.step.toString().padStart(3, '0')} | Total Energy: ${totEnergy.toFixed(1)}`;
-      document.getElementById("pop-counter").innerText = `👥 Population: ${data.population}`;
-      document.getElementById("msg-counter").innerText = `${data.total_messages} Messages Exchanged`;
-      
-      const stagText = data.pruning_enabled ? `🔄 Saturation Timer: ${data.stagnation_steps} / 1500` : `🔒 Pruning: Disabled (Permanent Vault)`;
-      document.getElementById("stagnation-status").innerText = stagText;
+      document.getElementById("telemetry-summary").innerText = `Pop: ${data.population}`;
 
-      // 4. Render Subroutines smoothly without text flicker
+      // 3. Render Subroutines smoothly
       const subs = data.subroutines || [];
       const currentKeys = subs.map(s => s.signature).join(",");
       if (currentKeys !== lastSubroutineKeys) {
         lastSubroutineKeys = currentKeys;
-        document.getElementById("sub-count").innerText = `${subs.length} Unique Discovered Laws`;
+        document.getElementById("sub-count").innerText = `${subs.length} Discovered Laws`;
         const subBox = document.getElementById("subroutine-box");
         if (subs.length > 0) {
           subBox.innerHTML = subs.map(item => `
@@ -879,11 +884,11 @@ def visual_dashboard():
             </div>
           `).join("");
         } else {
-          subBox.innerHTML = "<div style='color:#6b7280;'>Inducing verified causal transition laws...</div>";
+          subBox.innerHTML = "<div style='color:#6b7280;'>Inducing verified causal transition laws from Step 0...</div>";
         }
       }
 
-      // 5. Render Messages & Events smoothly
+      // 4. Render Messages & Events
       const msgCount = (data.events ? (data.events.prunings?.length || 0) + (data.events.births?.length || 0) : 0) + (data.messages?.length || 0);
       if (msgCount !== lastMessageCount) {
         lastMessageCount = msgCount;
@@ -905,13 +910,16 @@ def visual_dashboard():
       }
     }
 
-    document.getElementById("btn-fever").onclick = () => fetch(`/api/action/fever?u=${activeUniverse}`, { method: "POST" });
-    document.getElementById("btn-reset").onclick = () => fetch(`/api/action/reset?u=${activeUniverse}`, { method: "POST" });
+    document.getElementById("btn-fever").onclick = () => fetch(`/api/action/fever?u=${getActiveUniverseKey()}`, { method: "POST" });
+    document.getElementById("btn-reset").onclick = () => fetch(`/api/action/reset?u=${getActiveUniverseKey()}`, { method: "POST" });
 
-    // Poll live Python server every 120ms
     setInterval(fetchState, 120);
     fetchState();
   </script>
 </body>
 </html>
 """
+
+@app.get("/", response_class=HTMLResponse)
+def index():
+    return HTMLResponse(content=HTML_CONTENT)

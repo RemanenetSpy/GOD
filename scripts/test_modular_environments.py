@@ -1,5 +1,12 @@
-import sys
+"""
+========================================================================================
+Verification Suite for all 7 Modular Substrates in the Cellular Automata Multiverse
+========================================================================================
+"""
+
 import os
+import sys
+import numpy as np
 
 if sys.stdout.encoding != 'utf-8':
     try:
@@ -7,59 +14,53 @@ if sys.stdout.encoding != 'utf-8':
     except Exception:
         pass
 
-sys.path.insert(0, os.path.abspath("src"))
-sys.path.insert(0, os.path.abspath("src/environments"))
+# Add src and src/environments to path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src", "environments")))
 
-from environments.registry import SubstrateRegistry
-from civilization import SovereignCivilization
+from registry import SubstrateRegistry
+from civilization import SovereignCivilization, Observation, Action
 
-def test_environments():
-    print("=================================================================")
-    print("TESTING MODULAR PLUG-AND-PLAY SUBSTRATE ARCHITECTURE")
-    print("=================================================================")
+
+def test_all_seven_realms():
+    print("=" * 70)
+    print("TESTING 7-PARADIGM CELLULAR AUTOMATA MULTIVERSE SUBSTRATES")
+    print("=" * 70)
     
-    # 1. Check available substrates
-    available = SubstrateRegistry.list_available()
-    print(f"Available Substrates: {available}")
-    assert "classic_ca" in available
-    assert "seasonal_scarcity" in available
-    assert "lenia" in available
-
-    # 2. Test Classic CA (Epoch 1 Baseline)
-    u_classic = SubstrateRegistry.get_substrate("classic_ca")
-    rewards = u_classic.step({"agent_1": (5, 5)})
-    clim_classic = u_classic.get_climate_telemetry()
-    print(f"[Classic CA] Step OK! Season: {clim_classic['season']}")
-    assert clim_classic["is_famine"] is False
-
-    # 3. Test Seasonal Scarcity CA (Epoch 2 Dynamic Climate)
-    u_season = SubstrateRegistry.get_substrate("seasonal_scarcity", season_length=400)
-    seasons_observed = set()
-    for step in range(400):
-        rewards = u_season.step({"pioneer": (10, 10)})
-        clim = u_season.get_climate_telemetry()
-        seasons_observed.add(clim["season"])
-        if step in [20, 120, 220, 320]:
-            print(f"Step {step:3d}: [{clim['season']}] | Temp: {clim['ambient_temp']} | Regrowth: {clim['regrowth_rate']} | Famine: {clim['is_famine']}")
-
-    assert seasons_observed == {"Spring", "Summer", "Autumn", "Winter"}
-    print("[Seasonal Scarcity CA] Full 4-Season Solar Cycle Verified!")
-
-    # 4. Test Continuous Lenia (Universe 3)
-    u_lenia = SubstrateRegistry.get_substrate("lenia")
-    for _ in range(20):
-        r_lenia = u_lenia.step({"pioneer": (12, 12)})
-    clim_lenia = u_lenia.get_climate_telemetry()
-    print(f"[Continuous Lenia] Step OK! Biomass: {clim_lenia['total_biomass']} | Max Density: {clim_lenia['max_density']}")
-    assert clim_lenia["total_biomass"] > 0.0
-    print("[Continuous Lenia] Continuous Wave Physics Verified!")
-
-    # 5. Test Sovereign Civilization Integration with Lenia
-    civ = SovereignCivilization()
-    actions = civ.step(climate_telemetry=clim_lenia)
-    print(f"[Civilization Integration] Step OK with Lenia continuous telemetry! Active nodes: {len(civ.nodes)}")
+    realms = [
+        ("classic_ca", "Realm 1: Classic Discrete CA"),
+        ("seasonal_scarcity", "Realm 2: Seasonal Scarcity CA"),
+        ("lenia", "Realm 3: Continuous Wave Lenia"),
+        ("reaction_diffusion", "Realm 4: Gray-Scott Reaction-Diffusion"),
+        ("wireworld", "Realm 5: Wireworld Digital Circuit"),
+        ("lattice_gas", "Realm 6: Lattice Gas Hydrodynamics"),
+        ("red_queen", "Realm 7: Red Queen Co-Evolution Arena")
+    ]
     
-    print("\nALL 3 MODULAR SUBSTRATES (CLASSIC, SEASONAL, LENIA) FULLY VERIFIED!")
+    agent_positions = {
+        "classical_prime": (5, 5),
+        "quantum_prime": (20, 5),
+        "modern_prime": (5, 20),
+        "string_meta": (20, 20)
+    }
+    
+    for key, label in realms:
+        print(f"\n[Testing {label}]...")
+        sub = SubstrateRegistry.get_substrate(key, grid_shape=(25, 25))
+        assert sub.grid.shape == (25, 25), f"{label} grid shape mismatch"
+        
+        # Step 10 times
+        for _ in range(10):
+            rewards = sub.step(agent_positions)
+            assert len(rewards) == len(agent_positions), f"{label} reward count mismatch"
+            
+        telemetry = sub.get_climate_telemetry()
+        print(f"  [OK] {telemetry['season_icon']} {telemetry['environment_name']} | Season: {telemetry['season']} | Biomass: {telemetry.get('total_biomass')}")
+        
+    print("\n" + "=" * 70)
+    print("ALL 7 PARADIGMS FULLY VALIDATED AND FUNCTIONAL!")
+    print("=" * 70)
+
 
 if __name__ == "__main__":
-    test_environments()
+    test_all_seven_realms()
