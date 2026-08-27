@@ -1,6 +1,6 @@
 """
 ========================================================================================
-SOVEREIGN MULTIVERSE 24/7 ENGINE: 21 PARALLEL LIVING UNIVERSES (HIGH PERFORMANCE)
+SOVEREIGN MULTIVERSE 24/7 ENGINE: 21 PARALLEL LIVING UNIVERSES (SECURE ADMIN ACCESS)
 ========================================================================================
 Runs 21 Independent Parallel Civilizations across 7 Substrate Paradigms:
 1. 🏛️ Realm 1: Classic Discrete CA (Conway B3/S23 & Wolfram)
@@ -12,6 +12,8 @@ Runs 21 Independent Parallel Civilizations across 7 Substrate Paradigms:
 7. ⚔️ Realm 7: Red Queen Co-Evolution Arena (Predator-Prey Warfare)
 
 Features:
+- Sovereign Master Key Access Control (Only Owner Can Intervene/Mutate World)
+- Public Read-Only Real-Time Shared Spectator Mode
 - Cooperative Round-Robin Multiverse Scheduler (Zero GIL contention)
 - Atomic Non-Blocking State Cache (Instantaneous 0ms Tab Switching)
 - Native /ping & /health Endpoints for 100% Uptime Monitors (UptimeRobot / Cron-Job)
@@ -24,9 +26,16 @@ import time
 import json
 import threading
 import numpy as np
-from typing import Dict, Any, List, Tuple
-from fastapi import FastAPI, Response
+from typing import Dict, Any, List, Tuple, Optional
+from fastapi import FastAPI, Response, Header
 from fastapi.responses import HTMLResponse, JSONResponse
+
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 
 # Add src and src/environments to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -53,6 +62,7 @@ if os.path.exists(env_file):
 
 HF_TOKEN = os.environ.get("HF_TOKEN", "")
 HF_REPO = os.environ.get("HF_DATASET_REPO", "Explorerp/sovereign-civilization-memory")
+ADMIN_SECRET_KEY = os.environ.get("ADMIN_SECRET_KEY", "sovereign-master-2026")
 
 vault = HFDatasetMemoryVault(repo_id=HF_REPO, token=HF_TOKEN)
 
@@ -376,7 +386,7 @@ def ping_health():
     )
 
 
-# 2. Instantaneous Zero-Lock State Endpoint
+# 2. Instantaneous Zero-Lock State Endpoint (Public Spectator Mode)
 @app.api_route("/api/state", methods=["GET", "HEAD"])
 def api_state(u: str = "r3_a"):
     target_key = u.lower()
@@ -386,15 +396,30 @@ def api_state(u: str = "r3_a"):
         fallback_key = "r3_a" if "r3_a" in CACHED_PAYLOADS else next(iter(CACHED_PAYLOADS.keys()), None)
         if fallback_key:
             return CACHED_PAYLOADS[fallback_key]
-    # If cache not ready yet, return direct payload
     target_runner = runners.get(target_key, runners.get("r3_a"))
     if target_runner:
         return target_runner.update_cache()
     return {"status": "initializing"}
 
 
+# 3. Master Key Verification Endpoint
+@app.post("/api/action/verify_admin")
+def verify_admin(x_admin_key: Optional[str] = Header(None)):
+    admin_secret = os.environ.get("ADMIN_SECRET_KEY", "sovereign-master-2026")
+    if x_admin_key and x_admin_key == admin_secret:
+        return {"status": "AUTHORIZED", "is_admin": True}
+    return JSONResponse(status_code=403, content={"status": "UNAUTHORIZED", "is_admin": False, "error": "Invalid Sovereign Admin Key."})
+
+
+# 4. Master-Key Locked Interventions (Only authorized owner can change the world)
 @app.post("/api/action/fever")
-def api_fever(u: str = "r3_a"):
+def api_fever(u: str = "r3_a", x_admin_key: Optional[str] = Header(None)):
+    admin_secret = os.environ.get("ADMIN_SECRET_KEY", "sovereign-master-2026")
+    if not x_admin_key or x_admin_key != admin_secret:
+        return JSONResponse(
+            status_code=403,
+            content={"status": "FORBIDDEN", "error": "Access Locked: God Mode Master Key required to alter the multiverse."}
+        )
     target_runner = runners.get(u.lower(), runners.get("r3_a"))
     if target_runner:
         target_runner.trigger_fever()
@@ -402,7 +427,13 @@ def api_fever(u: str = "r3_a"):
 
 
 @app.post("/api/action/reset")
-def api_reset(u: str = "r3_a"):
+def api_reset(u: str = "r3_a", x_admin_key: Optional[str] = Header(None)):
+    admin_secret = os.environ.get("ADMIN_SECRET_KEY", "sovereign-master-2026")
+    if not x_admin_key or x_admin_key != admin_secret:
+        return JSONResponse(
+            status_code=403,
+            content={"status": "FORBIDDEN", "error": "Access Locked: God Mode Master Key required to reset the universe."}
+        )
     target_runner = runners.get(u.lower(), runners.get("r3_a"))
     if target_runner:
         target_runner.reset()
@@ -605,7 +636,7 @@ HTML_CONTENT = """
     .stream-line.mitosis { border-left-color: #10b981; color: #6ee7b7; }
     .stream-line.grad { border-left-color: #3b82f6; color: #93c5fd; }
     
-    .btn-group { display: flex; gap: 6px; }
+    .btn-group { display: flex; gap: 6px; align-items: center; }
     .action-btn {
       background: #1f2937;
       border: 1px solid #374151;
@@ -620,6 +651,17 @@ HTML_CONTENT = """
     .action-btn:hover { background: #374151; border-color: #4b5563; }
     .action-btn.fever-btn { border-color: #dc2626; color: #f87171; }
     .action-btn.fever-btn:hover { background: #7f1d1d; color: #fff; }
+    .key-btn { border-color: #8b5cf6; color: #c4b5fd; }
+    .key-btn:hover { background: #5b21b6; color: #fff; }
+
+    .badge-status {
+      font-size: 0.68rem;
+      padding: 3px 7px;
+      border-radius: 5px;
+      font-weight: 700;
+    }
+    .badge-readonly { background: #1f2937; color: #9ca3af; border: 1px solid #374151; }
+    .badge-admin { background: #065f46; color: #34d399; border: 1px solid #059669; }
   </style>
 </head>
 <body>
@@ -631,6 +673,8 @@ HTML_CONTENT = """
         <p id="universe-subtitle">7 Physical Substrates x 3 Evolution Branches | Zero-Lock Instantaneous Engine</p>
       </div>
       <div class="btn-group">
+        <span id="admin-badge" class="badge-status badge-readonly">🔒 Spectator (Read-Only)</span>
+        <button id="btn-admin-key" class="action-btn key-btn">🔑 Unlock God Mode</button>
         <button id="btn-fever" class="action-btn fever-btn">🔥 Trigger Fever</button>
         <button id="btn-reset" class="action-btn">🔄 Reset Universe</button>
       </div>
@@ -726,6 +770,51 @@ HTML_CONTENT = """
     let lastSubroutineKeys = "";
     let lastMessageCount = 0;
     let isFetching = false;
+    let storedAdminKey = localStorage.getItem("sovereign_admin_key") || "";
+
+    function updateAdminUI() {
+      const badge = document.getElementById("admin-badge");
+      const keyBtn = document.getElementById("btn-admin-key");
+      if (storedAdminKey) {
+        badge.className = "badge-status badge-admin";
+        badge.innerText = "👑 GOD MODE (Owner)";
+        keyBtn.innerText = "🔒 Lock God Mode";
+      } else {
+        badge.className = "badge-status badge-readonly";
+        badge.innerText = "🔒 Spectator (Read-Only)";
+        keyBtn.innerText = "🔑 Unlock God Mode";
+      }
+    }
+
+    document.getElementById("btn-admin-key").onclick = async () => {
+      if (storedAdminKey) {
+        storedAdminKey = "";
+        localStorage.removeItem("sovereign_admin_key");
+        updateAdminUI();
+        alert("🔒 God Mode Locked. You are now in Read-Only Spectator Mode.");
+      } else {
+        const inputKey = prompt("🔑 Enter Sovereign Master Key to unlock God Mode:");
+        if (!inputKey) return;
+        try {
+          const res = await fetch("/api/action/verify_admin", {
+            method: "POST",
+            headers: { "X-Admin-Key": inputKey.trim() }
+          });
+          if (res.ok) {
+            storedAdminKey = inputKey.trim();
+            localStorage.setItem("sovereign_admin_key", storedAdminKey);
+            updateAdminUI();
+            alert("👑 God Mode Unlocked! You now have exclusive intervention authority.");
+          } else {
+            alert("❌ Invalid Master Key. Access Denied.");
+          }
+        } catch (e) {
+          alert("Error verifying key: " + e);
+        }
+      }
+    };
+
+    updateAdminUI();
 
     // Instantaneous Tab Switch Handlers
     document.querySelectorAll(".realm-btn").forEach(btn => {
@@ -800,33 +889,26 @@ HTML_CONTENT = """
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Render physical field with realm-adaptive colors
       for (let r = 0; r < h; r++) {
         for (let col = 0; col < w; col++) {
           const val = grid[r][col];
           if (val > 0.01) {
             if (activeRealm === "r5") {
-              // Wireworld
               if (val === 1) ctx.fillStyle = "#38bdf8";
               else if (val === 2) ctx.fillStyle = "#ef4444";
               else if (val === 3) ctx.fillStyle = "#eab308";
             } else if (activeRealm === "r4") {
-              // Turing Morph
               const g = Math.floor(val * 255);
               ctx.fillStyle = `rgb(${Math.floor(val * 100)}, ${g}, ${255 - g})`;
             } else if (activeRealm === "r7") {
-              // Red Queen
               if (val >= 0.9) ctx.fillStyle = "#ef4444";
               else if (val >= 0.5) ctx.fillStyle = "#38bdf8";
               else ctx.fillStyle = `rgba(34, 197, 94, ${val})`;
             } else if (activeRealm === "r6") {
-              // Lattice Gas
               ctx.fillStyle = `rgba(56, 189, 248, ${val})`;
             } else if (activeRealm === "r2") {
-              // Seasonal CA
               ctx.fillStyle = val === 1 ? "#22c55e" : (val === 2 ? "#eab308" : "#a855f7");
             } else {
-              // Lenia & Classic CA
               const intensity = Math.min(1.0, val);
               const b = Math.floor(intensity * 255);
               const g = Math.floor(intensity * 200);
@@ -932,10 +1014,30 @@ HTML_CONTENT = """
       }
     }
 
-    document.getElementById("btn-fever").onclick = () => fetch(`/api/action/fever?u=${getActiveUniverseKey()}`, { method: "POST" });
-    document.getElementById("btn-reset").onclick = () => fetch(`/api/action/reset?u=${getActiveUniverseKey()}`, { method: "POST" });
+    async function sendAdminAction(endpoint) {
+      if (!storedAdminKey) {
+        alert("⛔ Access Denied: God Mode is locked. Enter your Sovereign Master Key first.");
+        return;
+      }
+      try {
+        const res = await fetch(`${endpoint}?u=${getActiveUniverseKey()}`, {
+          method: "POST",
+          headers: { "X-Admin-Key": storedAdminKey }
+        });
+        const data = await res.json();
+        if (res.status === 403) {
+          alert("⛔ Unauthorized: " + (data.error || "Invalid Admin Key"));
+        } else {
+          console.log("Action Success:", data);
+        }
+      } catch (err) {
+        alert("Action Error: " + err);
+      }
+    }
 
-    // Smooth polling every 140ms
+    document.getElementById("btn-fever").onclick = () => sendAdminAction("/api/action/fever");
+    document.getElementById("btn-reset").onclick = () => sendAdminAction("/api/action/reset");
+
     setInterval(fetchState, 140);
     fetchState();
   </script>
