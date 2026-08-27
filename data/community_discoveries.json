@@ -1,0 +1,13 @@
+{
+  "discoveries": [
+    {
+      "signature": "browser_turing_laplacian_test",
+      "code_str": "def rule_local(): return 1",
+      "description": "Test community rule",
+      "realm": "turing",
+      "author": "Test Pioneer",
+      "timestamp": 1787858379.283678
+    }
+  ],
+  "count": 1
+}
