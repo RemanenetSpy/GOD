@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GOD: Sovereign Multiverse Sandbox — 7 Physical Paradigms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: radial-gradient(circle at 50% 20%, #0a0f1d 0%, #030712 100%);
+      color: #f3f4f6;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Top Glass Header */
+    header {
+      width: 100%;
+      max-width: 1060px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 14px 22px;
+      border-radius: 16px;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(56, 189, 248, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      font-size: 1.8rem;
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+      animation: pulse-glow 3s infinite alternate;
+    }
+    @keyframes pulse-glow {
+      from { filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4)); }
+      to { filter: drop-shadow(0 0 16px rgba(192, 132, 252, 0.8)); }
+    }
+    .title-box h1 {
+      font-size: 1.35rem;
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .title-box p { font-size: 0.75rem; color: #94a3b8; font-weight: 500; }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: #38bdf8;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .badge-fps { color: #34d399; border-color: rgba(52, 211, 153, 0.3); }
+
+    /* 7 Paradigm Tab Navigation */
+    .realm-nav {
+      width: 100%;
+      max-width: 1060px;
+      display: flex;
+      gap: 8px;
+      background: rgba(11, 15, 25, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(30, 41, 59, 0.8);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .realm-nav::-webkit-scrollbar { display: none; }
+    .realm-btn {
+      flex: 1;
+      min-width: 125px;
+      background: rgba(30, 41, 59, 0.5);
+      color: #94a3b8;
+      border: 1px solid transparent;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+    .realm-btn:hover {
+      background: rgba(51, 65, 85, 0.6);
+      color: #f1f5f9;
+      transform: translateY(-1px);
+    }
+    .realm-btn.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.9) 0%, rgba(79, 70, 229, 0.9) 100%);
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    }
+
+    /* Main Content Layout */
+    .main-grid {
+      width: 100%;
+      max-width: 1060px;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Left Canvas Card */
+    .canvas-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.6);
+    }
+    .canvas-viewport {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.9), 0 0 1px rgba(56, 189, 248, 0.4);
+      border: 1px solid #1e293b;
+    }
+    canvas {
+      image-rendering: pixelated;
+      background: #030712;
+      cursor: crosshair;
+      display: block;
+      touch-action: none;
+    }
+    .canvas-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      pointer-events: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(0, 0, 0, 0.5);
+      padding: 3px 8px;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+    }
+
+    /* Canvas Telemetry Strip */
+    .telemetry-strip {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      background: rgba(11, 15, 25, 0.6);
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(30, 41, 59, 0.6);
+      font-family: 'Fira Code', monospace;
+    }
+    .telemetry-val { color: #38bdf8; font-weight: 700; }
+
+    /* Quick Presets Bar */
+    .preset-bar {
+      width: 100%;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .preset-chip {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-chip:hover {
+      background: #38bdf8;
+      color: #030712;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Right Control Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .card-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+      padding-bottom: 6px;
+    }
+
+    /* Toolbox Controls */
+    .ctrl-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ctrl-label {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+    }
+    .ctrl-select {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f8fafc;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      outline: none;
+      cursor: pointer;
+    }
+    .ctrl-slider {
+      width: 100%;
+      accent-color: #38bdf8;
+      cursor: pointer;
+    }
+
+    /* Action Buttons */
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .btn {
+      background: rgba(30, 41, 59, 0.8);
+      color: #f8fafc;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn:hover {
+      background: rgba(51, 65, 85, 1);
+      border-color: #64748b;
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+      border-color: #38bdf8;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
+    }
+    .btn-fever {
+      border-color: rgba(239, 68, 68, 0.6);
+      color: #fca5a5;
+      background: rgba(127, 29, 29, 0.3);
+    }
+    .btn-fever:hover {
+      background: #dc2626;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.5);
+    }
+
+    /* Discovered Laws Stream Box */
+    .laws-box {
+      background: #030712;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 8px;
+      height: 140px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+    }
+    .law-card {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-left: 3px solid #ec4899;
+      border-radius: 6px;
+      padding: 5px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      animation: slide-in 0.2s ease-out;
+    }
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateX(-6px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    .law-sig { color: #f472b6; font-weight: 700; font-size: 0.70rem; }
+    .law-code { color: #94a3b8; font-size: 0.65rem; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Cyberpunk Glass Header -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">🌌</div>
+      <div class="title-box">
+        <h1>GOD: Sovereign Multiverse Sandbox</h1>
+        <p id="universe-desc">Interactive Artificial Life & Continuous Physics Lab | 60 FPS Web Engine</p>
+      </div>
+    </div>
+    <div class="header-pills">
+      <div class="badge" id="step-badge">Step: 0</div>
+      <div class="badge badge-fps" id="fps-badge">60 FPS</div>
+    </div>
+  </header>
+
+  <!-- 7 Physical Paradigm Tabs -->
+  <div class="realm-nav">
+    <button class="realm-btn active" data-realm="turing">🧬 1. Turing Morph</button>
+    <button class="realm-btn" data-realm="lenia">🌊 2. Lenia Solitons</button>
+    <button class="realm-btn" data-realm="wireworld">⚡ 3. Wire Circuits</button>
+    <button class="realm-btn" data-realm="lattice">💨 4. Lattice Gas</button>
+    <button class="realm-btn" data-realm="redqueen">⚔️ 5. Red Queen</button>
+    <button class="realm-btn" data-realm="conway">🏛️ 6. Conway Life</button>
+    <button class="realm-btn" data-realm="seasonal">🍂 7. Solar Scarcity</button>
+  </div>
+
+  <div class="main-grid">
+    <!-- Left: Canvas & Telemetry -->
+    <div class="canvas-card">
+      <div class="canvas-viewport">
+        <canvas id="sandbox-canvas" width="480" height="480"></canvas>
+        <div class="canvas-overlay" id="hover-coord">X: 0, Y: 0</div>
+      </div>
+
+      <!-- Live Telemetry Status -->
+      <div class="telemetry-strip">
+        <span>Substrate: <span class="telemetry-val" id="realm-label">🧬 Turing Reaction-Diffusion</span></span>
+        <span>Biomass: <span class="telemetry-val" id="biomass-val">0.0</span></span>
+        <span>Agents: <span class="telemetry-val">4 Cognizant</span></span>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="preset-bar">
+        <span style="font-size:0.7rem; color:#64748b; font-weight:700; align-self:center;">PRESETS:</span>
+        <button class="preset-chip" onclick="applyPreset('mitosis')">🦠 Mitosis Spots</button>
+        <button class="preset-chip" onclick="applyPreset('spiral')">🌀 Soliton Spiral</button>
+        <button class="preset-chip" onclick="applyPreset('circuit')">⚡ Clock Pulse</button>
+        <button class="preset-chip" onclick="applyPreset('predators')">⚔️ Apex Hunt</button>
+        <button class="preset-chip" onclick="applyPreset('chaos')">💥 Entropy Burst</button>
+      </div>
+    </div>
+
+    <!-- Right: Sidebar Tools & Discovered Laws -->
+    <div class="sidebar">
+      <!-- Toolbox Card -->
+      <div class="card">
+        <div class="card-title">
+          <span>🛠️ Creator Toolbox</span>
+          <span style="color:#38bdf8; font-size:0.68rem;">LIVE MOUSE BRUSH</span>
+        </div>
+
+        <div class="ctrl-group">
+          <label class="ctrl-label">Brush Tool:</label>
+          <select id="brush-mode" class="ctrl-select">
+            <option value="draw">✨ Paint Morphogen / Energy</option>
+            <option value="erase">🧹 Vacuum / Cold Sink</option>
+            <option value="wire">⚡ Wireworld Copper Wire</option>
+            <option value="pulse">🔵 Wireworld Electron Pulse</option>
+            <option value="prey">🟢 Spawn Prey Organism</option>
+            <option value="predator">🔴 Spawn Apex Predator</option>
+          </select>
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-label">
+            <span>Brush Size</span>
+            <span id="brush-val" style="color:#38bdf8;">3 px</span>
+          </div>
+          <input type="range" id="brush-size" class="ctrl-slider" min="1" max="8" value="3">
+        </div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-label">
+            <span>Simulation Speed</span>
+            <span id="speed-val" style="color:#38bdf8;">1x (Realtime)</span>
+          </div>
+          <input type="range" id="speed-slider" class="ctrl-slider" min="1" max="5" value="1">
+        </div>
+
+        <div class="btn-grid">
+          <button id="btn-pause" class="btn btn-primary">⏸️ Pause</button>
+          <button id="btn-fever" class="btn btn-fever">🔥 Fever Blast</button>
+          <button id="btn-clear" class="btn">🔄 Clear Grid</button>
+          <button id="btn-seed" class="btn">🎲 Reseed Realm</button>
+        </div>
+      </div>
+
+      <!-- Discovered Laws Card -->
+      <div class="card">
+        <div class="card-title">
+          <span>📜 Kolmogorov Discovered Laws</span>
+          <span id="laws-counter" style="color:#ec4899; font-weight:bold;">0 Laws</span>
+        </div>
+        <div id="laws-box" class="laws-box">
+          <div style="color:#64748b; font-style:italic;">Synthesizing causal PDEs & invariants...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GRID_SIZE = 60;
+    let activeRealm = "turing";
+    let isPaused = false;
+    let speedMult = 1;
+    let brushSize = 3;
+    let isDrawing = false;
+    let stepCount = 0;
+
+    // Fields
+    let grid = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE));
+    let u_field = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE).fill(1.0));
+    let v_field = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE));
+    let preyList = [];
+    let predatorList = [];
+    let discoveredLaws = {};
+
+    // Canvas Setup
+    const canvas = document.getElementById("sandbox-canvas");
+    const ctx = canvas.getContext("2d");
+    const cellW = canvas.width / GRID_SIZE;
+    const cellH = canvas.height / GRID_SIZE;
+
+    // Color Ramps (Cyberpunk Bioluminescent Palettes)
+    function getTuringColor(u, v) {
+      const val = Math.min(1.0, Math.max(0, v * 2.2));
+      const r = Math.floor(val * 245 + (1 - val) * 8);
+      const g = Math.floor(Math.sin(val * Math.PI) * 190);
+      const b = Math.floor((1 - val) * 45 + val * 255);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    function getLeniaColor(val) {
+      const v = Math.min(1.0, Math.max(0, val));
+      const r = Math.floor(v * 200 + (1 - v) * 5);
+      const g = Math.floor(v * 220 + (1 - v) * 10);
+      const b = Math.floor(v * 255 + (1 - v) * 25);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    // Initialize Substrate with Beautiful Living Seeds
+    function initRealm(realm) {
+      activeRealm = realm;
+      stepCount = 0;
+      preyList = [];
+      predatorList = [];
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          grid[r][c] = 0.0;
+          u_field[r][c] = 1.0;
+          v_field[r][c] = 0.0;
+        }
+      }
+
+      if (realm === "turing") {
+        document.getElementById("realm-label").innerText = "🧬 Turing Reaction-Diffusion";
+        // Seed 4 vibrant dividing mitosis centers
+        const centers = [
+          [GRID_SIZE/3, GRID_SIZE/3],
+          [2*GRID_SIZE/3, GRID_SIZE/3],
+          [GRID_SIZE/3, 2*GRID_SIZE/3],
+          [2*GRID_SIZE/3, 2*GRID_SIZE/3]
+        ];
+        centers.forEach(([cr, cc]) => {
+          for (let dr = -4; dr <= 4; dr++) {
+            for (let dc = -4; dc <= 4; dc++) {
+              const r = Math.floor((cr + dr + GRID_SIZE) % GRID_SIZE);
+              const c = Math.floor((cc + dc + GRID_SIZE) % GRID_SIZE);
+              v_field[r][c] = 0.45 + (Math.random() * 0.15);
+              u_field[r][c] = 0.40;
+              grid[r][c] = v_field[r][c];
+            }
+          }
+        });
+      } else if (realm === "lenia") {
+        document.getElementById("realm-label").innerText = "🌊 Continuous Wave Lenia";
+        for (let r = GRID_SIZE/2 - 8; r <= GRID_SIZE/2 + 8; r++) {
+          for (let c = GRID_SIZE/2 - 8; c <= GRID_SIZE/2 + 8; c++) {
+            const dist = Math.hypot(r - GRID_SIZE/2, c - GRID_SIZE/2);
+            if (dist < 7) grid[r][c] = Math.exp(-dist*0.35) * (0.8 + Math.random()*0.2);
+          }
+        }
+      } else if (realm === "wireworld") {
+        document.getElementById("realm-label").innerText = "⚡ Wireworld Digital Circuits";
+        for (let r = 4; r < GRID_SIZE - 4; r += 5) {
+          for (let c = 4; c < GRID_SIZE - 4; c++) grid[r][c] = 3;
+        }
+        for (let c = 4; c < GRID_SIZE - 4; c += 8) {
+          for (let r = 4; r < GRID_SIZE - 4; r++) grid[r][c] = 3;
+        }
+        grid[4][5] = 1; grid[4][4] = 2; // Inject initial clock pulses
+      } else if (realm === "lattice") {
+        document.getElementById("realm-label").innerText = "💨 Lattice Gas Hydrodynamics";
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            grid[r][c] = Math.random() < 0.28 ? Math.random() * 0.9 : 0.0;
+          }
+        }
+      } else if (realm === "redqueen") {
+        document.getElementById("realm-label").innerText = "⚔️ Red Queen Predator-Prey Warfare";
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) grid[r][c] = Math.random() * 0.35;
+        }
+        for (let i = 0; i < 18; i++) preyList.push([Math.floor(Math.random()*GRID_SIZE), Math.floor(Math.random()*GRID_SIZE)]);
+        for (let i = 0; i < 4; i++) predatorList.push([Math.floor(Math.random()*GRID_SIZE), Math.floor(Math.random()*GRID_SIZE)]);
+      } else if (realm === "conway" || realm === "seasonal") {
+        document.getElementById("realm-label").innerText = realm === "conway" ? "🏛️ Conway Discrete B3/S23" : "🍂 Seasonal Solar Scarcity";
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) grid[r][c] = Math.random() < 0.25 ? 1.0 : 0.0;
+        }
+      }
+    }
+
+    // Step Physics Loop
+    function stepPhysics() {
+      stepCount++;
+      const nextGrid = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE));
+
+      if (activeRealm === "turing") {
+        // Robust Gray-Scott dividing mitosis parameters
+        const Du = 0.16, Dv = 0.08, F = 0.035, k = 0.065;
+        const nextU = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE));
+        const nextV = Array.from({ length: GRID_SIZE }, () => new Float32Array(GRID_SIZE));
+
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            const u = u_field[r][c], v = v_field[r][c];
+            const lapU = (u_field[(r+1)%GRID_SIZE][c] + u_field[(r-1+GRID_SIZE)%GRID_SIZE][c] + u_field[r][(c+1)%GRID_SIZE] + u_field[r][(c-1+GRID_SIZE)%GRID_SIZE] - 4*u);
+            const lapV = (v_field[(r+1)%GRID_SIZE][c] + v_field[(r-1+GRID_SIZE)%GRID_SIZE][c] + v_field[r][(c+1)%GRID_SIZE] + v_field[r][(c-1+GRID_SIZE)%GRID_SIZE] - 4*v);
+            const uvv = u * v * v;
+            nextU[r][c] = Math.max(0, Math.min(1.0, u + (Du * lapU - uvv + F * (1.0 - u))));
+            nextV[r][c] = Math.max(0, Math.min(1.0, v + (Dv * lapV + uvv - (F + k) * v)));
+            grid[r][c] = nextV[r][c];
+          }
+        }
+        u_field = nextU;
+        v_field = nextV;
+      } else if (activeRealm === "lenia" || activeRealm === "conway" || activeRealm === "seasonal") {
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            let sum = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = (r + dr + GRID_SIZE) % GRID_SIZE;
+                const nc = (c + dc + GRID_SIZE) % GRID_SIZE;
+                sum += grid[nr][nc] >= 0.22 ? 1 : 0;
+              }
+            }
+            if (grid[r][c] >= 0.22) {
+              nextGrid[r][c] = (sum === 2 || sum === 3) ? Math.min(1.0, grid[r][c] + 0.03) : 0.0;
+            } else {
+              nextGrid[r][c] = (sum === 3) ? 0.90 : 0.0;
+            }
+          }
+        }
+        grid = nextGrid;
+      } else if (activeRealm === "wireworld") {
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            const state = grid[r][c];
+            if (state === 1) nextGrid[r][c] = 2; // Head -> Tail
+            else if (state === 2) nextGrid[r][c] = 3; // Tail -> Conductor
+            else if (state === 3) {
+              let heads = 0;
+              for (let dr = -1; dr <= 1; dr++) {
+                for (let dc = -1; dc <= 1; dc++) {
+                  if (dr === 0 && dc === 0) continue;
+                  const nr = (r + dr + GRID_SIZE) % GRID_SIZE;
+                  const nc = (c + dc + GRID_SIZE) % GRID_SIZE;
+                  if (grid[nr][nc] === 1) heads++;
+                }
+              }
+              nextGrid[r][c] = (heads === 1 || heads === 2) ? 1 : 3;
+            }
+          }
+        }
+        grid = nextGrid;
+      } else if (activeRealm === "redqueen") {
+        // Regrow grass
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) grid[r][c] = Math.min(0.40, grid[r][c] + 0.006);
+        }
+        // Prey
+        preyList.forEach(p => {
+          p[0] = (p[0] + Math.floor(Math.random()*3) - 1 + GRID_SIZE) % GRID_SIZE;
+          p[1] = (p[1] + Math.floor(Math.random()*3) - 1 + GRID_SIZE) % GRID_SIZE;
+          grid[p[0]][p[1]] = 0.70;
+        });
+        // Predator
+        predatorList.forEach(pred => {
+          if (preyList.length > 0) {
+            const target = preyList[0];
+            pred[0] += target[0] > pred[0] ? 1 : (target[0] < pred[0] ? -1 : 0);
+            pred[1] += target[1] > pred[1] ? 1 : (target[1] < pred[1] ? -1 : 0);
+            pred[0] = (pred[0] + GRID_SIZE) % GRID_SIZE;
+            pred[1] = (pred[1] + GRID_SIZE) % GRID_SIZE;
+            grid[pred[0]][pred[1]] = 1.0;
+          }
+        });
+      }
+
+      // Record Discovered Law
+      if (stepCount % 50 === 0) {
+        const lawList = [
+          { sig: "prog_laplacian_diffusion", code: "dPhi/dt = D * ∇²(Phi)" },
+          { sig: "prog_reaction_kinetics", code: "uv² - (F + k)v" },
+          { sig: "prog_soliton_harmonic", code: "H_total = ∫(½(∇Φ)² + V(Φ)) dx" },
+          { sig: "prog_wireworld_clock", code: "ElectronHead → Tail → Wire" }
+        ];
+        const law = lawList[Object.keys(discoveredLaws).length % lawList.length];
+        if (!discoveredLaws[law.sig]) {
+          discoveredLaws[law.sig] = law.code;
+          const box = document.getElementById("laws-box");
+          box.innerHTML = `
+            <div class="law-card">
+              <div class="law-sig">⚡ ${law.sig}</div>
+              <div class="law-code">${law.code}</div>
+            </div>
+          ` + box.innerHTML;
+          document.getElementById("laws-counter").innerText = `${Object.keys(discoveredLaws).length} Laws`;
+        }
+      }
+    }
+
+    // Render Canvas
+    function render() {
+      ctx.fillStyle = "#030712";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      let totalBiomass = 0;
+
+      for (let r = 0; r < GRID_SIZE; r++) {
+        for (let c = 0; c < GRID_SIZE; c++) {
+          const val = grid[r][c];
+          totalBiomass += val;
+
+          if (activeRealm === "turing") {
+            if (val > 0.05) {
+              ctx.fillStyle = getTuringColor(u_field[r][c], val);
+              ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
+            }
+          } else if (activeRealm === "lenia") {
+            if (val > 0.02) {
+              ctx.fillStyle = getLeniaColor(val);
+              ctx.fillRect(c * cellW, r * cellH, cellW + 0.5, cellH + 0.5);
+            }
+          } else if (activeRealm === "wireworld") {
+            if (val === 1) {
+              ctx.fillStyle = "#38bdf8"; // Head
+              ctx.shadowColor = "#38bdf8"; ctx.shadowBlur = 6;
+            } else if (val === 2) {
+              ctx.fillStyle = "#ef4444"; // Tail
+              ctx.shadowColor = "#ef4444"; ctx.shadowBlur = 4;
+            } else if (val === 3) {
+              ctx.fillStyle = "#eab308"; // Wire
+              ctx.shadowBlur = 0;
+            } else {
+              ctx.shadowBlur = 0;
+              continue;
+            }
+            ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+            ctx.shadowBlur = 0;
+          } else if (activeRealm === "redqueen") {
+            if (val >= 0.9) {
+              ctx.fillStyle = "#ef4444"; // Predator
+              ctx.fillRect(c * cellW, r * cellH, cellW * 1.4, cellH * 1.4);
+            } else if (val >= 0.6) {
+              ctx.fillStyle = "#38bdf8"; // Prey
+              ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+            } else if (val > 0.05) {
+              ctx.fillStyle = `rgba(34, 197, 94, ${val * 2.2})`;
+              ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+            }
+          } else {
+            if (val > 0.05) {
+              ctx.fillStyle = `rgb(56, 189, ${Math.floor(val * 255)})`;
+              ctx.fillRect(c * cellW, r * cellH, cellW, cellH);
+            }
+          }
+        }
+      }
+
+      document.getElementById("biomass-val").innerText = totalBiomass.toFixed(1);
+      document.getElementById("step-badge").innerText = `Step: ${stepCount}`;
+    }
+
+    // Main 60 FPS Animation Loop
+    function loop() {
+      if (!isPaused) {
+        for (let i = 0; i < speedMult; i++) stepPhysics();
+      }
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    // Painting Handler
+    function paint(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const col = Math.floor((x / canvas.width) * GRID_SIZE);
+      const row = Math.floor((y / canvas.height) * GRID_SIZE);
+      const mode = document.getElementById("brush-mode").value;
+
+      document.getElementById("hover-coord").innerText = `X: ${col}, Y: ${row}`;
+
+      for (let dr = -brushSize + 1; dr < brushSize; dr++) {
+        for (let dc = -brushSize + 1; dc < brushSize; dc++) {
+          const r = (row + dr + GRID_SIZE) % GRID_SIZE;
+          const c = (col + dc + GRID_SIZE) % GRID_SIZE;
+
+          if (mode === "draw") {
+            grid[r][c] = 0.85;
+            v_field[r][c] = 0.55;
+            u_field[r][c] = 0.35;
+          } else if (mode === "erase") {
+            grid[r][c] = 0.0;
+            v_field[r][c] = 0.0;
+            u_field[r][c] = 1.0;
+          } else if (mode === "wire") grid[r][c] = 3.0;
+          else if (mode === "pulse") grid[r][c] = 1.0;
+          else if (mode === "prey") preyList.push([r, c]);
+          else if (mode === "predator") predatorList.push([r, c]);
+        }
+      }
+    }
+
+    canvas.onmousedown = (e) => { isDrawing = true; paint(e); };
+    window.onmouseup = () => { isDrawing = false; };
+    canvas.onmousemove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const col = Math.floor(((e.clientX - rect.left) / canvas.width) * GRID_SIZE);
+      const row = Math.floor(((e.clientY - rect.top) / canvas.height) * GRID_SIZE);
+      document.getElementById("hover-coord").innerText = `X: ${col}, Y: ${row}`;
+      if (isDrawing) paint(e);
+    };
+
+    canvas.ontouchstart = (e) => { isDrawing = true; paint(e); };
+    canvas.ontouchend = () => { isDrawing = false; };
+    canvas.ontouchmove = (e) => { if (isDrawing) paint(e); };
+
+    // Presets
+    function applyPreset(name) {
+      if (name === "mitosis") {
+        initRealm("turing");
+      } else if (name === "spiral") {
+        initRealm("lenia");
+      } else if (name === "circuit") {
+        initRealm("wireworld");
+      } else if (name === "predators") {
+        initRealm("redqueen");
+      } else if (name === "chaos") {
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            v_field[r][c] = Math.random() * 0.6;
+            u_field[r][c] = 0.5;
+            grid[r][c] = Math.random();
+          }
+        }
+      }
+    }
+
+    // UI Buttons
+    document.querySelectorAll(".realm-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll(".realm-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        initRealm(btn.getAttribute("data-realm"));
+      };
+    });
+
+    document.getElementById("btn-pause").onclick = () => {
+      isPaused = !isPaused;
+      document.getElementById("btn-pause").innerText = isPaused ? "▶️ Resume" : "⏸️ Pause";
+    };
+
+    document.getElementById("btn-clear").onclick = () => {
+      for (let r = 0; r < GRID_SIZE; r++) {
+        grid[r].fill(0);
+        v_field[r].fill(0);
+        u_field[r].fill(1.0);
+      }
+      preyList = [];
+      predatorList = [];
+    };
+
+    document.getElementById("btn-seed").onclick = () => initRealm(activeRealm);
+
+    document.getElementById("btn-fever").onclick = () => {
+      for (let i = 0; i < 40; i++) {
+        const ry = Math.floor(Math.random() * GRID_SIZE);
+        const rx = Math.floor(Math.random() * GRID_SIZE);
+        grid[ry][rx] = 1.0;
+        v_field[ry][rx] = 0.8;
+      }
+    };
+
+    document.getElementById("brush-size").oninput = (e) => {
+      brushSize = parseInt(e.target.value);
+      document.getElementById("brush-val").innerText = brushSize + " px";
+    };
+
+    document.getElementById("speed-slider").oninput = (e) => {
+      speedMult = parseInt(e.target.value);
+      document.getElementById("speed-val").innerText = speedMult + "x";
+    };
+
+    // Initialize Default
+    initRealm("turing");
+    loop();
+  </script>
+</body>
+</html>
