@@ -1,19 +1,20 @@
-# 🌌 GOD: The Sovereign Multiverse Engine
-### *Autonomous Autopoietic Multi-Agent Society across 21 Living Universes, Continuous Calculus Dynamics & Dual-Domain Kolmogorov PDE Induction*
+# 🌌 GOD & BinoryLogy 2.0: Sovereign Physics Cognitive Architecture
+### *Autonomous 4-Agent Society, 6-Engine Physiology, Physics Knowledge Graph (Tier 1 → Tier 6) & Hugging Face Cloud Vault*
 
-[![Live Multiverse Server](https://img.shields.io/badge/Render%20Live-god--1d2m.onrender.com-brightgreen.svg?logo=render&style=for-the-badge)](https://god-1d2m.onrender.com)
+[![Live Render Server](https://img.shields.io/badge/Render%20Live-god--1d2m.onrender.com-brightgreen.svg?logo=render&style=for-the-badge)](https://god-1d2m.onrender.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 [![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-yellow.svg?style=for-the-badge&logo=python)](https://www.python.org/)
-[![Cloud: 24/7 Vault Sync](https://img.shields.io/badge/Cloud%20Vault-HuggingFace%20Dataset-orange.svg?style=for-the-badge&logo=huggingface)](https://huggingface.co/datasets/Explorerp/sovereign-civilization-memory)
+[![Cloud: 24/7 Vault Sync](https://img.shields.io/badge/Cloud%20Vault-HuggingFace%20Dataset-orange.svg?style=for-the-badge&logo=huggingface)](https://huggingface.co/datasets/Explorerp/binorylogy-physics-memory)
 
 ---
 
-## 🌐 Live Interactive 24/7 Multiverse Dashboard
+## 🌐 Live Interactive 24/7 Physics Cognitive Dashboard
 
 > ### 🚀 **Access the Live Web Interface:** **[https://god-1d2m.onrender.com](https://god-1d2m.onrender.com)**
-> * Real-time, 0ms zero-lock visual canvas across all **21 living universes**.
-> * Switch instantaneously between the **7 cellular automata paradigms** and **3 evolution branches**.
-> * Live interactive controls (🔥 *Trigger Multiverse Fever*, 🔄 *Reset Universe*).
+> * Real-time, zero-lock interactive visual dashboard across all **6 Physics Curriculum Tiers** (Grade 1 Kinematics to MIT Graduate QFT/GR).
+> * **4 Cognitive Agents** (Engineer, Prophet, Witness, Architect) equipped with **6 Engine Organs** as body physiology.
+> * Live **STDP Causal Network** and **Autonomous Discovery Ledger**.
+> * 24/7 Immortal state persistence backed by the **Hugging Face Dataset Memory Vault**.
 
 ---
 
