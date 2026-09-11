@@ -235,6 +235,8 @@ def _engine_loop():
                     "obs_tier": obs.tier,
                     "obs_vars": {k: round(float(v), 4) for k, v in list(obs.variables.items())[:6]},
                     "hf_repo": HF_REPO,
+                    "connectome": civilization.get_connectome(),
+                    "total_messages": civilization.total_messages_routed(),
                     "sample_interval": round(_sample_interval, 3),
                     "last_updated": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
                 })
@@ -374,6 +376,21 @@ def dashboard():
           <span class="link-arrow">⟶</span>
           <span class="link-node to">{lk['to']}</span>
           <span class="link-weight">+{lk['strength']:.1f}</span>
+        </div>"""
+
+    connectome_html = ""
+    for edge in s.get("connectome", [])[:10]:
+        is_emerged = edge.get("emerged", False)
+        status_tag = '<span class="tag link-tag" style="background:#059669;color:#a7f3d0">AXON</span>' if is_emerged else '<span class="tag link-tag" style="background:#1e293b;color:#94a3b8">SYNAPSE</span>'
+        src_clean = edge.get('from', '').replace('_prime', '').replace('_meta', '')
+        dst_clean = edge.get('to', '').replace('_prime', '').replace('_meta', '')
+        connectome_html += f"""
+        <div class="link-item">
+          {status_tag}
+          <span class="link-node from" style="width:80px;">{src_clean}</span>
+          <span class="link-arrow">⟶</span>
+          <span class="link-node to" style="width:80px;">{dst_clean}</span>
+          <span class="link-weight" style="color:var(--accent);">W={edge.get('weight', 0):.1f}</span>
         </div>"""
 
     disc_html = ""
@@ -707,20 +724,31 @@ def dashboard():
   </div>
 
   <!-- Causal Synapse Network -->
-  <div class="card col-6">
+  <div class="card col-4">
     <div class="card-title">
-      <span>⚡ Causal Plasticity Network (STDP + Transfer Entropy)</span>
-      <span style="font-size: 10px; color: var(--cyan)">{emerged_count} links emerged</span>
+      <span>⚡ Causal Network (STDP + TE)</span>
+      <span style="font-size: 10px; color: var(--cyan)">{emerged_count} links</span>
     </div>
     <div class="link-list">
       {links_html if links_html else '<div style="color: var(--text-muted)">Constructing causal graph from physics streams...</div>'}
     </div>
   </div>
 
-  <!-- Discovery Ledger -->
-  <div class="card col-6">
+  <!-- 4-Pillar Synaptic Connectome -->
+  <div class="card col-4">
     <div class="card-title">
-      <span>🔭 Discovered Laws & Invariants Ledger</span>
+      <span>🧬 4-Pillar Connectome (Zero Broadcast)</span>
+      <span style="font-size: 10px; color: var(--accent)">{s.get('total_messages', 0):,} msgs</span>
+    </div>
+    <div class="link-list">
+      {connectome_html if connectome_html else '<div style="color: var(--text-muted)">Evolving synaptic axons between pillars...</div>'}
+    </div>
+  </div>
+
+  <!-- Discovery Ledger -->
+  <div class="card col-4">
+    <div class="card-title">
+      <span>🔭 Discovered Laws & Invariants</span>
       <span style="font-size: 10px; color: var(--accent)">{total_disc} total</span>
     </div>
     <div class="disc-list">

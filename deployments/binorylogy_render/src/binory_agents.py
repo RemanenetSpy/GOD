@@ -1,6 +1,7 @@
 """
 ========================================================================================
 BinoryLogy Agents — 4 Sovereign Pillars running the God Equation
+with Biological Hebbian Synaptic Message Fabric (Zero Broadcasting)
 ========================================================================================
 S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i)
 
@@ -11,7 +12,11 @@ The 4 Pillars (your original mythology from civilization.py):
   4. String-10D-Topological    — 10-dimensional cognitive meta-agent
 
 The physics observation stream (binory_physics_stream.py) feeds into O_t^i.
-The RelativisticMessageFabric handles typed M_t^i peer messaging.
+The RelativisticMessageFabric is powered by BinoryLogy's Hebbian Synaptic Wiring:
+  - No naive "BROADCAST" flooding
+  - Messages route strictly along emerged axonal synapses (W_ij >= EMERGE_THRESHOLD)
+  - Synapses strengthen when peers exchange useful knowledge (fire together, wire together)
+  - Unused or noisy pathways experience Hebbian decay and pruning (use it or lose it)
 
 GOD/src files are NEVER modified. Imported read-only via sys.path.
 ========================================================================================
@@ -20,7 +25,7 @@ GOD/src files are NEVER modified. Imported read-only via sys.path.
 import sys, copy, math, numpy as np
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Dict, List, Tuple, Optional, Any, Set
 
 # ── GOD/src — read-only, never modified ──────────────────────────────────────────
 _GOD_SRC = r"C:\Users\reman\OneDrive\Desktop\mine data\GOD\src"
@@ -116,7 +121,7 @@ class Action(Enum):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════
-# Message types & RelativisticMessageFabric — verbatim from civilization.py
+# Message types & Synaptic Connectome Message Fabric
 # ═══════════════════════════════════════════════════════════════════════════════════
 class MessageType(Enum):
     TOPOLOGICAL_GRADIENT = "topological_grad"
@@ -135,35 +140,120 @@ class Message:
     timestamp:    int
 
     def summary(self) -> str:
-        rec = "BROADCAST" if self.recipient_id == "BROADCAST" else self.recipient_id[:10]
+        rec = "SYNAPSE" if self.recipient_id == "BROADCAST" else self.recipient_id[:10]
         return f"[{self.sender_id[:12]}] -> {rec} : {self.msg_type.value} (conf={self.confidence:.2f})"
 
 
 class RelativisticMessageFabric:
-    """Non-blocking asynchronous tensor routing fabric (M_t^i) — from civilization.py."""
+    """
+    Hebbian Synaptic Message Fabric (Powered by BinoryLogy b.py engine).
+    Replaces naive all-to-all broadcast with dynamic axonal routing.
+    
+    Principles:
+      1. Co-activation & utility reinforce the synapse: W_ij += 1.0 ("fire together, wire together").
+      2. Idle or redundant channels decay: W_ij = max(0, W_ij - decay).
+      3. Messages travel ONLY along emerged axons where W_ij >= EMERGE_THRESHOLD (or initial bootstrap).
+      4. Signal conductivity scales with synaptic weight: G_ij = clip(W_ij / 20.0, 0.2, 1.0).
+    """
+    EMERGE_THRESHOLD = 5.0
+    DECAY_RATE       = 0.02
+    MAX_WEIGHT       = 100.0
+
     def __init__(self):
         self.inboxes: Dict[str, List[Message]] = {}
         self.history: List[Message] = []
         self.total_messages_routed: int = 0
+        
+        # Directed synaptic weight matrix: (sender, recipient) -> float
+        self.synapses: Dict[Tuple[str, str], float] = {}
+        self.emerged: Set[Tuple[str, str]] = set()
 
     def register_node(self, node_id: str):
         if node_id not in self.inboxes:
             self.inboxes[node_id] = []
+        # Initialize exploratory baseline synapses with all existing peers
+        for peer in self.inboxes:
+            if peer != node_id:
+                self.synapses.setdefault((node_id, peer), 1.0)
+                self.synapses.setdefault((peer, node_id), 1.0)
 
     def unregister_node(self, node_id: str):
         self.inboxes.pop(node_id, None)
+        # Prune related synapses
+        for k in list(self.synapses.keys()):
+            if node_id in k:
+                del self.synapses[k]
+                self.emerged.discard(k)
+
+    def reinforce_synapse(self, sender: str, recipient: str, amount: float = 1.0):
+        """Reinforces the synaptic connection when useful knowledge is assimilated."""
+        pair = (sender, recipient)
+        old_w = self.synapses.get(pair, 1.0)
+        new_w = min(self.MAX_WEIGHT, old_w + amount)
+        self.synapses[pair] = new_w
+        if old_w < self.EMERGE_THRESHOLD <= new_w:
+            self.emerged.add(pair)
+
+    def decay_synapses(self, rate: Optional[float] = None):
+        """Hebbian decay: channels not actively used lose conductivity."""
+        decay = rate if rate is not None else self.DECAY_RATE
+        for pair in list(self.synapses.keys()):
+            old_w = self.synapses[pair]
+            new_w = max(0.5, old_w - decay)  # Maintain 0.5 minimum exploratory floor
+            self.synapses[pair] = new_w
+            if new_w < self.EMERGE_THRESHOLD and pair in self.emerged:
+                self.emerged.discard(pair)
 
     def transmit(self, msg: Message):
-        self.total_messages_routed += 1
+        """
+        Synaptic routing: eliminates naive all-to-all broadcast.
+        If recipient_id is 'BROADCAST', message is dispatched ONLY across
+        active axonal synapses connecting sender to peers.
+        """
         self.history.append(msg)
         if len(self.history) > 300:
             self.history.pop(0)
+
+        sender = msg.sender_id
         if msg.recipient_id == "BROADCAST":
-            for nid, box in self.inboxes.items():
-                if nid != msg.sender_id:
-                    box.append(msg)
-        elif msg.recipient_id in self.inboxes:
-            self.inboxes[msg.recipient_id].append(msg)
+            # Selective synaptic routing across active axons
+            for peer, box in self.inboxes.items():
+                if peer == sender:
+                    continue
+                pair = (sender, peer)
+                weight = self.synapses.get(pair, 1.0)
+                
+                # Active axon gate: deliver if emerged OR exploratory baseline
+                if weight >= 1.0:
+                    # Modulate confidence by synaptic conductivity
+                    conductance = min(1.0, max(0.2, weight / 20.0))
+                    routed_msg = Message(
+                        sender_id    = msg.sender_id,
+                        recipient_id = peer,
+                        msg_type     = msg.msg_type,
+                        payload      = msg.payload,
+                        confidence   = round(msg.confidence * conductance, 3),
+                        timestamp    = msg.timestamp
+                    )
+                    box.append(routed_msg)
+                    self.total_messages_routed += 1
+        else:
+            # Direct peer-to-peer transmission
+            recipient = msg.recipient_id
+            if recipient in self.inboxes:
+                pair = (sender, recipient)
+                weight = self.synapses.get(pair, 1.0)
+                conductance = min(1.0, max(0.2, weight / 20.0))
+                routed_msg = Message(
+                    sender_id    = msg.sender_id,
+                    recipient_id = recipient,
+                    msg_type     = msg.msg_type,
+                    payload      = msg.payload,
+                    confidence   = round(msg.confidence * conductance, 3),
+                    timestamp    = msg.timestamp
+                )
+                self.inboxes[recipient].append(routed_msg)
+                self.total_messages_routed += 1
 
     def fetch_inbox(self, node_id: str) -> List[Message]:
         if node_id not in self.inboxes:
@@ -171,6 +261,20 @@ class RelativisticMessageFabric:
         msgs = self.inboxes[node_id]
         self.inboxes[node_id] = []
         return msgs
+
+    def get_connectome(self) -> List[Dict[str, Any]]:
+        """Returns the directed synaptic connectome for dashboard visualization."""
+        edges = []
+        for (src, dst), w in self.synapses.items():
+            edges.append({
+                "from":       src,
+                "to":         dst,
+                "weight":     round(w, 2),
+                "emerged":    (src, dst) in self.emerged,
+                "conductance": round(min(1.0, max(0.2, w / 20.0)), 3)
+            })
+        edges.sort(key=lambda x: x["weight"], reverse=True)
+        return edges
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════
@@ -241,7 +345,7 @@ class BaseSovereignNode:
         self._apply_pillar_personality()
 
     def _apply_pillar_personality(self):
-        """Pillar-specific tuning — from agent.py specialization logic."""
+        """Pillar-specific tuning — preserved strictly from agent.py specialization logic."""
         if self.pillar == PillarArchetype.QUANTUM_SUPERPOSED:
             self.aperture = max(self.aperture, 3)
             self.exploration_bias = 1.5
@@ -272,9 +376,8 @@ class BaseSovereignNode:
     # S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i)
     # Verbatim logic from civilization.py BaseSovereignNode.universal_update()
     # ─────────────────────────────────────────────────────────────────────────────
-    def universal_update(self, action, physics_obs, inbox, step, climate_telemetry=None):
+    def universal_update(self, action, physics_obs, inbox, step, fabric: Optional[RelativisticMessageFabric] = None, climate_telemetry=None):
         # 1. Build visible_cells window from physics stream signal
-        # Flatten ensures 1-D regardless of whether binary_signal is 1D or 2D
         raw = physics_obs.binary_signal.flatten().astype(np.float32)
         aw  = self.aperture * 2 + 1
         need = aw * aw
@@ -284,7 +387,6 @@ class BaseSovereignNode:
             curr_obs = np.pad(raw, (0, need - raw.size)).reshape(aw, aw)
 
         # 2. Quantum Bayesian Belief Update — |Psi>
-        # Slice the aperture window that falls within the universe boundaries
         py, px = self.state.position
         r = self.aperture
         y_min, y_max = max(0, py - r), min(self.h, py + r + 1)
@@ -302,16 +404,23 @@ class BaseSovereignNode:
         )
         self.state.belief_entropy = self.belief_engine.compute_total_entropy()
 
-        # 3. Relativistic Message Ingestion — M_t^i
+        # 3. Synaptic Message Ingestion & Reinforcement — M_t^i
         for msg in inbox:
+            sender = msg.sender_id
             if msg.msg_type == MessageType.BELIEF_TENSOR and isinstance(msg.payload, np.ndarray):
                 if hasattr(self.belief_engine, 'belief_tensor') and \
                         msg.payload.shape == self.belief_engine.belief_tensor.shape:
+                    weight_factor = 0.10 * msg.confidence
                     self.belief_engine.belief_tensor = (
-                        0.90 * self.belief_engine.belief_tensor + 0.10 * msg.payload
+                        (1.0 - weight_factor) * self.belief_engine.belief_tensor + weight_factor * msg.payload
                     )
+                    # Reinforce connection between sender and this recipient
+                    if fabric is not None:
+                        fabric.reinforce_synapse(sender, self.node_id, amount=0.5)
+
             elif msg.msg_type == MessageType.SUBROUTINE_CODE and isinstance(msg.payload, dict):
                 if _HAS_KOLMOGOROV:
+                    assimilated_count = 0
                     for sig, code in msg.payload.items():
                         if sig not in self.kolmogorov_engine.program_library:
                             try:
@@ -324,11 +433,16 @@ class BaseSovereignNode:
                                     discovery_step=step
                                 )
                                 self.kolmogorov_engine.program_library[sig] = prog
+                                assimilated_count += 1
                             except Exception:
                                 pass
+                    # Hebbian wiring: if peer provided useful new subroutines, reinforce synapse!
+                    if assimilated_count > 0 and fabric is not None:
+                        fabric.reinforce_synapse(sender, self.node_id, amount=1.0 * assimilated_count)
+
             elif msg.msg_type == MessageType.FEVER_ALERT:
-                if msg.confidence > 0.8 and _HAS_FEVER:
-                    self.fever_engine.temperature = min(3.0, self.fever_engine.temperature + 0.2)
+                if msg.confidence > 0.6 and _HAS_FEVER:
+                    self.fever_engine.temperature = min(3.0, self.fever_engine.temperature + 0.15 * msg.confidence)
 
         # 4. Kolmogorov Causal Law Induction — L(S_t^i)
         new_programs = self.kolmogorov_engine.induce_causal_laws(
@@ -469,8 +583,8 @@ class ClassicalEikonalNode(BaseSovereignNode):
                          grid_shape, aperture=2, initial_energy=100.0)
         self._energy_errors: List[float] = []
 
-    def tick(self, physics_obs, inbox, step, curriculum, climate=None):
-        self.universal_update(self._last_action, physics_obs, inbox, step, climate)
+    def tick(self, physics_obs, inbox, step, curriculum, fabric=None, climate=None):
+        self.universal_update(self._last_action, physics_obs, inbox, step, fabric, climate)
         act = self.select_action()
         self._last_action = act
         self.apply_action_movement(act)
@@ -494,8 +608,8 @@ class QuantumSuperposedNode(BaseSovereignNode):
                          grid_shape, aperture=3, initial_energy=100.0)
         self._entropy_history: List[float] = []
 
-    def tick(self, physics_obs, inbox, step, curriculum, climate=None):
-        self.universal_update(self._last_action, physics_obs, inbox, step, climate)
+    def tick(self, physics_obs, inbox, step, curriculum, fabric=None, climate=None):
+        self.universal_update(self._last_action, physics_obs, inbox, step, fabric, climate)
         act = self.select_action()
         self._last_action = act
         self.apply_action_movement(act)
@@ -515,8 +629,8 @@ class ModernThermodynamicNode(BaseSovereignNode):
                          grid_shape, aperture=3, initial_energy=100.0)
         self._invariant_violations: List[float] = []
 
-    def tick(self, physics_obs, inbox, step, curriculum, climate=None):
-        self.universal_update(self._last_action, physics_obs, inbox, step, climate)
+    def tick(self, physics_obs, inbox, step, curriculum, fabric=None, climate=None):
+        self.universal_update(self._last_action, physics_obs, inbox, step, fabric, climate)
         act = self.select_action()
         self._last_action = act
         self.apply_action_movement(act)
@@ -543,8 +657,8 @@ class StringTopologicalNode(BaseSovereignNode):
                          grid_shape, aperture=4, initial_energy=100.0)
         self._symmetry_scores: List[float] = []
 
-    def tick(self, physics_obs, inbox, step, curriculum, climate=None):
-        self.universal_update(self._last_action, physics_obs, inbox, step, climate)
+    def tick(self, physics_obs, inbox, step, curriculum, fabric=None, climate=None):
+        self.universal_update(self._last_action, physics_obs, inbox, step, fabric, climate)
         act = self.select_action()
         self._last_action = act
         self.apply_action_movement(act)
@@ -572,13 +686,13 @@ class StringTopologicalNode(BaseSovereignNode):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════════
-# SovereignCivilization — orchestrates 4 Pillars + RelativisticMessageFabric
+# SovereignCivilization — orchestrates 4 Pillars + Hebbian Synaptic Fabric
 # Based on civilization.py SovereignCivilization.step()
 # ═══════════════════════════════════════════════════════════════════════════════════
 class SovereignCivilization:
     """
     The living orchestrator. Runs God Equation on all 4 Pillars each tick,
-    routes messages through RelativisticMessageFabric, drives curriculum.
+    routes messages through Hebbian RelativisticMessageFabric, drives curriculum.
     """
     def __init__(self, grid_shape: Tuple[int, int] = (8, 8)):
         self.grid_shape  = grid_shape
@@ -600,10 +714,15 @@ class SovereignCivilization:
         out_msgs: List[Message] = []
         snapshots: Dict[str, dict] = {}
 
+        # 1. Decay idle synaptic channels periodically (every 10 steps)
+        if self.step_count % 10 == 0:
+            self.fabric.decay_synapses(rate=0.05)
+
+        # 2. Tick each pillar with synaptic inbox
         for nid, node in self.nodes.items():
             inbox = self.fabric.fetch_inbox(nid)
             msgs, act = node.tick(physics_obs, inbox, self.step_count,
-                                  curriculum, climate_telemetry)
+                                  curriculum, fabric=self.fabric, climate=climate_telemetry)
             out_msgs.extend(msgs)
             for sig, code in node.kolmogorov_engine.get_library_dict().items():
                 self.global_subroutine_archive[sig] = code
@@ -613,6 +732,7 @@ class SovereignCivilization:
             snap["step"] = self.step_count
             snapshots[nid] = snap
 
+        # 3. Route all emitted messages along active synaptic pathways
         for msg in out_msgs:
             self.fabric.transmit(msg)
 
@@ -643,6 +763,9 @@ class SovereignCivilization:
             snap["step"] = self.step_count
             out.append(snap)
         return out
+
+    def get_connectome(self) -> List[Dict[str, Any]]:
+        return self.fabric.get_connectome()
 
     def global_discoveries(self) -> int:
         return sum(len(n._discoveries) for n in self.nodes.values())

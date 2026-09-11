@@ -58,7 +58,7 @@ from pathlib import Path
 from binory_core import BinoryCore, make_node_id, register_name, readable
 from binory_physics_stream import PhysicsStreamGenerator, PhysicsTier
 from binory_curriculum import AdaptiveCurriculum
-from binory_agents import CognitiveCouncil
+from binory_agents import SovereignCivilization
 
 DATA_DIR = Path(vault.local_cache_dir)
 DATA_DIR.mkdir(exist_ok=True)
@@ -68,7 +68,7 @@ LOG_PATH = DATA_DIR / "binory_log.txt"
 core = BinoryCore(STATE_PATH, LOG_PATH)
 stream_gen = PhysicsStreamGenerator()
 curriculum = AdaptiveCurriculum()
-council = CognitiveCouncil()
+civilization = SovereignCivilization(grid_shape=(8, 8))
 
 STATE_LOCK = threading.Lock()
 LIVE_STATE: Dict[str, Any] = {}
@@ -152,14 +152,14 @@ def _engine_loop():
             # 3. Update Adaptive Causal STDP Core
             core_out = core.update(active_nodes, cpu_load=len(active_nodes) * 8.0)
             
-            # 4. Cognitive Council Step (4 Agents × 6 Engines)
-            agent_results = council.step(obs, curriculum)
-            
-            # 5. Adapt simulation interval from council temperature/viscosity
-            viscosities = [v.get("viscosity", 1.0) for v in agent_results.values() if isinstance(v, dict)]
+            # 4. Sovereign Civilization Step — God Equation on all 4 Pillars
+            pillar_snapshots = civilization.step(obs, curriculum)
+
+            # 5. Adapt simulation interval from civilization mean viscosity
+            viscosities = [v.get("viscosity", 1.0) for v in pillar_snapshots.values()]
             mean_visc = sum(viscosities) / len(viscosities) if viscosities else 1.0
             _sample_interval = max(0.2, min(2.0, 0.8 / (1.0 + mean_visc)))
-            
+
             # 6. Record newly emerged causal links
             for (a, b), (strength, te) in core_out.get("newly_emerged", {}).items():
                 DISCOVERY_LOG.append({
@@ -172,27 +172,45 @@ def _engine_loop():
                     "tier": int(curriculum.tier),
                     "time": time.strftime("%H:%M:%S")
                 })
-                
+
             # 7. Record curriculum law discoveries
             cur_status = curriculum.status()
             for disc in cur_status.get("recent_discoveries", []):
                 if not any(d.get("concept") == disc.get("concept") and d.get("step") == disc.get("step") for d in DISCOVERY_LOG[-30:]):
                     disc["time"] = time.strftime("%H:%M:%S")
                     DISCOVERY_LOG.append(disc)
-                    
-            # 8. Update Atomic Live State Cache
+
+            # 8. Record Kolmogorov laws discovered by any Pillar node
+            for nid, snap in pillar_snapshots.items():
+                for law in civilization.nodes[nid]._discoveries:
+                    if law["step"] == step:
+                        entry = {
+                            "step": step,
+                            "type": "law",
+                            "agent": snap["pillar"],
+                            "concept": law.get("law", "unknown"),
+                            "equation": f"gain={law.get('gain', 0):.2f}",
+                            "time": time.strftime("%H:%M:%S")
+                        }
+                        if not any(d.get("concept") == entry["concept"] and d.get("step") == step for d in DISCOVERY_LOG[-30:]):
+                            DISCOVERY_LOG.append(entry)
+
+            # 9. Build agent cards from pillar snapshots (pillar name as id + role)
             agent_cards = []
-            for agent_id, res in agent_results.items():
-                if isinstance(res, dict):
-                    agent_cards.append({
-                        "id": agent_id,
-                        "role": res.get("role", agent_id),
-                        "temperature": round(res.get("temperature", 0.1), 3),
-                        "energy": round(res.get("energy", 100.0), 1),
-                        "fever": res.get("fever", False),
-                        "new_laws": res.get("new_laws", 0),
-                        "belief_kl": round(res.get("belief_kl", 0.0), 4),
-                    })
+            for nid, snap in pillar_snapshots.items():
+                agent_cards.append({
+                    "id":         snap["pillar"],           # e.g. "Classical-Eikonal"
+                    "role":       snap["pillar"],
+                    "temperature": snap.get("temperature", 0.1),
+                    "energy":      snap.get("energy", 100.0),
+                    "fever":       snap.get("fever", False),
+                    "new_laws":    snap.get("subroutines", 0),
+                    "belief_kl":   snap.get("belief_entropy", 0.0),
+                    "dh_dt":       snap.get("dh_dt", 0.0),
+                    "action":      snap.get("last_action", "OBSERVE"),
+                    "discoveries": snap.get("discoveries", 0),
+                    "cognitive_10d": snap.get("cognitive_10d", {}),
+                })
                     
             with STATE_LOCK:
                 LIVE_STATE.update({
@@ -217,6 +235,8 @@ def _engine_loop():
                     "obs_tier": obs.tier,
                     "obs_vars": {k: round(float(v), 4) for k, v in list(obs.variables.items())[:6]},
                     "hf_repo": HF_REPO,
+                    "connectome": civilization.get_connectome(),
+                    "total_messages": civilization.total_messages_routed(),
                     "sample_interval": round(_sample_interval, 3),
                     "last_updated": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
                 })
@@ -266,10 +286,10 @@ def api_discoveries():
 def api_fever(x_admin_key: Optional[str] = Header(None)):
     if x_admin_key != ADMIN_KEY:
         return JSONResponse(status_code=403, content={"error": "Unauthorized. Master key required."})
-    for a in council._agents:
-        if hasattr(a, "immune") and hasattr(a.immune, "force_fever"):
-            a.immune.force_fever()
-    return {"status": "FEVER_TRIGGERED_ALL_AGENTS"}
+    for node in civilization.nodes.values():
+        if hasattr(node, "fever_engine") and hasattr(node.fever_engine, "temperature"):
+            node.fever_engine.temperature = min(3.0, node.fever_engine.temperature + 1.5)
+    return {"status": "FEVER_TRIGGERED_ALL_PILLARS"}
 
 @app.post("/api/action/reset")
 def api_reset(x_admin_key: Optional[str] = Header(None)):
@@ -335,15 +355,17 @@ def dashboard():
         <div class="agent-card {fever_cls}">
           <div class="agent-header">
             <span class="agent-id">{ag.get('id', '?')}</span>
-            <span class="agent-role">{ag.get('role', '')}</span>
+            <span class="agent-role">{'🔥 FEVER' if ag.get('fever') else ag.get('action', 'OBSERVE')}</span>
           </div>
           <div class="agent-metrics">
             <div><span class="lbl">Temp:</span> <span class="val">{ag.get('temperature', 0):.3f}</span></div>
             <div><span class="lbl">Energy:</span> <span class="val">{ag.get('energy', 100):.0f}</span></div>
-            <div><span class="lbl">Belief KL:</span> <span class="val">{ag.get('belief_kl', 0):.4f}</span></div>
-            <div><span class="lbl">Laws Induced:</span> <span class="val highlight">{ag.get('new_laws', 0)}</span></div>
+            <div><span class="lbl">dH/dt:</span> <span class="val">{ag.get('dh_dt', 0.0):.4f}</span></div>
+            <div><span class="lbl">Belief Entropy:</span> <span class="val">{ag.get('belief_kl', 0):.4f}</span></div>
+            <div><span class="lbl">Subroutines:</span> <span class="val highlight">{ag.get('new_laws', 0)}</span></div>
+            <div><span class="lbl">Discoveries:</span> <span class="val highlight">{ag.get('discoveries', 0)}</span></div>
           </div>
-          {'<div class="fever-alert">🔥 ACTIVE FEVER (Hypothesis Burst)</div>' if ag.get('fever') else ''}
+          {'<div class="fever-alert">🔥 FEVER ACTIVE — Stochastic Brownian Walk</div>' if ag.get('fever') else ''}
         </div>"""
 
     links_html = ""
@@ -354,6 +376,21 @@ def dashboard():
           <span class="link-arrow">⟶</span>
           <span class="link-node to">{lk['to']}</span>
           <span class="link-weight">+{lk['strength']:.1f}</span>
+        </div>"""
+
+    connectome_html = ""
+    for edge in s.get("connectome", [])[:10]:
+        is_emerged = edge.get("emerged", False)
+        status_tag = '<span class="tag link-tag" style="background:#059669;color:#a7f3d0">AXON</span>' if is_emerged else '<span class="tag link-tag" style="background:#1e293b;color:#94a3b8">SYNAPSE</span>'
+        src_clean = edge.get('from', '').replace('_prime', '').replace('_meta', '')
+        dst_clean = edge.get('to', '').replace('_prime', '').replace('_meta', '')
+        connectome_html += f"""
+        <div class="link-item">
+          {status_tag}
+          <span class="link-node from" style="width:80px;">{src_clean}</span>
+          <span class="link-arrow">⟶</span>
+          <span class="link-node to" style="width:80px;">{dst_clean}</span>
+          <span class="link-weight" style="color:var(--accent);">W={edge.get('weight', 0):.1f}</span>
         </div>"""
 
     disc_html = ""
@@ -672,7 +709,7 @@ def dashboard():
   <!-- Cognitive Council Card -->
   <div class="card col-8">
     <div class="card-title">
-      <span>🧠 4-Agent Cognitive Council (6 Engines as Organs)</span>
+      <span>⚛️ 4 Sovereign Pillars — God Equation S&#8314;&#8301;&#8314;&#185; = U(S,A,O,M) + L(S)</span>
       <span style="font-size: 10px; color: var(--text-muted)">Heartbeat: {s.get('sample_interval', 0.5):.2f}s</span>
     </div>
     <div class="agent-list">
@@ -687,20 +724,31 @@ def dashboard():
   </div>
 
   <!-- Causal Synapse Network -->
-  <div class="card col-6">
+  <div class="card col-4">
     <div class="card-title">
-      <span>⚡ Causal Plasticity Network (STDP + Transfer Entropy)</span>
-      <span style="font-size: 10px; color: var(--cyan)">{emerged_count} links emerged</span>
+      <span>⚡ Causal Network (STDP + TE)</span>
+      <span style="font-size: 10px; color: var(--cyan)">{emerged_count} links</span>
     </div>
     <div class="link-list">
       {links_html if links_html else '<div style="color: var(--text-muted)">Constructing causal graph from physics streams...</div>'}
     </div>
   </div>
 
-  <!-- Discovery Ledger -->
-  <div class="card col-6">
+  <!-- 4-Pillar Synaptic Connectome -->
+  <div class="card col-4">
     <div class="card-title">
-      <span>🔭 Discovered Laws & Invariants Ledger</span>
+      <span>🧬 4-Pillar Connectome (Zero Broadcast)</span>
+      <span style="font-size: 10px; color: var(--accent)">{s.get('total_messages', 0):,} msgs</span>
+    </div>
+    <div class="link-list">
+      {connectome_html if connectome_html else '<div style="color: var(--text-muted)">Evolving synaptic axons between pillars...</div>'}
+    </div>
+  </div>
+
+  <!-- Discovery Ledger -->
+  <div class="card col-4">
+    <div class="card-title">
+      <span>🔭 Discovered Laws & Invariants</span>
       <span style="font-size: 10px; color: var(--accent)">{total_disc} total</span>
     </div>
     <div class="disc-list">
