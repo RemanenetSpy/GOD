@@ -17,7 +17,7 @@ GOD/src files are NEVER modified. Imported read-only via sys.path.
 ========================================================================================
 """
 
-import sys, copy, numpy as np
+import sys, copy, math, numpy as np
 from enum import Enum
 from dataclasses import dataclass, field
 from typing import Dict, List, Tuple, Optional, Any
@@ -67,7 +67,7 @@ class _StubBeliefEngine:
     def __init__(self, grid_shape=(8, 8)):
         self.belief_tensor = np.ones((*grid_shape, 4), dtype=np.float32) * 0.25
     def update_with_observation(self, agent_pos, aperture_radius, observed_patch):
-        return float(np.mean(np.abs(observed_patch - 0.5)))
+        return float(np.mean(np.abs(observed_patch - 0.5))) if observed_patch is not None else 0.0
     def compute_total_entropy(self):
         return float(np.mean(-self.belief_tensor * np.log(self.belief_tensor + 1e-12)))
     def get_nutrient_belief_field(self):
@@ -202,7 +202,7 @@ class AgentState:
 class BaseSovereignNode:
     """Core node. Implements the God Equation using BinoryLogy physics streams."""
 
-    def __init__(self, node_id, pillar, grid_shape=(8,8), aperture=3, initial_energy=100.0):
+    def __init__(self, node_id, pillar, grid_shape=(8, 8), aperture=3, initial_energy=100.0):
         self.node_id  = node_id
         self.pillar   = pillar
         self.h, self.w = grid_shape
@@ -255,29 +255,54 @@ class BaseSovereignNode:
             self.aperture = max(self.aperture, 4)
             self.exploration_bias = 0.8
 
+    def apply_action_movement(self, act: Action):
+        """Update spatial grid position based on chosen action."""
+        py, px = self.state.position
+        if act == Action.MOVE_UP:
+            self.state.position = (max(0, py - 1), px)
+        elif act == Action.MOVE_DOWN:
+            self.state.position = (min(self.h - 1, py + 1), px)
+        elif act == Action.MOVE_LEFT:
+            self.state.position = (py, max(0, px - 1))
+        elif act == Action.MOVE_RIGHT:
+            self.state.position = (py, min(self.w - 1, px + 1))
+
     # ─────────────────────────────────────────────────────────────────────────────
     # THE GOD EQUATION
     # S_{t+1}^i = U(S_t^i, A_t^i, O_t^i, M_t^i) + L(S_t^i)
     # Verbatim logic from civilization.py BaseSovereignNode.universal_update()
     # ─────────────────────────────────────────────────────────────────────────────
     def universal_update(self, action, physics_obs, inbox, step, climate_telemetry=None):
-        # Build visible_cells window from physics stream signal
-        raw = physics_obs.binary_signal.astype(np.float32)
+        # 1. Build visible_cells window from physics stream signal
+        # Flatten ensures 1-D regardless of whether binary_signal is 1D or 2D
+        raw = physics_obs.binary_signal.flatten().astype(np.float32)
         aw  = self.aperture * 2 + 1
-        if raw.size >= aw * aw:
-            curr_obs = raw[:aw * aw].reshape(aw, aw)
+        need = aw * aw
+        if raw.size >= need:
+            curr_obs = raw[:need].reshape(aw, aw)
         else:
-            curr_obs = np.pad(raw, (0, aw * aw - raw.size)).reshape(aw, aw)
+            curr_obs = np.pad(raw, (0, need - raw.size)).reshape(aw, aw)
 
-        # 1. Quantum Bayesian Belief Update — |Psi>
+        # 2. Quantum Bayesian Belief Update — |Psi>
+        # Slice the aperture window that falls within the universe boundaries
+        py, px = self.state.position
+        r = self.aperture
+        y_min, y_max = max(0, py - r), min(self.h, py + r + 1)
+        x_min, x_max = max(0, px - r), min(self.w, px + r + 1)
+        dy_min = y_min - (py - r)
+        dy_max = dy_min + (y_max - y_min)
+        dx_min = x_min - (px - r)
+        dx_max = dx_min + (x_max - x_min)
+        patch_in_bounds = curr_obs[dy_min:dy_max, dx_min:dx_max]
+
         info_gain = self.belief_engine.update_with_observation(
             agent_pos=self.state.position,
             aperture_radius=self.aperture,
-            observed_patch=curr_obs
+            observed_patch=patch_in_bounds
         )
         self.state.belief_entropy = self.belief_engine.compute_total_entropy()
 
-        # 2. Relativistic Message Ingestion — M_t^i
+        # 3. Relativistic Message Ingestion — M_t^i
         for msg in inbox:
             if msg.msg_type == MessageType.BELIEF_TENSOR and isinstance(msg.payload, np.ndarray):
                 if hasattr(self.belief_engine, 'belief_tensor') and \
@@ -305,7 +330,7 @@ class BaseSovereignNode:
                 if msg.confidence > 0.8 and _HAS_FEVER:
                     self.fever_engine.temperature = min(3.0, self.fever_engine.temperature + 0.2)
 
-        # 3. Kolmogorov Causal Law Induction — L(S_t^i)
+        # 4. Kolmogorov Causal Law Induction — L(S_t^i)
         new_programs = self.kolmogorov_engine.induce_causal_laws(
             prev_obs=self._last_obs, curr_obs=curr_obs, step=step
         )
@@ -319,7 +344,7 @@ class BaseSovereignNode:
                 "pillar": self.pillar.value
             })
 
-        # 4. Thermodynamic Homeostasis — dH/dt = (Sigma * Omega) - Lambda
+        # 5. Thermodynamic Homeostasis — dH/dt = (Sigma * Omega) - Lambda
         friction_mult  = float((climate_telemetry or {}).get("friction_mult", 1.0))
         friction       = 0.05 * friction_mult
         feeding_energy = max(0.0, physics_obs.variables.get("reward", 0.5))
@@ -329,7 +354,7 @@ class BaseSovereignNode:
         self.state.dh_dt   = float(dh_dt)
         self.state.energy  = float(np.clip(self.state.energy + dh_dt, 0.0, 300.0))
 
-        # 5. Fever & Viscous Momentum
+        # 6. Fever & Viscous Momentum
         temp, visc, fever = self.fever_engine.update(
             dh_dt=dh_dt,
             current_entropy=self.state.belief_entropy,
@@ -339,7 +364,7 @@ class BaseSovereignNode:
         self.state.viscosity    = float(visc)
         self.state.fever_active = bool(fever)
 
-        # 6. 10D String Cognitive Coordinate
+        # 7. 10D String Cognitive Coordinate
         self.string_10d_engine.update_state(
             pos=self.state.position,
             step=step,
@@ -393,7 +418,7 @@ class BaseSovereignNode:
             msgs.append(Message(
                 sender_id=self.node_id, recipient_id="BROADCAST",
                 msg_type=MessageType.BELIEF_TENSOR,
-                payload=self.belief_engine.belief_tensor,
+                payload=self.belief_engine.belief_tensor.copy(),
                 confidence=0.85, timestamp=step
             ))
         if self.kolmogorov_engine.program_library:
@@ -439,7 +464,7 @@ class BaseSovereignNode:
 
 class ClassicalEikonalNode(BaseSovereignNode):
     """Classical-Eikonal — governs kinematic/geometric consistency."""
-    def __init__(self, grid_shape=(8,8)):
+    def __init__(self, grid_shape=(8, 8)):
         super().__init__("classical_prime", PillarArchetype.CLASSICAL_EIKONAL,
                          grid_shape, aperture=2, initial_energy=100.0)
         self._energy_errors: List[float] = []
@@ -448,6 +473,8 @@ class ClassicalEikonalNode(BaseSovereignNode):
         self.universal_update(self._last_action, physics_obs, inbox, step, climate)
         act = self.select_action()
         self._last_action = act
+        self.apply_action_movement(act)
+
         ke = physics_obs.variables.get("KE", physics_obs.variables.get("ke_after", 0.0))
         pe = physics_obs.variables.get("PE", physics_obs.variables.get("V_potential", 0.0))
         e_total = physics_obs.variables.get("E_total", physics_obs.variables.get("H_hamiltonian", ke + pe))
@@ -462,7 +489,7 @@ class ClassicalEikonalNode(BaseSovereignNode):
 
 class QuantumSuperposedNode(BaseSovereignNode):
     """Quantum-Superposed — maximum exploration, belief entropy convergence."""
-    def __init__(self, grid_shape=(8,8)):
+    def __init__(self, grid_shape=(8, 8)):
         super().__init__("quantum_prime", PillarArchetype.QUANTUM_SUPERPOSED,
                          grid_shape, aperture=3, initial_energy=100.0)
         self._entropy_history: List[float] = []
@@ -471,6 +498,8 @@ class QuantumSuperposedNode(BaseSovereignNode):
         self.universal_update(self._last_action, physics_obs, inbox, step, climate)
         act = self.select_action()
         self._last_action = act
+        self.apply_action_movement(act)
+
         self._entropy_history.append(self.state.belief_entropy)
         if len(self._entropy_history) > 30:
             self._vote_advance = sum(self._entropy_history[-30:]) / 30 < 0.05
@@ -481,7 +510,7 @@ class QuantumSuperposedNode(BaseSovereignNode):
 
 class ModernThermodynamicNode(BaseSovereignNode):
     """Modern-Thermodynamic — homeostasis, momentum invariant verification."""
-    def __init__(self, grid_shape=(8,8)):
+    def __init__(self, grid_shape=(8, 8)):
         super().__init__("modern_prime", PillarArchetype.MODERN_THERMODYNAMIC,
                          grid_shape, aperture=3, initial_energy=100.0)
         self._invariant_violations: List[float] = []
@@ -490,6 +519,8 @@ class ModernThermodynamicNode(BaseSovereignNode):
         self.universal_update(self._last_action, physics_obs, inbox, step, climate)
         act = self.select_action()
         self._last_action = act
+        self.apply_action_movement(act)
+
         p_before = physics_obs.variables.get("p_before")
         p_after  = physics_obs.variables.get("p_after")
         if p_before is not None and p_after is not None and abs(p_before) > 1e-9:
@@ -507,7 +538,7 @@ class ModernThermodynamicNode(BaseSovereignNode):
 
 class StringTopologicalNode(BaseSovereignNode):
     """String-10D-Topological — tracks 10D cognitive coordinates, detects symmetries."""
-    def __init__(self, grid_shape=(8,8)):
+    def __init__(self, grid_shape=(8, 8)):
         super().__init__("string_meta", PillarArchetype.STRING_TOPOLOGICAL,
                          grid_shape, aperture=4, initial_energy=100.0)
         self._symmetry_scores: List[float] = []
@@ -516,13 +547,19 @@ class StringTopologicalNode(BaseSovereignNode):
         self.universal_update(self._last_action, physics_obs, inbox, step, climate)
         act = self.select_action()
         self._last_action = act
-        sig = physics_obs.binary_signal.astype(np.float32)
-        aw  = min(self.aperture * 2 + 1, len(sig))
-        need = aw * aw
-        g2d  = (sig[:need] if len(sig) >= need
-                else np.pad(sig, (0, need - len(sig)))).reshape(aw, aw)
-        sym  = float(np.sum(g2d == np.rot90(g2d))) / max(g2d.size, 1)
+        self.apply_action_movement(act)
+
+        # Rotational symmetry on the 2D observation
+        if physics_obs.binary_signal.ndim == 2:
+            g2d = physics_obs.binary_signal
+        else:
+            sig = physics_obs.binary_signal.flatten().astype(np.float32)
+            aw = max(2, int(math.isqrt(sig.size)))
+            need = aw * aw
+            g2d = (sig[:need] if sig.size >= need else np.pad(sig, (0, need - sig.size))).reshape(aw, aw)
+        sym = float(np.sum(g2d == np.rot90(g2d))) / max(g2d.size, 1)
         self._symmetry_scores.append(sym)
+
         ds2_diff = physics_obs.variables.get("ds2_diff")
         if ds2_diff is not None and ds2_diff < 1e-6:
             curriculum.record_discovery(self.node_id, "lorentz_invariance",
