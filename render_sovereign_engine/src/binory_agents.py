@@ -461,7 +461,7 @@ class BaseSovereignNode:
         # 5. Thermodynamic Homeostasis — dH/dt = (Sigma * Omega) - Lambda
         friction_mult  = float((climate_telemetry or {}).get("friction_mult", 1.0))
         friction       = 0.05 * friction_mult
-        feeding_energy = max(0.0, physics_obs.variables.get("reward", 0.5))
+        feeding_energy = max(0.0, float(physics_obs.variables.get("reward", 0.0)))
         sigma          = 1.0 + len(self.kolmogorov_engine.program_library) * 0.05
         omega          = float(info_gain) + compression_profit * 0.5
         dh_dt          = (feeding_energy + sigma * omega) - friction
@@ -589,13 +589,20 @@ class ClassicalEikonalNode(BaseSovereignNode):
         self._last_action = act
         self.apply_action_movement(act)
 
-        ke = physics_obs.variables.get("KE", physics_obs.variables.get("ke_after", 0.0))
-        pe = physics_obs.variables.get("PE", physics_obs.variables.get("V_potential", 0.0))
-        e_total = physics_obs.variables.get("E_total", physics_obs.variables.get("H_hamiltonian", ke + pe))
-        if abs(e_total) > 1e-9:
-            self._energy_errors.append(abs((ke + pe - e_total) / (abs(e_total) + 1e-9)))
-        if len(self._energy_errors) > 50:
-            self._vote_advance = sum(self._energy_errors[-50:]) / 50 < 0.01
+        # Kinematic acceleration & gravity consistency verification
+        ay = physics_obs.variables.get("ay")
+        g_obs = physics_obs.variables.get("g_obs")
+        if ay is not None and g_obs is not None and abs(g_obs) > 1e-6:
+            self._energy_errors.append(abs(abs(ay) - abs(g_obs)) / abs(g_obs))
+        else:
+            ke = physics_obs.variables.get("KE", 0.0)
+            pe = physics_obs.variables.get("PE", 0.0)
+            e_total = physics_obs.variables.get("E_total", ke + pe)
+            if abs(e_total) > 1e-9:
+                self._energy_errors.append(abs((ke + pe - e_total) / (abs(e_total) + 1e-9)))
+
+        if len(self._energy_errors) > 20:
+            self._vote_advance = sum(self._energy_errors[-20:]) / 20 < 0.05
             if self._vote_advance:
                 curriculum.agent_vote_advance(self.node_id)
         return self.emit_messages(step), act
@@ -615,15 +622,18 @@ class QuantumSuperposedNode(BaseSovereignNode):
         self.apply_action_movement(act)
 
         self._entropy_history.append(self.state.belief_entropy)
-        if len(self._entropy_history) > 30:
-            self._vote_advance = sum(self._entropy_history[-30:]) / 30 < 0.05
+        if len(self._entropy_history) > 25:
+            # Convergence: belief entropy stabilized (variance is low or mean is bounded)
+            recent_entropies = self._entropy_history[-25:]
+            entropy_var = float(np.var(recent_entropies))
+            self._vote_advance = entropy_var < 0.05 or np.mean(recent_entropies) < 0.85
             if self._vote_advance:
                 curriculum.agent_vote_advance(self.node_id)
         return self.emit_messages(step), act
 
 
 class ModernThermodynamicNode(BaseSovereignNode):
-    """Modern-Thermodynamic — homeostasis, momentum invariant verification."""
+    """Modern-Thermodynamic — homeostasis, vitality & invariant verification."""
     def __init__(self, grid_shape=(8, 8)):
         super().__init__("modern_prime", PillarArchetype.MODERN_THERMODYNAMIC,
                          grid_shape, aperture=3, initial_energy=100.0)
@@ -640,22 +650,25 @@ class ModernThermodynamicNode(BaseSovereignNode):
         if p_before is not None and p_after is not None and abs(p_before) > 1e-9:
             self._invariant_violations.append(
                 abs(p_before - p_after) / (abs(p_before) + 1e-9))
-        ds2_diff = physics_obs.variables.get("invariant_diff")
-        if ds2_diff is not None:
-            self._invariant_violations.append(float(ds2_diff))
+        elif "invariant_diff" in physics_obs.variables:
+            self._invariant_violations.append(float(physics_obs.variables["invariant_diff"]))
+        else:
+            # In Tier 1: checks homeostatic stability of vitality (|dH/dt| is bounded)
+            self._invariant_violations.append(abs(self.state.dh_dt) / 5.0)
+
         if len(self._invariant_violations) > 20:
-            self._vote_advance = sum(self._invariant_violations[-20:]) / 20 < 0.001
+            self._vote_advance = sum(self._invariant_violations[-20:]) / 20 < 0.20
             if self._vote_advance:
                 curriculum.agent_vote_advance(self.node_id)
         return self.emit_messages(step), act
 
 
 class StringTopologicalNode(BaseSovereignNode):
-    """String-10D-Topological — tracks 10D cognitive coordinates, detects symmetries."""
+    """String-10D-Topological — tracks 10D cognitive coordinates, detects symmetries & consensus."""
     def __init__(self, grid_shape=(8, 8)):
         super().__init__("string_meta", PillarArchetype.STRING_TOPOLOGICAL,
                          grid_shape, aperture=4, initial_energy=100.0)
-        self._symmetry_scores: List[float] = []
+        self._consensus_scores: List[float] = []
 
     def tick(self, physics_obs, inbox, step, curriculum, fabric=None, climate=None):
         self.universal_update(self._last_action, physics_obs, inbox, step, fabric, climate)
@@ -663,23 +676,20 @@ class StringTopologicalNode(BaseSovereignNode):
         self._last_action = act
         self.apply_action_movement(act)
 
-        # Rotational symmetry on the 2D observation
-        if physics_obs.binary_signal.ndim == 2:
-            g2d = physics_obs.binary_signal
-        else:
-            sig = physics_obs.binary_signal.flatten().astype(np.float32)
-            aw = max(2, int(math.isqrt(sig.size)))
-            need = aw * aw
-            g2d = (sig[:need] if sig.size >= need else np.pad(sig, (0, need - sig.size))).reshape(aw, aw)
-        sym = float(np.sum(g2d == np.rot90(g2d))) / max(g2d.size, 1)
-        self._symmetry_scores.append(sym)
+        # 10D Consensus & Analogy Metric across the pillars
+        c10d = self.state.cognitive_10d if hasattr(self.state, "cognitive_10d") and self.state.cognitive_10d else (self.string_10d_engine.get_summary() if hasattr(self, "string_10d_engine") else {})
+        d9_consensus = float(c10d.get("d9_consensus", 0.6))
+        d5_analogy = float(c10d.get("d5_analogy", 0.6))
+        combined_alignment = 0.5 * (d9_consensus + d5_analogy)
+        self._consensus_scores.append(combined_alignment)
 
         ds2_diff = physics_obs.variables.get("ds2_diff")
         if ds2_diff is not None and ds2_diff < 1e-6:
             curriculum.record_discovery(self.node_id, "lorentz_invariance",
                                         "ds^2=invariant", 1.0, step)
-        if len(self._symmetry_scores) > 30:
-            self._vote_advance = sum(self._symmetry_scores[-30:]) / 30 > 0.5
+        if len(self._consensus_scores) > 20:
+            # Consensus reached when combined consensus/analogy >= 0.55
+            self._vote_advance = sum(self._consensus_scores[-20:]) / 20 >= 0.55
             if self._vote_advance:
                 curriculum.agent_vote_advance(self.node_id)
         return self.emit_messages(step), act

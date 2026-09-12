@@ -62,7 +62,8 @@ class FeverProtocol:
             self.fever_active = False
         else:
             # 3. Check for Stagnation / Trapping
-            if dh_dt <= 0.1 and delta_entropy < 0.005:
+            # Stagnates when no new rules are found and belief divergence is low
+            if dh_dt <= 0.25 or delta_entropy < 0.01:
                 self.stagnation_counter += 1
             else:
                 self.stagnation_counter = max(0, self.stagnation_counter - 1)
@@ -70,7 +71,7 @@ class FeverProtocol:
             # 4. Trigger Fever if stagnant for more than 15 steps
             if self.stagnation_counter >= 15:
                 self.fever_active = True
-                # Heat up dynamically
+                # Heat up dynamically to force exploratory phase transition
                 self.temperature = min(self.max_temperature, self.temperature + 0.15)
             else:
                 # Gradual ambient cooling

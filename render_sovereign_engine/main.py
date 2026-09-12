@@ -88,6 +88,9 @@ def _restore_from_vault():
         DISCOVERY_LOG = saved.get("discoveries", [])
         TOTAL_STEPS = saved.get("step", 0)
         core._step = TOTAL_STEPS
+        for c, m in saved.get("concept_mastery", {}).items():
+            if c in curriculum.pkg._nodes:
+                curriculum.pkg._nodes[c].mastery = float(m)
         print(f"[BinoryVault] Restored from HF: Step {TOTAL_STEPS}, Tier {tier_val}, {len(DISCOVERY_LOG)} discoveries")
     except Exception as e:
         print(f"[BinoryVault] Checkpoint restore warning: {e}")
@@ -107,6 +110,7 @@ def _cloud_save(step: int):
             "tier": int(curriculum.tier),
             "tier_name": curriculum.tier.name,
             "tier_mastery": {str(t): round(curriculum.pkg.tier_mastery(t), 4) for t in range(1, 7)},
+            "concept_mastery": {c: round(n.mastery, 4) for c, n in curriculum.pkg._nodes.items()},
             "synapse_count": len(core._weights),
             "emerged_count": len(core._emerged),
             "discoveries": DISCOVERY_LOG[-250:],
@@ -154,6 +158,19 @@ def _engine_loop():
             
             # 4. Sovereign Civilization Step — God Equation on all 4 Pillars
             pillar_snapshots = civilization.step(obs, curriculum)
+            
+            # 4b. Empirical Knowledge Ingestion & Consensus Tier Advancement
+            curriculum.pkg.observe_empirical(obs.stream_type, obs.variables)
+            if curriculum.check_advancement(n_agents=4):
+                print(f"🎉 [TIER ADVANCEMENT] Sovereign Civilization ascended to Tier {int(curriculum.tier)}: {curriculum.tier.name} at Step {step}!")
+                DISCOVERY_LOG.append({
+                    "step": step,
+                    "type": "tier_advancement",
+                    "agent": "Sovereign-Council",
+                    "concept": f"ASCENSION_TO_TIER_{int(curriculum.tier)}_{curriculum.tier.name}",
+                    "equation": f"ConsensusMastery={curriculum.pkg.tier_mastery(int(curriculum.tier)-1):.2f}",
+                    "time": time.strftime("%H:%M:%S")
+                })
 
             # 5. Adapt simulation interval from civilization mean viscosity
             viscosities = [v.get("viscosity", 1.0) for v in pillar_snapshots.values()]

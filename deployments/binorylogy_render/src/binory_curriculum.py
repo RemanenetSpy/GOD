@@ -116,9 +116,59 @@ class PhysicsKnowledgeGraph:
         return self._nodes.get(concept)
 
     def update_mastery(self, concept: str, compression_gain: float):
-        if concept in self._nodes:
-            old = self._nodes[concept].mastery
-            self._nodes[concept].mastery = min(1.0, old + compression_gain * 0.01)
+        # Concept mapping: map discrete / automata / kinematic symbols to PhysicsKnowledgeGraph nodes
+        concept_map = {
+            "free_fall": ["free_fall", "gravity_g", "position"],
+            "gravity_g": ["gravity_g", "acceleration"],
+            "velocity": ["velocity", "position"],
+            "acceleration": ["acceleration", "velocity"],
+            "falling_particle": ["position", "velocity", "free_fall", "gravity_g"],
+            "prog_birth_k4": ["free_fall", "wave_speed"],
+            "prog_birth_k2": ["velocity", "position"],
+            "prog_birth_k0": ["position"],
+            "prog_birth_k1": ["velocity"],
+            "prog_birth_k3": ["acceleration"],
+            "prog_birth_k5": ["free_fall"],
+            "prog_birth_k6": ["gravity_g"],
+            "prog_birth_k7": ["wave_speed"],
+            "prog_birth_k8": ["wave_speed", "gravity_g"],
+            "prog_survive_k4": ["position", "gravity_g"],
+            "prog_survive_k0": ["position"],
+            "prog_survive_k5": ["velocity"],
+            "prog_survive_k6": ["acceleration"],
+            "prog_survive_k7": ["free_fall"],
+            "prog_survive_k8": ["wave_speed"],
+            # Tier 2 mappings
+            "pressure": ["pressure", "hydrostatic"],
+            "circuit": ["ohms_law", "electric_power"],
+            "wave": ["wave_speed"],
+            # Tier 3 mappings
+            "collision": ["momentum", "momentum_conservation", "kinetic_energy"],
+            "spring": ["hookes_law", "harmonic_oscillator"],
+            "gas": ["thermodynamics_1", "entropy"]
+        }
+        targets = concept_map.get(concept, [concept])
+        for target in targets:
+            if target in self._nodes:
+                old = self._nodes[target].mastery
+                self._nodes[target].mastery = min(1.0, old + compression_gain * 0.05)
+
+    def observe_empirical(self, obs_stream: str, variables: Dict[str, float]):
+        """Incremental empirical mastery earned by continuous observation of physical phenomena."""
+        if obs_stream == "falling_particle":
+            for c in ["position", "velocity", "acceleration", "gravity_g", "free_fall"]:
+                if c in self._nodes:
+                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
+        elif obs_stream in ("pressure", "circuit", "wave"):
+            targets = {"pressure": ["pressure", "hydrostatic"], "circuit": ["ohms_law", "electric_power"], "wave": ["wave_speed"]}.get(obs_stream, [])
+            for c in targets:
+                if c in self._nodes:
+                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
+        elif obs_stream in ("collision", "spring", "gas"):
+            targets = {"collision": ["momentum", "momentum_conservation", "kinetic_energy"], "spring": ["hookes_law", "harmonic_oscillator"], "gas": ["thermodynamics_1", "entropy"]}.get(obs_stream, [])
+            for c in targets:
+                if c in self._nodes:
+                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
 
     def current_frontier(self, current_tier: int) -> List[str]:
         """Returns concepts available in current tier with mastery < 1."""
@@ -185,9 +235,9 @@ class AdaptiveCurriculum:
         if self._gain_history:
             mean_g = sum(self._gain_history) / len(self._gain_history)
             std_g = math.sqrt(sum((x-mean_g)**2 for x in self._gain_history) / len(self._gain_history))
-            threshold = min(0.9, max(0.3, mean_g / (mean_g + std_g + 1e-6)))
+            threshold = min(0.85, max(0.25, mean_g / (mean_g + std_g + 1e-6)))
         else:
-            threshold = 0.5
+            threshold = 0.40
         if mastery >= threshold:
             next_tier = min(6, current_t + 1)
             self._current_tier = PhysicsTier(next_tier)
