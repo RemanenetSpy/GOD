@@ -1,4 +1,4 @@
-﻿"""
+"""
 ARC Sovereign Harness (Plug-in / Plug-out)
 Directly bridges the LIVING SovereignCivilization into ARC tasks without modifying core files.
 Returns visual grid data for the live real-time UI canvas.
@@ -106,7 +106,18 @@ class SovereignArcHarness:
             node = self.civilization.nodes[pillar_name]
             if hasattr(node, "kolmogorov_engine") and hasattr(node.kolmogorov_engine, "program_library"):
                 sig = f"arc_pass{pass_number}_{task_id}_{winning_hyp.signature}"
-                node.kolmogorov_engine.program_library[sig] = winning_hyp.description
+                try:
+                    from kolmogorov_engine import DiscoveredProgram
+                    node.kolmogorov_engine.program_library[sig] = DiscoveredProgram(
+                        signature=sig,
+                        code_str=f"# ARC Invariant: {winning_hyp.signature}\n# {winning_hyp.description}",
+                        program_type="ARC_INVARIANT",
+                        compression_gain=4.5,
+                        description=winning_hyp.description,
+                        discovery_step=pass_number
+                    )
+                except Exception:
+                    pass
             if hasattr(node, "state") and hasattr(node.state, "energy"):
                 node.state.energy = min(300.0, node.state.energy + 5.0)
             if hasattr(self.civilization, "fabric") and self.civilization.fabric:

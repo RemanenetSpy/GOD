@@ -317,4 +317,4 @@ class KolmogorovEngine:
 
     def get_library_dict(self) -> Dict[str, str]:
         """Returns all discovered programs as signature -> code string dictionary."""
-        return {sig: p.code_str for sig, p in self.program_library.items()}
+        return {sig: getattr(p, "code_str", str(p)) for sig, p in self.program_library.items()}
