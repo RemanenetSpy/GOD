@@ -144,8 +144,19 @@ class PhysicsKnowledgeGraph:
             "wave": ["wave_speed"],
             # Tier 3 mappings
             "collision": ["momentum", "momentum_conservation", "kinetic_energy"],
-            "spring": ["hookes_law", "harmonic_oscillator"],
-            "gas": ["thermodynamics_1", "entropy"]
+            "spring": ["hookes_law", "harmonic_oscillator", "work_energy"],
+            "oscillator": ["hookes_law", "harmonic_oscillator", "work_energy"],
+            "gas": ["thermodynamics_1", "entropy"],
+            "thermal": ["thermodynamics_1", "entropy"],
+            # Tier 4 mappings
+            "phase_space": ["action_principle", "lagrangian", "euler_lagrange", "hamiltonian", "noether_temporal", "noether_spatial"],
+            "maxwell": ["maxwell_gauss_E", "maxwell_faraday", "maxwell_ampere", "partition_function", "helmholtz"],
+            # Tier 5 mappings
+            "wavefunction": ["schrodinger", "born_rule", "uncertainty", "commutator", "qho_ladder"],
+            "lorentz": ["lorentz_invariance", "minkowski_metric", "lorentz_transform"],
+            # Tier 6 mappings
+            "schwarzschild": ["einstein_hilbert", "einstein_field_eq", "u1_gauge", "chern_number"],
+            "partition": ["path_integral", "yang_mills", "bcs_gap", "berry_phase"]
         }
         targets = concept_map.get(concept, [concept])
         for target in targets:
@@ -154,21 +165,34 @@ class PhysicsKnowledgeGraph:
                 self._nodes[target].mastery = min(1.0, old + compression_gain * 0.05)
 
     def observe_empirical(self, obs_stream: str, variables: Dict[str, float]):
-        """Incremental empirical mastery earned by continuous observation of physical phenomena."""
-        if obs_stream == "falling_particle":
-            for c in ["position", "velocity", "acceleration", "gravity_g", "free_fall"]:
-                if c in self._nodes:
-                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
-        elif obs_stream in ("pressure", "circuit", "wave"):
-            targets = {"pressure": ["pressure", "hydrostatic"], "circuit": ["ohms_law", "electric_power"], "wave": ["wave_speed"]}.get(obs_stream, [])
-            for c in targets:
-                if c in self._nodes:
-                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
-        elif obs_stream in ("collision", "spring", "gas"):
-            targets = {"collision": ["momentum", "momentum_conservation", "kinetic_energy"], "spring": ["hookes_law", "harmonic_oscillator"], "gas": ["thermodynamics_1", "entropy"]}.get(obs_stream, [])
-            for c in targets:
-                if c in self._nodes:
-                    self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
+        """Incremental empirical mastery earned by continuous observation of physical phenomena across all tiers."""
+        stream_targets = {
+            # Tier 1
+            "falling_particle": ["position", "velocity", "acceleration", "gravity_g", "free_fall"],
+            # Tier 2
+            "pressure": ["pressure", "hydrostatic"],
+            "circuit": ["ohms_law", "electric_power"],
+            "wave": ["wave_speed"],
+            # Tier 3
+            "collision": ["momentum", "momentum_conservation", "kinetic_energy"],
+            "spring": ["hookes_law", "harmonic_oscillator", "work_energy"],
+            "oscillator": ["hookes_law", "harmonic_oscillator", "work_energy"],
+            "gas": ["thermodynamics_1", "entropy"],
+            "thermal": ["thermodynamics_1", "entropy"],
+            # Tier 4
+            "phase_space": ["action_principle", "lagrangian", "euler_lagrange", "hamiltonian", "noether_temporal", "noether_spatial"],
+            "maxwell": ["maxwell_gauss_E", "maxwell_faraday", "maxwell_ampere", "partition_function", "helmholtz"],
+            # Tier 5
+            "wavefunction": ["schrodinger", "born_rule", "uncertainty", "commutator", "qho_ladder"],
+            "lorentz": ["lorentz_invariance", "minkowski_metric", "lorentz_transform"],
+            # Tier 6
+            "schwarzschild": ["einstein_hilbert", "einstein_field_eq", "u1_gauge", "chern_number"],
+            "partition": ["path_integral", "yang_mills", "bcs_gap", "berry_phase"]
+        }
+        targets = stream_targets.get(obs_stream, [])
+        for c in targets:
+            if c in self._nodes:
+                self._nodes[c].mastery = min(1.0, self._nodes[c].mastery + 0.002)
 
     def current_frontier(self, current_tier: int) -> List[str]:
         """Returns concepts available in current tier with mastery < 1."""
