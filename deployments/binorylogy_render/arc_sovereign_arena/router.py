@@ -1,4 +1,4 @@
-﻿"""
+"""
 ARC Sovereign API Router & Live Visual Dashboard
 Serves real-time JSON telemetry and the standalone /arc interactive HTML UI.
 """
@@ -204,9 +204,12 @@ def generate_arc_html_dashboard() -> str:
     <span class="badge badge-live">● LIVE 24/7</span>
     <span class="badge badge-pass" id="pass-badge">PASS #1</span>
     <span class="badge badge-time" id="time-badge">00:00:00</span>
+    <a href="https://huggingface.co/datasets/Explorerp/binorylogy-physics-memory" target="_blank" style="text-decoration: none;">
+      <span class="badge badge-pass" id="vault-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--amber); border: 1px solid var(--amber); cursor: pointer;">🤗 HF VAULT: CONNECTED</span>
+    </a>
   </div>
   <div style="color: var(--text-dim); font-size: 11px;">
-    Host: <code>god-1d2m.onrender.com</code> | Model: <strong>SovereignCivilization (4 Living Pillars)</strong>
+    Host: <code>god-1d2m.onrender.com</code> | Model: <strong>SovereignCivilization (4 Living Pillars)</strong> | Vault: <a href="https://huggingface.co/datasets/Explorerp/binorylogy-physics-memory" target="_blank" style="color: var(--amber); text-decoration: none;"><strong>Explorerp/binorylogy-physics-memory</strong></a>
   </div>
 </header>
 
@@ -340,6 +343,18 @@ async function fetchLiveTelemetry() {
     document.getElementById('pass-badge').innerText = `PASS #${d.current_pass || 1}`;
     document.getElementById('time-badge').innerText = d.elapsed_time_formatted || '00:00:00';
     document.getElementById('total-laws').innerText = d.total_laws_discovered || 0;
+
+    // Cloud Vault Badge
+    if (d.cloud_vault) {
+      const vb = document.getElementById('vault-badge');
+      if (vb) {
+        if (d.cloud_vault.connected) {
+          vb.innerText = `🤗 HF VAULT: SYNCED (${d.cloud_vault.last_cloud_sync || 'ACTIVE'})`;
+        } else {
+          vb.innerText = '🤗 HF VAULT: LOCAL CACHE';
+        }
+      }
+    }
 
     // Progress
     if (d.agi1_progress) {
