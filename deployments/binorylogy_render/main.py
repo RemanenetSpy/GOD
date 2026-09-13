@@ -276,6 +276,18 @@ print("[BinoryLogy 2.0] Engine loop initialized and running 24/7.")
 # ── FastAPI App & Endpoints ─────────────────────────────────────────────────
 app = FastAPI(title="BinoryLogy 2.0 Sovereign Physics Cognitive Architecture")
 
+# ── ARC Sovereign Discovery Arena (Plug-in / Plug-out) ──────────────────────
+try:
+    from arc_sovereign_arena.router import arc_router
+    from arc_sovereign_arena.coordinator import SovereignArcCoordinator
+    app.include_router(arc_router)
+    arc_coordinator = SovereignArcCoordinator(civilization=civilization)
+    arc_coordinator.start_background_loop()
+    print("[ARC Sovereign Arena] Plugged into living civilization and active 24/7.")
+except Exception as e:
+    arc_coordinator = None
+    print(f"[ARC Sovereign Arena] Plug-in notice: {e}")
+
 @app.api_route("/ping", methods=["GET", "HEAD"])
 def ping():
     return Response(content="PONG", media_type="text/plain")
@@ -293,7 +305,10 @@ def health():
 @app.get("/api/state")
 def api_state():
     with STATE_LOCK:
-        return JSONResponse(content=dict(LIVE_STATE))
+        st = dict(LIVE_STATE)
+        if "arc_coordinator" in globals() and arc_coordinator:
+            st["arc_arena"] = arc_coordinator.get_telemetry()
+        return JSONResponse(content=st)
 
 @app.get("/api/discoveries")
 def api_discoveries():
