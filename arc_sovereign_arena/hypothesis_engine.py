@@ -557,12 +557,23 @@ class SovereignHypothesisGenerator:
         p0_out = train_pairs[0]["output"]
 
         hyps: List[Hypothesis] = []
+
+        # 1. Analytical Inverse Causal Deduction (Deducing rules from Delta & Perception)
+        try:
+            from arc_sovereign_arena.causal_deduction import InverseCausalDeducer
+            deduced_hyps = InverseCausalDeducer.deduce_all(train_pairs)
+            for dh in deduced_hyps:
+                hyps.append(Hypothesis(dh.pillar_id, dh.signature, dh.description, dh.func))
+        except Exception:
+            pass
+
+        # 2. Foundational Physical & Topological Operator Generators
         hyps.extend(cls.generate_classical_hypotheses(p0_in, p0_out))
         hyps.extend(cls.generate_quantum_hypotheses(train_pairs))
         hyps.extend(cls.generate_thermodynamic_hypotheses(p0_in, p0_out))
         hyps.extend(cls.generate_string_hypotheses(p0_in, p0_out))
 
-        # Council Composition: D4 Symmetries combined with Color Permutation
+        # 3. Council Composition: D4 Symmetries combined with Color Permutation
         quantum_maps = [h for h in hyps if h.signature.startswith("color_permutation_")]
         if quantum_maps:
             q_map = quantum_maps[0]
