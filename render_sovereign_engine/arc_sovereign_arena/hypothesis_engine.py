@@ -1,10 +1,10 @@
-﻿"""
+"""
 ARC Sovereign Hypothesis Engine
 Maps mathematical and physical operators directly to the 4 Sovereign Pillars:
-- Classical-Eikonal: Affine symmetries (D4), spatial shifts, gravity advection, bounding crops.
-- Quantum-Superposed: State permutation ciphers, multi-operator superposition.
-- Modern-Thermodynamic: Cellular diffusion, neighbor dilation, MDL entropy reduction.
-- String-10D-Topological: Enclosure hole-filling, connected components, Kronecker fractals.
+- Classical-Eikonal: Affine symmetries (D4), spatial shifts, gravity advection, bounding crops, compound D4, homothety, kaleidoscope expansions.
+- Quantum-Superposed: State permutation ciphers, crop-permutation compositions, multi-operator superposition.
+- Modern-Thermodynamic: Cellular diffusion, vacuum entropy background crops, minimum thermal energy clusters.
+- String-10D-Topological: Enclosure hole-filling, largest connected component extractions, Kronecker fractals, boundary perimeters.
 """
 
 import numpy as np
@@ -107,7 +107,7 @@ class SovereignHypothesisGenerator:
         hyps.append(Hypothesis("classical_prime", "gravity_advection_right", "Gravitational mass advection rightward", gravity_right))
         hyps.append(Hypothesis("classical_prime", "gravity_advection_left", "Gravitational mass advection leftward", gravity_left))
 
-        # 4. Bounding Box Isolation / Crop
+        # 4. Bounding Box Isolation & Compound Symmetries
         def bbox_crop(grid):
             nz = np.argwhere(grid != 0)
             if len(nz) == 0:
@@ -117,6 +117,38 @@ class SovereignHypothesisGenerator:
             return grid[min_r:max_r+1, min_c:max_c+1]
 
         hyps.append(Hypothesis("classical_prime", "bounding_box_crop", "Minimal non-zero bounding box crop", bbox_crop))
+
+        for d_name, d_desc, d_op in d4_ops[1:]:
+            hyps.append(Hypothesis(
+                "classical_prime",
+                f"bbox_crop_{d_name}",
+                f"Bounding Box Crop + {d_desc}",
+                lambda x, op=d_op: op(bbox_crop(x))
+            ))
+
+        # 5. Integer Homothetic Scaling
+        for scale in [2, 3, 4]:
+            hyps.append(Hypothesis(
+                "classical_prime",
+                f"scale_homothety_{scale}x",
+                f"Integer Homothetic Scale {scale}x",
+                lambda x, s=scale: np.repeat(np.repeat(x, s, axis=0), s, axis=1)
+            ))
+
+        # 6. Concatenation & Symmetry Overlays
+        hyps.append(Hypothesis("classical_prime", "concat_h_flip", "Horizontal Concatenation with Parity Flip", lambda x: np.concatenate([x, np.fliplr(x)], axis=1)))
+        hyps.append(Hypothesis("classical_prime", "concat_v_flip", "Vertical Concatenation with Parity Flip", lambda x: np.concatenate([x, np.flipud(x)], axis=0)))
+        hyps.append(Hypothesis("classical_prime", "concat_h_ident", "Horizontal Concatenation Identity", lambda x: np.concatenate([x, x], axis=1)))
+        hyps.append(Hypothesis("classical_prime", "mirror_v_overlay", "Vertical Reflection Parity Overlay", lambda x: np.where(x != 0, x, np.flipud(x))))
+        hyps.append(Hypothesis("classical_prime", "mirror_h_overlay", "Horizontal Reflection Parity Overlay", lambda x: np.where(x != 0, x, np.fliplr(x))))
+
+        # 7. 4-Fold D4 Kaleidoscope Expansion
+        def quad_mirror(x):
+            top = np.concatenate([x, np.fliplr(x)], axis=1)
+            bottom = np.concatenate([np.flipud(x), np.rot90(x, 2)], axis=1)
+            return np.concatenate([top, bottom], axis=0)
+
+        hyps.append(Hypothesis("classical_prime", "quad_mirror_expansion", "4-Fold D4 Kaleidoscope Expansion", quad_mirror))
 
         return hyps
 
@@ -128,41 +160,78 @@ class SovereignHypothesisGenerator:
             return hyps
 
         p0_in, p0_out = train_pairs[0]["input"], train_pairs[0]["output"]
-        if p0_in.shape != p0_out.shape:
-            return hyps
 
-        # Induce color mapping from demonstration pairs
-        cmap = {}
-        consistent = True
-        for p in train_pairs:
-            inp, out = p["input"], p["output"]
-            if inp.shape != out.shape:
-                consistent = False
-                break
-            for u in np.unique(inp):
-                targets = np.unique(out[inp == u])
-                if len(targets) == 1:
-                    if u in cmap and cmap[u] != targets[0]:
-                        consistent = False
-                        break
-                    cmap[u] = targets[0]
-                else:
+        # Helper bbox
+        def bbox_crop(grid):
+            nz = np.argwhere(grid != 0)
+            if len(nz) == 0:
+                return grid
+            min_r, min_c = nz.min(axis=0)
+            max_r, max_c = nz.max(axis=0)
+            return grid[min_r:max_r+1, min_c:max_c+1]
+
+        # 1. Direct color permutation cipher
+        if p0_in.shape == p0_out.shape:
+            cmap = {}
+            consistent = True
+            for p in train_pairs:
+                inp, out = p["input"], p["output"]
+                if inp.shape != out.shape:
                     consistent = False
                     break
-            if not consistent:
-                break
+                for u in np.unique(inp):
+                    targets = np.unique(out[inp == u])
+                    if len(targets) == 1:
+                        if u in cmap and cmap[u] != targets[0]:
+                            consistent = False
+                            break
+                        cmap[u] = targets[0]
+                    else:
+                        consistent = False
+                        break
+                if not consistent:
+                    break
 
-        if consistent and cmap and any(k != v for k, v in cmap.items()):
-            def make_palette_map(mapping):
-                return lambda x: np.vectorize(lambda c: mapping.get(c, c))(x)
-            hyps.append(Hypothesis(
-                "quantum_prime",
-                f"color_permutation_{len(cmap)}states",
-                f"Quantum discrete state permutation cipher {dict(cmap)}",
-                make_palette_map(dict(cmap))
-            ))
+            if consistent and cmap and any(k != v for k, v in cmap.items()):
+                def make_palette_map(mapping):
+                    return lambda x: np.vectorize(lambda c: mapping.get(c, c))(x)
+                hyps.append(Hypothesis(
+                    "quantum_prime",
+                    f"color_permutation_{len(cmap)}states",
+                    f"Quantum discrete state permutation cipher {dict(cmap)}",
+                    make_palette_map(dict(cmap))
+                ))
 
-        # Color-conditional filters (project onto state c)
+        # 2. BBox Crop + Quantum Permutation Cipher
+        cropped_pairs = [(bbox_crop(pr["input"]), pr["output"]) for pr in train_pairs]
+        if not any(c_in.shape != c_out.shape for c_in, c_out in cropped_pairs):
+            cmap_crop = {}
+            consistent_crop = True
+            for c_in, c_out in cropped_pairs:
+                for u in np.unique(c_in):
+                    targets = np.unique(c_out[c_in == u])
+                    if len(targets) == 1:
+                        if u in cmap_crop and cmap_crop[u] != targets[0]:
+                            consistent_crop = False
+                            break
+                        cmap_crop[u] = targets[0]
+                    else:
+                        consistent_crop = False
+                        break
+                if not consistent_crop:
+                    break
+
+            if consistent_crop and cmap_crop:
+                def make_crop_map(mapping):
+                    return lambda g: np.vectorize(lambda c: mapping.get(c, c))(bbox_crop(g))
+                hyps.append(Hypothesis(
+                    "quantum_prime",
+                    f"bbox_crop_color_permutation_{len(cmap_crop)}states",
+                    f"BBox Crop + Quantum Color Permutation {dict(cmap_crop)}",
+                    make_crop_map(dict(cmap_crop))
+                ))
+
+        # 3. Color-conditional filters (project onto state c)
         for c in np.unique(p0_in):
             if c == 0:
                 continue
@@ -179,10 +248,10 @@ class SovereignHypothesisGenerator:
 
     @staticmethod
     def generate_thermodynamic_hypotheses(sample_in: np.ndarray, sample_out: np.ndarray) -> List[Hypothesis]:
-        """Modern-Thermodynamic: cellular diffusion, dilation & entropy reduction."""
+        """Modern-Thermodynamic: cellular diffusion, vacuum entropy crops, minimum thermal energy clusters."""
         hyps = []
 
-        # 4-Neighbor Cellular Dilation / Diffusion
+        # 1. 4-Neighbor Cellular Dilation / Diffusion
         def cellular_diffuse_1step(grid):
             res = grid.copy()
             h, w = grid.shape
@@ -209,6 +278,43 @@ class SovereignHypothesisGenerator:
 
         hyps.append(Hypothesis("modern_prime", "cellular_diffusion_4neighbor", "Orthogonal 4-neighbor cellular diffusion", cellular_diffuse_1step))
         hyps.append(Hypothesis("modern_prime", "cellular_diffusion_diagonal", "Diagonal cellular diffusion", cellular_diffuse_diagonal))
+
+        # Helper bbox
+        def bbox_crop(grid):
+            nz = np.argwhere(grid != 0)
+            if len(nz) == 0:
+                return grid
+            min_r, min_c = nz.min(axis=0)
+            max_r, max_c = nz.max(axis=0)
+            return grid[min_r:max_r+1, min_c:max_c+1]
+
+        # 2. Vacuum-Invariant Background Entropy Crop
+        def bg_crop(grid):
+            counts = np.bincount(grid.ravel(), minlength=10)
+            bg = counts.argmax()
+            nz = np.argwhere(grid != bg)
+            if len(nz) == 0:
+                return grid
+            min_r, min_c = nz.min(axis=0)
+            max_r, max_c = nz.max(axis=0)
+            return grid[min_r:max_r+1, min_c:max_c+1]
+
+        hyps.append(Hypothesis("modern_prime", "bg_invariant_bbox_crop", "Vacuum-Invariant BBox Crop", bg_crop))
+
+        # 3. Minimum Thermal Energy Cluster Extraction (Lowest entropy/area localized component)
+        def smallest_cc_crop(grid):
+            nz_mask = (grid != 0)
+            if not np.any(nz_mask):
+                return grid
+            labeled, num = scipy.ndimage.label(nz_mask)
+            if num == 0:
+                return grid
+            counts = [np.sum(labeled == i) for i in range(1, num + 1)]
+            min_idx = np.argmin(counts) + 1
+            isolated = np.where(labeled == min_idx, grid, 0)
+            return bbox_crop(isolated)
+
+        hyps.append(Hypothesis("modern_prime", "smallest_cc_crop", "Minimum Thermal Energy Cluster Crop", smallest_cc_crop))
 
         return hyps
 
@@ -242,14 +348,38 @@ class SovereignHypothesisGenerator:
                     make_hole_fill(bound_c, fill_c)
                 ))
 
-        # 2. Kronecker Self-Similar Fractal Expansion
+        # Helper bbox
+        def bbox_crop(grid):
+            nz = np.argwhere(grid != 0)
+            if len(nz) == 0:
+                return grid
+            min_r, min_c = nz.min(axis=0)
+            max_r, max_c = nz.max(axis=0)
+            return grid[min_r:max_r+1, min_c:max_c+1]
+
+        # 2. Largest Connected Component Extraction & BBox Crop
+        def largest_cc_crop(grid):
+            nz_mask = (grid != 0)
+            if not np.any(nz_mask):
+                return grid
+            labeled, num = scipy.ndimage.label(nz_mask)
+            if num == 0:
+                return grid
+            counts = [np.sum(labeled == i) for i in range(1, num + 1)]
+            max_idx = np.argmax(counts) + 1
+            isolated = np.where(labeled == max_idx, grid, 0)
+            return bbox_crop(isolated)
+
+        hyps.append(Hypothesis("string_meta", "largest_cc_bbox_crop", "Topological Largest Component BBox Crop", largest_cc_crop))
+
+        # 3. Kronecker Self-Similar Fractal Expansion
         def kronecker_fractal(grid):
             mask = (grid != 0).astype(int)
             return np.kron(mask, grid)
 
         hyps.append(Hypothesis("string_meta", "kronecker_fractal_expansion", "Self-similar Kronecker fractal expansion", kronecker_fractal))
 
-        # 3. Perimeter / Boundary Extraction
+        # 4. Perimeter / Boundary Extraction
         def extract_perimeter(grid):
             res = np.zeros_like(grid)
             h, w = grid.shape
