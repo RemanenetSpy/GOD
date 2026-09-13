@@ -150,6 +150,117 @@ class SovereignHypothesisGenerator:
 
         hyps.append(Hypothesis("classical_prime", "quad_mirror_expansion", "4-Fold D4 Kaleidoscope Expansion", quad_mirror))
 
+        # 8. Optical Ray Geodesics (Fermat's Principle / Wavefront propagation)
+        if sample_in.shape == sample_out.shape:
+            unique_in = [c for c in np.unique(sample_in) if c != 0]
+            unique_out = [c for c in np.unique(sample_out) if c != 0]
+            beam_targets = list(set(unique_out + [c for c in unique_out if c not in unique_in]))
+            for sc in unique_in:
+                for bc in beam_targets:
+                    def make_ray_conn(src_c, beam_c):
+                        def _conn(grid):
+                            coords = np.argwhere(grid == src_c)
+                            if len(coords) < 2:
+                                return grid
+                            res = grid.copy()
+                            for i in range(len(coords)):
+                                for j in range(i + 1, len(coords)):
+                                    r1, c1 = coords[i]
+                                    r2, c2 = coords[j]
+                                    if r1 == r2:
+                                        c_min, c_max = min(c1, c2), max(c1, c2)
+                                        for col in range(c_min + 1, c_max):
+                                            if res[r1, col] == 0:
+                                                res[r1, col] = beam_c
+                                    elif c1 == c2:
+                                        r_min, r_max = min(r1, r2), max(r1, r2)
+                                        for row in range(r_min + 1, r_max):
+                                            if res[row, c1] == 0:
+                                                res[row, c1] = beam_c
+                            return res
+                        return _conn
+                    hyps.append(Hypothesis(
+                        "classical_prime",
+                        f"eikonal_ray_connect_{sc}_{bc}",
+                        f"Eikonal Ray Connect source {sc} with beam {bc}",
+                        make_ray_conn(sc, bc)
+                    ))
+
+            # 9. Gravitational Vector Attraction Between Physical Bodies
+            if len(unique_in) >= 2:
+                for mc in unique_in:
+                    for ac in unique_in:
+                        if mc == ac:
+                            continue
+                        def make_attract(mover_c, attr_c):
+                            def _attr(grid):
+                                m_coords = np.argwhere(grid == mover_c)
+                                a_coords = np.argwhere(grid == attr_c)
+                                if len(m_coords) == 0 or len(a_coords) == 0:
+                                    return grid
+                                m_cm = m_coords.mean(axis=0)
+                                a_cm = a_coords.mean(axis=0)
+                                dr_total = a_cm[0] - m_cm[0]
+                                dc_total = a_cm[1] - m_cm[1]
+                                if abs(dr_total) >= abs(dc_total):
+                                    step_r = 1 if dr_total > 0 else -1
+                                    step_c = 0
+                                else:
+                                    step_r = 0
+                                    step_c = 1 if dc_total > 0 else -1
+                                h, w = grid.shape
+                                other_mask = (grid != 0) & (grid != mover_c)
+                                curr_m = m_coords.copy()
+                                max_steps = max(h, w)
+                                best_m = curr_m.copy()
+                                for _ in range(max_steps):
+                                    next_m = best_m + np.array([step_r, step_c])
+                                    collision = False
+                                    for r, c in next_m:
+                                        if not (0 <= r < h and 0 <= c < w) or other_mask[r, c]:
+                                            collision = True
+                                            break
+                                    if collision:
+                                        break
+                                    best_m = next_m
+                                res = grid.copy()
+                                res[grid == mover_c] = 0
+                                for r, c in best_m:
+                                    res[r, c] = mover_c
+                                return res
+                            return _attr
+                        hyps.append(Hypothesis(
+                            "classical_prime",
+                            f"gravitational_attraction_{mc}_{ac}",
+                            f"Gravitational Attraction: Color {mc} attracted to {ac}",
+                            make_attract(mc, ac)
+                        ))
+
+            # 10. Non-Wrapping Selective Cardinal Translations
+            for mc in unique_in:
+                for dr in [-3, -2, -1, 0, 1, 2, 3]:
+                    for dc in [-3, -2, -1, 0, 1, 2, 3]:
+                        if dr == 0 and dc == 0:
+                            continue
+                        def make_selective_shift(col, r, c):
+                            def _cs(grid):
+                                h, w = grid.shape
+                                res = grid.copy()
+                                res[res == col] = 0
+                                coords = np.argwhere(grid == col)
+                                for cr, cc in coords:
+                                    nr, nc = cr + r, cc + c
+                                    if 0 <= nr < h and 0 <= nc < w:
+                                        res[nr, nc] = col
+                                return res
+                            return _cs
+                        hyps.append(Hypothesis(
+                            "classical_prime",
+                            f"selective_shift_{mc}_{dr}_{dc}",
+                            f"Selective shift color {mc} by ({dr}, {dc})",
+                            make_selective_shift(mc, dr, dc)
+                        ))
+
         return hyps
 
     @staticmethod
@@ -243,6 +354,46 @@ class SovereignHypothesisGenerator:
                 f"Quantum state projection onto eigenstate color {c}",
                 make_filter(c)
             ))
+
+        # 4. Cluster Mass to Energy State Mapping
+        if p0_in.shape == p0_out.shape:
+            sz_map = {}
+            consistent = True
+            for pr in train_pairs:
+                labeled, num = scipy.ndimage.label(pr["input"] != 0)
+                for i in range(1, num + 1):
+                    sz = int(np.sum(labeled == i))
+                    out_colors = np.unique(pr["output"][labeled == i])
+                    if len(out_colors) == 1 and out_colors[0] != 0:
+                        c = out_colors[0]
+                        if sz in sz_map and sz_map[sz] != c:
+                            consistent = False
+                            break
+                        sz_map[sz] = c
+                    else:
+                        consistent = False
+                        break
+                if not consistent:
+                    break
+            if consistent and sz_map:
+                def make_sz_recolor(mapping):
+                    def _rc(grid):
+                        labeled, num = scipy.ndimage.label(grid != 0)
+                        if num == 0:
+                            return grid
+                        res = grid.copy()
+                        for i in range(1, num + 1):
+                            sz = int(np.sum(labeled == i))
+                            if sz in mapping:
+                                res[labeled == i] = mapping[sz]
+                        return res
+                    return _rc
+                hyps.append(Hypothesis(
+                    "quantum_prime",
+                    f"cluster_mass_recolor_{len(sz_map)}",
+                    f"Cluster Mass to State Mapping {dict(sz_map)}",
+                    make_sz_recolor(dict(sz_map))
+                ))
 
         return hyps
 
