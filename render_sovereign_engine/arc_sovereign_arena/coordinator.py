@@ -71,6 +71,8 @@ class SovereignArcCoordinator:
         }
         self.discoveries: List[Dict[str, Any]] = []
         self.mastered_task_ids: set = set()
+        self.mastered_agi1: set = set()
+        self.mastered_agi2: set = set()
 
         # Restore from Hugging Face Cloud Vault if available
         self._restore_from_vault()
@@ -93,7 +95,15 @@ class SovereignArcCoordinator:
                     self.stats["pillar_leaderboard"].update(saved["stats"]["pillar_leaderboard"])
             self.discoveries = saved.get("discoveries", [])
             self.mastered_task_ids = set(saved.get("mastered_task_ids", []))
-            print(f"[ARC Vault Cloud Sync] Restored Pass {self.current_pass} | {len(self.discoveries)} Laws Discovered | {len(self.mastered_task_ids)} Mastered Tasks from {getattr(self.vault, 'repo_id', 'cache')}")
+            self.mastered_agi1 = set(saved.get("mastered_agi1", []))
+            self.mastered_agi2 = set(saved.get("mastered_agi2", []))
+            if not self.mastered_agi1 and self.discoveries:
+                for disc in self.discoveries:
+                    if disc.get("track") == "AGI-1":
+                        self.mastered_agi1.add(disc.get("task_id"))
+                    elif disc.get("track") == "AGI-2":
+                        self.mastered_agi2.add(disc.get("task_id"))
+            print(f"[ARC Vault Cloud Sync] Restored Pass {self.current_pass} | {len(self.discoveries)} Laws Discovered | {len(self.mastered_agi1)} AGI-1, {len(self.mastered_agi2)} AGI-2 Mastered from {getattr(self.vault, 'repo_id', 'cache')}")
         except Exception as e:
             print(f"[ARC Vault Warning] Error restoring checkpoint: {e}")
 
@@ -112,6 +122,8 @@ class SovereignArcCoordinator:
             "stats": self.stats,
             "total_laws_discovered": len(self.discoveries),
             "mastered_task_ids": list(self.mastered_task_ids),
+            "mastered_agi1": list(self.mastered_agi1),
+            "mastered_agi2": list(self.mastered_agi2),
             "discoveries": self.discoveries[-500:],
             "saved_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
             "hf_repo": getattr(self.vault, "repo_id", "local")
@@ -188,6 +200,10 @@ class SovereignArcCoordinator:
             if pillar in self.stats["pillar_leaderboard"]:
                 self.stats["pillar_leaderboard"][pillar] += 1
             self.mastered_task_ids.add(res["task_id"])
+            if track == "AGI-1":
+                self.mastered_agi1.add(res["task_id"])
+            elif track == "AGI-2":
+                self.mastered_agi2.add(res["task_id"])
             self.discoveries.append({
                 "pass": self.current_pass,
                 "track": track,
@@ -230,15 +246,19 @@ class SovereignArcCoordinator:
             "elapsed_time_formatted": time.strftime("%H:%M:%S", time.gmtime(elapsed)),
             "agi1_progress": {
                 "total_tasks": len(self.agi1_tasks),
-                "tested": self.stats["agi1"]["tested"],
-                "mastered": self.stats["agi1"]["solved"],
-                "mastery_rate": self.stats["agi1"]["accuracy"]
+                "unique_mastered": len(self.mastered_agi1),
+                "mastered": len(self.mastered_agi1),
+                "mastery_rate": round(len(self.mastered_agi1) / max(1, len(self.agi1_tasks)), 4),
+                "cumulative_hits": self.stats["agi1"]["solved"],
+                "tested": self.stats["agi1"]["tested"]
             },
             "agi2_progress": {
                 "total_tasks": len(self.agi2_tasks),
-                "tested": self.stats["agi2"]["tested"],
-                "mastered": self.stats["agi2"]["solved"],
-                "mastery_rate": self.stats["agi2"]["accuracy"]
+                "unique_mastered": len(self.mastered_agi2),
+                "mastered": len(self.mastered_agi2),
+                "mastery_rate": round(len(self.mastered_agi2) / max(1, len(self.agi2_tasks)), 4),
+                "cumulative_hits": self.stats["agi2"]["solved"],
+                "tested": self.stats["agi2"]["tested"]
             },
             "agi3_progress": {
                 "mode": self.agi3_info.get("mode"),

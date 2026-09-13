@@ -223,11 +223,13 @@ def generate_arc_html_dashboard() -> str:
     <div class="stat-label">ARC-AGI-1 (Training 400)</div>
     <div class="stat-val" id="agi1-stat">0 / 400 (0.0%)</div>
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="agi1-bar"></div></div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="agi1-sub">0 cumulative hits</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">ARC-AGI-2 (Evaluation 400)</div>
     <div class="stat-val" id="agi2-stat">0 / 400 (0.0%)</div>
     <div class="progress-bar-bg"><div class="progress-bar-fill" id="agi2-bar"></div></div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="agi2-sub">0 cumulative hits</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Current Task</div>
@@ -359,13 +361,21 @@ async function fetchLiveTelemetry() {
     // Progress
     if (d.agi1_progress) {
       const p1 = d.agi1_progress;
-      document.getElementById('agi1-stat').innerText = `${p1.mastered} / ${p1.total_tasks} (${(p1.mastery_rate*100).toFixed(1)}%)`;
-      document.getElementById('agi1-bar').style.width = `${(p1.tested / p1.total_tasks)*100}%`;
+      const uniq = (p1.unique_mastered !== undefined) ? p1.unique_mastered : p1.mastered;
+      const rate = (p1.mastery_rate !== undefined) ? (p1.mastery_rate * 100).toFixed(1) : '0.0';
+      document.getElementById('agi1-stat').innerText = `${uniq} / ${p1.total_tasks} (${rate}%)`;
+      document.getElementById('agi1-bar').style.width = `${(uniq / p1.total_tasks) * 100}%`;
+      const s1 = document.getElementById('agi1-sub');
+      if (s1 && p1.cumulative_hits) s1.innerText = `${p1.cumulative_hits} total pass hits across runs`;
     }
     if (d.agi2_progress) {
       const p2 = d.agi2_progress;
-      document.getElementById('agi2-stat').innerText = `${p2.mastered} / ${p2.total_tasks} (${(p2.mastery_rate*100).toFixed(1)}%)`;
-      document.getElementById('agi2-bar').style.width = `${(p2.tested / p2.total_tasks)*100}%`;
+      const uniq = (p2.unique_mastered !== undefined) ? p2.unique_mastered : p2.mastered;
+      const rate = (p2.mastery_rate !== undefined) ? (p2.mastery_rate * 100).toFixed(1) : '0.0';
+      document.getElementById('agi2-stat').innerText = `${uniq} / ${p2.total_tasks} (${rate}%)`;
+      document.getElementById('agi2-bar').style.width = `${(uniq / p2.total_tasks) * 100}%`;
+      const s2 = document.getElementById('agi2-sub');
+      if (s2 && p2.cumulative_hits) s2.innerText = `${p2.cumulative_hits} total pass hits across runs`;
     }
 
     // Current Task
