@@ -281,7 +281,7 @@ try:
     from arc_sovereign_arena.router import arc_router, generate_arc_html_dashboard
     from arc_sovereign_arena.coordinator import SovereignArcCoordinator
     app.include_router(arc_router)
-    arc_coordinator = SovereignArcCoordinator(civilization=civilization)
+    arc_coordinator = SovereignArcCoordinator(civilization=civilization, vault=vault)
     arc_coordinator.start_background_loop()
     print("[ARC Sovereign Arena] Plugged into living civilization and active 24/7.")
 

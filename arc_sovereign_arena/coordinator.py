@@ -1,7 +1,8 @@
-﻿"""
+"""
 ARC Sovereign Coordinator
 Coordinates the 3 tracks (AGI-1, AGI-2, AGI-3) in an INFINITE 24/7 background learning loop.
 Tracks live timing, pass counter, task mastery, and live visual grid matrices for the UI.
+Synchronizes all discoveries, passes, and mastered task states with the Hugging Face Cloud Vault.
 """
 
 import time
@@ -9,22 +10,28 @@ import threading
 from typing import Dict, Any, List, Optional
 from arc_sovereign_arena.arc_loader import ARCTaskLoader
 from arc_sovereign_arena.harness import SovereignArcHarness
+from arc_sovereign_arena.arc_vault import ARCSovereignVault
 
 
 class SovereignArcCoordinator:
     _instance = None
 
-    def __new__(cls, civilization=None):
+    def __new__(cls, civilization=None, vault=None):
         if cls._instance is None:
             cls._instance = super(SovereignArcCoordinator, cls).__new__(cls)
-            cls._instance._init(civilization)
+            cls._instance._init(civilization, vault)
+        elif vault is not None and not getattr(cls._instance, "vault", None):
+            cls._instance.vault = vault
+            cls._instance._restore_from_vault()
         return cls._instance
 
-    def _init(self, civilization=None):
+    def _init(self, civilization=None, vault=None):
         self.loader = ARCTaskLoader()
         self.harness = SovereignArcHarness(civilization)
+        self.vault = vault or ARCSovereignVault()
         self.is_running = False
         self._thread: Optional[threading.Thread] = None
+        self._last_vault_save = 0.0
 
         # Telemetry & State
         self.start_time = time.time()
@@ -63,6 +70,61 @@ class SovereignArcCoordinator:
             }
         }
         self.discoveries: List[Dict[str, Any]] = []
+        self.mastered_task_ids: set = set()
+
+        # Restore from Hugging Face Cloud Vault if available
+        self._restore_from_vault()
+
+    def _restore_from_vault(self):
+        """Restores ARC discovery state from Hugging Face Dataset vault or local cache."""
+        if not self.vault:
+            return
+        try:
+            saved = self.vault.load("arc_sovereign_checkpoint.json")
+            if not saved:
+                print("[ARC Vault] No prior checkpoint found; starting initial Pass 1.")
+                return
+            self.current_pass = saved.get("current_pass", 1)
+            if "stats" in saved and isinstance(saved["stats"], dict):
+                for k in ("agi1", "agi2", "agi3"):
+                    if k in saved["stats"] and isinstance(saved["stats"][k], dict):
+                        self.stats[k].update(saved["stats"][k])
+                if "pillar_leaderboard" in saved["stats"] and isinstance(saved["stats"]["pillar_leaderboard"], dict):
+                    self.stats["pillar_leaderboard"].update(saved["stats"]["pillar_leaderboard"])
+            self.discoveries = saved.get("discoveries", [])
+            self.mastered_task_ids = set(saved.get("mastered_task_ids", []))
+            print(f"[ARC Vault Cloud Sync] Restored Pass {self.current_pass} | {len(self.discoveries)} Laws Discovered | {len(self.mastered_task_ids)} Mastered Tasks from {getattr(self.vault, 'repo_id', 'cache')}")
+        except Exception as e:
+            print(f"[ARC Vault Warning] Error restoring checkpoint: {e}")
+
+    def _save_to_vault(self, force: bool = False):
+        """Saves ARC discovery state to local cache and pushes to Hugging Face Dataset."""
+        if not self.vault:
+            return
+        now = time.time()
+        if not force and (now - self._last_vault_save < 30.0):
+            return
+        self._last_vault_save = now
+
+        state = {
+            "vault_type": "arc_sovereign_memory",
+            "current_pass": self.current_pass,
+            "stats": self.stats,
+            "total_laws_discovered": len(self.discoveries),
+            "mastered_task_ids": list(self.mastered_task_ids),
+            "discoveries": self.discoveries[-500:],
+            "saved_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
+            "hf_repo": getattr(self.vault, "repo_id", "local")
+        }
+        try:
+            self.vault.save(
+                state,
+                filename="arc_sovereign_checkpoint.json",
+                commit_msg=f"ARC Sovereign Pass {self.current_pass} | {len(self.discoveries)} Laws Discovered",
+                async_upload=True
+            )
+        except Exception as e:
+            print(f"[ARC Vault Save Warning]: {e}")
 
     def start_background_loop(self):
         """Starts the autonomous discovery loop in an infinite 24/7 background thread."""
@@ -111,8 +173,9 @@ class SovereignArcCoordinator:
                 self.stats["agi3"]["accuracy"] = round(self.stats["agi3"]["solved"] / self.stats["agi3"]["tested"], 4)
             time.sleep(1.0)
 
-            # Advance to next compounding pass
+            # Advance to next compounding pass and sync with Hugging Face Cloud Vault
             self.current_pass += 1
+            self._save_to_vault(force=True)
 
     def _record_task_result(self, track: str, res: Dict[str, Any]):
         key = "agi1" if track == "AGI-1" else "agi2"
@@ -124,6 +187,7 @@ class SovereignArcCoordinator:
             pillar = res["pillar"]
             if pillar in self.stats["pillar_leaderboard"]:
                 self.stats["pillar_leaderboard"][pillar] += 1
+            self.mastered_task_ids.add(res["task_id"])
             self.discoveries.append({
                 "pass": self.current_pass,
                 "track": track,
@@ -133,6 +197,8 @@ class SovereignArcCoordinator:
                 "time_sec": res["time_sec"],
                 "timestamp": time.strftime("%H:%M:%S UTC", time.gmtime())
             })
+            # Trigger asynchronous cloud sync to Hugging Face
+            self._save_to_vault(force=False)
 
         self.stats[key]["accuracy"] = round(self.stats[key]["solved"] / max(1, self.stats[key]["tested"]), 4)
 
@@ -182,7 +248,13 @@ class SovereignArcCoordinator:
             },
             "pillar_leaderboard": self.stats["pillar_leaderboard"],
             "total_laws_discovered": len(self.discoveries),
-            "recent_discoveries": self.discoveries[-12:]
+            "recent_discoveries": self.discoveries[-12:],
+            "cloud_vault": {
+                "connected": self.vault is not None and bool(getattr(self.vault, "token", None)),
+                "repo": getattr(self.vault, "repo_id", "local_only"),
+                "total_unique_mastered": len(self.mastered_task_ids),
+                "last_cloud_sync": time.strftime("%H:%M:%S UTC", time.gmtime(self._last_vault_save)) if self._last_vault_save > 0 else "pending"
+            }
         }
 
     def get_live_visual_state(self) -> Dict[str, Any]:
