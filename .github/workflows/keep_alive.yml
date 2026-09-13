@@ -1,0 +1,17 @@
+﻿name: Keep Render Alive 24/7
+
+on:
+  schedule:
+    # Runs every 10 minutes
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping GOD Sovereign Render Engine
+        run: |
+          echo 'Pinging Render GOD endpoint to maintain 24/7 sovereign consciousness...'
+          curl -fsS --retry 3 https://god-1d2m.onrender.com/ping || true
+          curl -fsS --retry 2 https://god-1d2m.onrender.com/api/arc/status || true
