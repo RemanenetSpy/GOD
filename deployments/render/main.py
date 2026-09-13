@@ -80,16 +80,16 @@ def _restore_from_vault():
     global DISCOVERY_LOG, TOTAL_STEPS
     saved = vault.load("binory_checkpoint.json")
     if not saved:
-        print("[BinoryVault] Fresh genesis - restoring Tier 6 Graduate foundation.")
-        curriculum._current_tier = PhysicsTier.TIER6_GRADUATE
-        TOTAL_STEPS = 15420
-        core._step = TOTAL_STEPS
+        print("[BinoryVault] Fresh genesis - starting from Tier 1.")
+        curriculum._current_tier = PhysicsTier.TIER1_SENSORIMOTOR
+        TOTAL_STEPS = 0
+        core._step = 0
         return
     try:
-        tier_val = saved.get("tier", 6)
+        tier_val = saved.get("tier", 1)
         curriculum._current_tier = PhysicsTier(tier_val)
         DISCOVERY_LOG = saved.get("discoveries", [])
-        TOTAL_STEPS = saved.get("step", 15420)
+        TOTAL_STEPS = saved.get("step", 0)
         core._step = TOTAL_STEPS
         for c, m in saved.get("concept_mastery", {}).items():
             if c in curriculum.pkg._nodes:
