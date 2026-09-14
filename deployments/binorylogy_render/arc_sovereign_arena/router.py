@@ -243,6 +243,11 @@ def generate_arc_html_dashboard() -> str:
     <div class="stat-val" id="current-task-name" style="color: var(--amber);">genesis</div>
     <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="stat-organism-pos">Body Pos: (0, 0) | Tool: 1</div>
   </div>
+  <div class="stat-card">
+    <div class="stat-label">Ancestral Causal Memory</div>
+    <div class="stat-val" id="stat-ancestral-food" style="color: var(--purple);">0 Food Px</div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="stat-ancestral-veto">Vetoed Poisons: 0 | Deaths Learned: 0</div>
+  </div>
 </div>
 
 <div class="main-arena">
@@ -399,6 +404,14 @@ async function fetchLiveTelemetry() {
     document.getElementById('stat-puzzles-cleared').innerText = `${d.puzzles_cleared || 0} Puzzles Cleared`;
     document.getElementById('current-task-name').innerText = d.task_id || d.current_task || 'genesis';
     document.getElementById('stat-organism-pos').innerText = `Body Pos: (${org.r || 0}, ${org.c || 0}) | Color: ${org.selected_color || 0}`;
+
+    // Ancestral Causal Memory
+    const mem = d.ancestral_memory || {};
+    const nutCount = mem.total_nutrition_discovered !== undefined ? mem.total_nutrition_discovered : (mem.confirmed_nutrition ? Object.keys(mem.confirmed_nutrition).length : 0);
+    const toxCount = mem.total_toxic_vetoed !== undefined ? mem.total_toxic_vetoed : (mem.toxic_ledger ? Object.keys(mem.toxic_ledger).length : 0);
+    const deathCount = mem.total_deaths_recorded !== undefined ? mem.total_deaths_recorded : (mem.task_deaths ? Object.values(mem.task_deaths).reduce((a, b) => a + b, 0) : 0);
+    document.getElementById('stat-ancestral-food').innerText = `${nutCount} Confirmed Food`;
+    document.getElementById('stat-ancestral-veto').innerText = `Vetoed Poisons: ${toxCount} | Deaths Learned: ${deathCount}`;
 
     // Connectome / Selected color info
     const toolCol = org.selected_color || 0;

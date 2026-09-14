@@ -103,6 +103,8 @@ class SovereignArcCoordinator:
             self.world.total_food_eaten = saved.get("total_food_eaten", 0)
             self.world.total_puzzles_cleared = saved.get("puzzles_cleared", 0)
             self.world.best_lifespan = saved.get("best_lifespan", 0)
+            if "ancestral_memory" in saved:
+                self.world.ancestral_memory.load_dict(saved["ancestral_memory"])
 
             print(f"[ARC Survival Vault Cloud Sync] Restored Generation {self.world.generation} | {self.world.total_deaths} Deaths | {self.world.total_puzzles_cleared} Puzzles Cleared from {getattr(self.vault, 'repo_id', 'cache')}")
         except Exception as e:
@@ -127,6 +129,7 @@ class SovereignArcCoordinator:
             "best_lifespan": self.world.best_lifespan,
             "current_task": self.world.current_task_id,
             "core_synapses": self._get_core_synapse_count(),
+            "ancestral_memory": self.world.ancestral_memory.to_dict(),
             "recent_events": self.world.recent_events[-10:],
             "saved_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
             "hf_repo": getattr(self.vault, "repo_id", "local")
@@ -215,6 +218,7 @@ class SovereignArcCoordinator:
                 "lifespan": self.world.organism.lifespan_ticks,
                 "food_eaten": self.world.organism.food_eaten
             },
+            "ancestral_memory": self.world.ancestral_memory.to_dict(),
             "recent_events": self.world.recent_events[-6:],
             "cloud_vault": {
                 "connected": self.vault is not None and bool(getattr(self.vault, "token", None)),
