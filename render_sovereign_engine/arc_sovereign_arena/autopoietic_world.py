@@ -123,28 +123,27 @@ class ArcSurvivalWorld:
             paint_color = int(self.organism.selected_color)
 
             if paint_color == target_color:
-                # Correct Pixel: NUTRITION!
                 if self.working_canvas[r, c] != target_color:
+                    # Genuine NEW Food ingestion
                     food_gain = 15.0
                     self.organism.feed(food_gain)
                     self.total_food_eaten += 1
+                    self.working_canvas[r, c] = paint_color
+                    # Register confirmed food source in Ancestral Causal Ledger
+                    self.ancestral_memory.record_nutrition(self.current_task_id, r, c, paint_color)
                     event_msg = f"NUTRITION! Pixel ({r},{c}) set to {paint_color} (+15 Energy) [Saved in Ancestral Memory]"
+
+                    # Potentiate STDP node in BinoryCore
+                    if self.core is not None and hasattr(self.core, "update"):
+                        try:
+                            nid_food = make_node_id(f"arc_food_{r}_{c}_{paint_color}")
+                            register_name(nid_food, f"food:({r},{c})={paint_color}")
+                            self.core.update([nid_food], cpu_load=8.0)
+                        except Exception:
+                            pass
                 else:
-                    self.organism.feed(1.0)
-                    event_msg = f"Maintenance! Pixel ({r},{c}) refreshed to {paint_color} (+1 Energy)"
-                self.working_canvas[r, c] = paint_color
-
-                # Register confirmed food source in Ancestral Causal Ledger
-                self.ancestral_memory.record_nutrition(self.current_task_id, r, c, paint_color)
-
-                # Potentiate STDP node in BinoryCore
-                if self.core is not None and hasattr(self.core, "update"):
-                    try:
-                        nid_food = make_node_id(f"arc_food_{r}_{c}_{paint_color}")
-                        register_name(nid_food, f"food:({r},{c})={paint_color}")
-                        self.core.update([nid_food], cpu_load=8.0)
-                    except Exception:
-                        pass
+                    # Food on this tile has already been eaten! 0 food reward!
+                    event_msg = f"DEPLETED! Pixel ({r},{c}) already satisfied (0 Food). Organism must seek another pixel!"
             else:
                 # Wrong Pixel: TOXIC / WASTE
                 waste_penalty = 3.0
