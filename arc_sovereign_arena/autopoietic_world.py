@@ -1,23 +1,28 @@
 """
 ARC Sovereign Autopoietic Survival World
 A living environment where ARC puzzles are terrain and correct pixels are food.
-Zero hardcoded physics rules. The organism survives or starves through embodied action.
+Driven directly by the 4 Sovereign Pillars and BinoryCore STDP Plasticity.
+Zero hardcoded physics rules.
 """
 
 import numpy as np
 from typing import Dict, Any, List, Optional
-from arc_sovereign_arena.organism import ArcLivingOrganism, SensoryMotorConnectome
+from arc_sovereign_arena.organism import ArcLivingOrganism
 from arc_sovereign_arena.arc_loader import ARCTaskLoader
 
 
 class ArcSurvivalWorld:
     """
     The living ARC environment. Orchestrates the puzzle canvas,
-    metabolic food dispersion, starvation deaths, and generational births.
+    metabolic food dispersion, starvation deaths, and generational births
+    driven directly by SovereignCivilization and BinoryCore.
     """
 
-    def __init__(self, loader: Optional[ARCTaskLoader] = None):
+    def __init__(self, loader: Optional[ARCTaskLoader] = None, civilization=None, core=None):
         self.loader = loader or ARCTaskLoader()
+        self.civilization = civilization
+        self.core = core
+
         self.agi1_files = self.loader.get_agi1_tasks()
         self.agi2_files = self.loader.get_agi2_tasks()
         self.all_files = self.agi1_files + self.agi2_files
@@ -29,7 +34,7 @@ class ArcSurvivalWorld:
         self.working_canvas: np.ndarray = np.zeros((3, 3), dtype=int)
         self.target_canvas: np.ndarray = np.zeros((3, 3), dtype=int)
 
-        # Living Population & Genetics
+        # Living Population & Generations
         self.generation: int = 1
         self.total_births: int = 1
         self.total_deaths: int = 0
@@ -38,8 +43,11 @@ class ArcSurvivalWorld:
         self.best_lifespan: int = 0
         self.tick_count: int = 0
 
-        self.organism = ArcLivingOrganism(generation=1)
-        self.fittest_organism = self.organism
+        self.organism = ArcLivingOrganism(
+            civilization=self.civilization,
+            core=self.core,
+            generation=1
+        )
         self.recent_events: List[Dict[str, Any]] = []
 
         # Load initial puzzle
@@ -48,7 +56,6 @@ class ArcSurvivalWorld:
     def _load_current_puzzle(self):
         """Loads the current ARC puzzle terrain."""
         if not self.all_files:
-            # Fallback simple 3x3 gravity genesis puzzle if no dataset files found
             self.current_task_id = "genesis_falling_seed"
             self.input_canvas = np.array([[0, 1, 0], [0, 0, 0], [0, 0, 0]], dtype=int)
             self.target_canvas = np.array([[0, 0, 0], [0, 0, 0], [0, 1, 0]], dtype=int)
@@ -64,12 +71,10 @@ class ArcSurvivalWorld:
             return
 
         self.current_task_id = task["task_id"]
-        # Use first training pair as the immediate environment
         pair = task["train"][0]
         self.input_canvas = pair["input"].copy()
         self.target_canvas = pair["output"].copy()
 
-        # If target shape differs from input shape, working canvas matches target dimensions
         if self.target_canvas.shape == self.input_canvas.shape:
             self.working_canvas = self.input_canvas.copy()
         else:
@@ -79,14 +84,14 @@ class ArcSurvivalWorld:
         self.organism.reset_position(h, w)
 
     def tick(self) -> Dict[str, Any]:
-        """Runs one biological tick of the survival ecology."""
+        """Runs one biological tick: perception, STDP spikes, 4-pillar council action, and metabolic feedback."""
         self.tick_count += 1
 
-        # 1. Sensory Perception (Vision + Hunger + Location)
-        sensory = self.organism.perceive(self.input_canvas, self.working_canvas)
+        # 1. Sensory Perception & BinoryCore STDP Synaptic Spikes
+        self.organism.perceive_and_spike(self.input_canvas, self.working_canvas)
 
-        # 2. Embodied Action
-        action = self.organism.step(sensory)
+        # 2. Embodied Action via 4-Pillar Council Consensus
+        action = self.organism.decide_action(self.input_canvas, self.working_canvas)
 
         event_msg = None
         h, w = self.working_canvas.shape
@@ -122,25 +127,21 @@ class ArcSurvivalWorld:
                 self.working_canvas[r, c] = paint_color
                 event_msg = f"TOXIC! Pixel ({r},{c}) set to {paint_color}, needed {target_color} (-3 Energy)"
         elif action == ArcLivingOrganism.ACTION_REST:
-            event_msg = "Resting / Meditating"
-        elif 6 <= action <= 15:
-            # Tool Color Selection
-            self.organism.selected_color = action - 6
+            event_msg = "Sovereign Pillars Meditating (Conserving Vitality)"
 
-        # 4. Check Starvation & Death
+        # 4. Check Starvation & Generational Transition
         if not self.organism.is_alive:
             self.total_deaths += 1
             if self.organism.lifespan_ticks > self.best_lifespan:
                 self.best_lifespan = self.organism.lifespan_ticks
-                self.fittest_organism = self.organism
 
-            # Spawn next generation from the fittest survivor
+            # Spawn next generation of the Sovereign Civilization
             self.generation += 1
             self.total_births += 1
-            self.organism = self.fittest_organism.spawn_offspring()
+            self.organism = self.organism.spawn_next_generation()
             self._load_current_puzzle()
 
-            event_msg = f"STARVATION! Organism died at tick {self.tick_count}. Generation {self.generation} spawned."
+            event_msg = f"STARVATION! Civilization starved at tick {self.tick_count}. Generation {self.generation} spawned."
             self._record_event(event_msg, "death")
             return self.get_state()
 
@@ -153,7 +154,6 @@ class ArcSurvivalWorld:
             event_msg = f"LEVEL CLEARED! Puzzle {self.current_task_id} completed. (+50 Energy FEAST)"
             self._record_event(event_msg, "clear")
 
-            # Advance to next puzzle
             self.puzzle_idx += 1
             self._load_current_puzzle()
 
@@ -176,6 +176,23 @@ class ArcSurvivalWorld:
 
     def get_state(self) -> Dict[str, Any]:
         """Returns the full live state for web visualization and telemetry."""
+        # 4 Pillars status
+        pillar_info = {}
+        if self.civilization and hasattr(self.civilization, "nodes"):
+            for nid, node in self.civilization.nodes.items():
+                pillar_info[nid] = {
+                    "energy": round(node.state.energy, 1) if hasattr(node, "state") else 100.0,
+                    "temperature": round(node.state.temperature, 2) if hasattr(node, "state") else 0.1,
+                    "fever": getattr(node.state, "fever_active", False) if hasattr(node, "state") else False
+                }
+
+        if self.core and hasattr(self.core, "_synapses"):
+            core_synapse_count = len(self.core._synapses)
+        elif self.core and hasattr(self.core, "_weights"):
+            core_synapse_count = len(self.core._weights)
+        else:
+            core_synapse_count = 0
+
         return {
             "tick": self.tick_count,
             "current_task": self.current_task_id,
@@ -199,5 +216,7 @@ class ArcSurvivalWorld:
             "input_canvas": self.input_canvas.tolist(),
             "working_canvas": self.working_canvas.tolist(),
             "target_canvas": self.target_canvas.tolist(),
+            "pillar_info": pillar_info,
+            "core_synapses": core_synapse_count,
             "recent_events": self.recent_events[-8:]
         }

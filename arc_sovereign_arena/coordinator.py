@@ -1,11 +1,8 @@
 """
-ARC Sovereign Coordinator (Autopoietic Survival Ecology Edition)
-Runs an infinite 24/7 embodied survival world where:
-- ARC puzzles are the terrain.
-- Correct pixels are food/nutrition; wrong pixels waste energy.
-- Organisms survive through hunger ($dH/dt < 0$), birth, and death.
-- Zero pre-coded physics rules or hypothesis templates.
-- Telemetry and generational lineages are saved permanently to Hugging Face Cloud Vault.
+ARC Sovereign Coordinator (4-Pillar Council & BinoryCore STDP Edition)
+Directly connects the original Sovereign Civilization and BinoryCore STDP plasticity
+into the 24/7 ARC Survival Ecology.
+Zero hardcoded physics rules.
 """
 
 import time
@@ -14,32 +11,62 @@ from typing import Dict, Any, List, Optional
 from arc_sovereign_arena.arc_loader import ARCTaskLoader
 from arc_sovereign_arena.arc_vault import ARCSovereignVault
 from arc_sovereign_arena.autopoietic_world import ArcSurvivalWorld
-from arc_sovereign_arena.organism import SensoryMotorConnectome
 
 
 class SovereignArcCoordinator:
     _instance = None
 
-    def __new__(cls, civilization=None, vault=None):
+    def __new__(cls, civilization=None, vault=None, core=None):
         if cls._instance is None:
             cls._instance = super(SovereignArcCoordinator, cls).__new__(cls)
-            cls._instance._init(civilization, vault)
-        elif vault is not None and not getattr(cls._instance, "vault", None):
-            cls._instance.vault = vault
-            cls._instance._restore_from_vault()
+            cls._instance._init(civilization, vault, core)
+        else:
+            if civilization is not None and getattr(cls._instance, "civilization", None) is None:
+                cls._instance.civilization = civilization
+                cls._instance.world.civilization = civilization
+                cls._instance.world.organism.civilization = civilization
+            if core is not None and getattr(cls._instance, "core", None) is None:
+                cls._instance.core = core
+                cls._instance.world.core = core
+                cls._instance.world.organism.core = core
+            if vault is not None and getattr(cls._instance, "vault", None) is None:
+                cls._instance.vault = vault
+                cls._instance._restore_from_vault()
         return cls._instance
 
-    def _init(self, civilization=None, vault=None):
+    def _init(self, civilization=None, vault=None, core=None):
         self.civilization = civilization
+        self.core = core
+
+        # If core not provided, try to obtain from BinoryCore
+        if self.core is None:
+            try:
+                from binory_core import BinoryCore
+                self.core = BinoryCore()
+            except ImportError:
+                try:
+                    from src.binory_core import BinoryCore
+                    self.core = BinoryCore()
+                except ImportError:
+                    self.core = None
+
         self.loader = ARCTaskLoader()
         self.vault = vault or ARCSovereignVault()
         self.is_running = False
         self._thread: Optional[threading.Thread] = None
         self._last_vault_save = 0.0
 
-        # Initialize the Living Autopoietic World
-        self.world = ArcSurvivalWorld(loader=self.loader)
+        # Initialize the Living Autopoietic World powered directly by the 4 Pillars
+        self.world = ArcSurvivalWorld(loader=self.loader, civilization=self.civilization, core=self.core)
         self.start_time = time.time()
+
+    def _get_core_synapse_count(self) -> int:
+        if self.core is not None:
+            if hasattr(self.core, "_synapses"):
+                return len(self.core._synapses)
+            elif hasattr(self.core, "_weights"):
+                return len(self.core._weights)
+        return 0
 
         # Telemetry & State
         self.current_task_id = self.world.current_task_id
@@ -51,6 +78,8 @@ class SovereignArcCoordinator:
             "input_grid": self.world.input_canvas.tolist(),
             "working_grid": self.world.working_canvas.tolist(),
             "target_grid": self.world.target_canvas.tolist(),
+            "pillar_info": {},
+            "core_synapses": 0,
             "recent_events": [],
             "last_update": time.strftime("%H:%M:%S UTC", time.gmtime())
         }
@@ -75,20 +104,12 @@ class SovereignArcCoordinator:
             self.world.total_puzzles_cleared = saved.get("puzzles_cleared", 0)
             self.world.best_lifespan = saved.get("best_lifespan", 0)
 
-            if "fittest_connectome" in saved and isinstance(saved["fittest_connectome"], dict):
-                try:
-                    c = SensoryMotorConnectome.from_dict(saved["fittest_connectome"])
-                    self.world.fittest_organism.connectome = c
-                    self.world.organism = self.world.fittest_organism.spawn_offspring()
-                except Exception:
-                    pass
-
             print(f"[ARC Survival Vault Cloud Sync] Restored Generation {self.world.generation} | {self.world.total_deaths} Deaths | {self.world.total_puzzles_cleared} Puzzles Cleared from {getattr(self.vault, 'repo_id', 'cache')}")
         except Exception as e:
             print(f"[ARC Vault Warning] Error restoring lineage: {e}")
 
     def _save_to_vault(self, force: bool = False):
-        """Saves living lineage, generational stats, and best connectome to Cloud Vault."""
+        """Saves living lineage, generational stats, and core state to Cloud Vault."""
         if not self.vault:
             return
         now = time.time()
@@ -105,7 +126,7 @@ class SovereignArcCoordinator:
             "puzzles_cleared": self.world.total_puzzles_cleared,
             "best_lifespan": self.world.best_lifespan,
             "current_task": self.world.current_task_id,
-            "fittest_connectome": self.world.fittest_organism.connectome.to_dict(),
+            "core_synapses": self._get_core_synapse_count(),
             "recent_events": self.world.recent_events[-10:],
             "saved_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime()),
             "hf_repo": getattr(self.vault, "repo_id", "local")
@@ -134,7 +155,7 @@ class SovereignArcCoordinator:
         self.is_running = False
 
     def _run_survival_loop(self):
-        """Runs the living ecology: steps the organism, updates UI state, and saves lineages."""
+        """Runs the living ecology: steps the 4-pillar council, updates UI state, and saves lineages."""
         while self.is_running:
             # 1. Step the living organism in the ARC survival environment
             st = self.world.tick()
@@ -155,19 +176,16 @@ class SovereignArcCoordinator:
                 "input_grid": st["input_canvas"],
                 "working_grid": st["working_canvas"],
                 "target_grid": st["target_canvas"],
+                "pillar_info": st["pillar_info"],
+                "core_synapses": st["core_synapses"],
                 "recent_events": st["recent_events"],
                 "last_update": time.strftime("%H:%M:%S UTC", time.gmtime())
             }
 
-            # 3. Synchronize with Sovereign Civilization connectome if plugged in
-            if self.civilization and hasattr(self.civilization, "fabric") and self.civilization.fabric:
-                if st["total_food_eaten"] > 0 and st["tick"] % 20 == 0:
-                    self.civilization.fabric.reinforce_synapse("quantum_prime", "classical_prime", amount=0.5)
-
-            # 4. Periodic cloud save
+            # 3. Periodic cloud save
             self._save_to_vault(force=False)
 
-            # Ticking speed: ~12.5 ticks per second (0.08s) for smooth visual observation
+            # Ticking speed: ~12.5 ticks per second (0.08s)
             time.sleep(0.08)
 
     def get_telemetry(self) -> Dict[str, Any]:
@@ -186,6 +204,7 @@ class SovereignArcCoordinator:
             "total_food_eaten": self.world.total_food_eaten,
             "puzzles_cleared": self.world.total_puzzles_cleared,
             "best_lifespan": self.world.best_lifespan,
+            "core_synapses": self._get_core_synapse_count(),
             "organism": {
                 "r": self.world.organism.r,
                 "c": self.world.organism.c,
@@ -206,7 +225,7 @@ class SovereignArcCoordinator:
         }
 
     def get_live_visual_state(self) -> Dict[str, Any]:
-        """Returns the active task's live 2D grids and organism cursor for UI rendering."""
+        """Returns the active task's live 2D grids and 4-pillar state for UI rendering."""
         data = dict(self.live_visual_state)
         data.update(self.get_telemetry())
         return data
