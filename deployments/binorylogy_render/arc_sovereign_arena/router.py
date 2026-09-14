@@ -1,10 +1,11 @@
 """
-ARC Sovereign API Router & Live Visual Dashboard
-Serves real-time JSON telemetry and the standalone /arc interactive HTML UI.
+ARC Sovereign API Router & Live Visual Dashboard (Survival Ecology Edition)
+Serves real-time JSON telemetry and the /arc interactive HTML UI showing the
+living organism walking, eating, starving, and surviving in ARC environments.
 """
 
 from fastapi import APIRouter
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from arc_sovereign_arena.coordinator import SovereignArcCoordinator
 
 arc_router = APIRouter(prefix="/api/arc", tags=["ARC-Sovereign-Arena"])
@@ -19,19 +20,17 @@ def get_arc_live():
     coordinator = SovereignArcCoordinator()
     return coordinator.get_live_visual_state()
 
-@arc_router.get("/laws")
-def get_arc_laws():
-    coordinator = SovereignArcCoordinator()
-    return {
-        "count": len(coordinator.discoveries),
-        "laws": coordinator.discoveries
-    }
-
 @arc_router.post("/start")
 def start_arc_loop():
     coordinator = SovereignArcCoordinator()
     coordinator.start_background_loop()
-    return {"status": "started", "message": "ARC Sovereign Discovery Arena running"}
+    return {"status": "started", "message": "ARC Autopoietic Survival Ecology active 24/7"}
+
+@arc_router.post("/stop")
+def stop_arc_loop():
+    coordinator = SovereignArcCoordinator()
+    coordinator.stop_background_loop()
+    return {"status": "stopped", "message": "ARC Survival loop paused"}
 
 
 def generate_arc_html_dashboard() -> str:
@@ -41,7 +40,7 @@ def generate_arc_html_dashboard() -> str:
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ARC-AGI Sovereign Arena | Autonomous 4-Pillar Discovery</title>
+<title>ARC-AGI Sovereign Survival Ecology | Embodied Autopoiesis</title>
 <style>
   :root {
     --bg-dark: #070b14;
@@ -79,13 +78,13 @@ def generate_arc_html_dashboard() -> str:
     padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase;
   }
   .badge-live { background: rgba(16, 185, 129, 0.2); color: var(--green); border: 1px solid var(--green); animation: pulse 2s infinite; }
-  .badge-pass { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid var(--purple); }
+  .badge-gen { background: rgba(168, 85, 247, 0.2); color: var(--purple); border: 1px solid var(--purple); }
   .badge-time { background: rgba(0, 240, 255, 0.2); color: var(--cyan); border: 1px solid var(--cyan); }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
   .grid-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 12px;
     margin-bottom: 16px;
   }
@@ -97,12 +96,12 @@ def generate_arc_html_dashboard() -> str:
   }
   .stat-label { font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 4px; }
   .stat-val { font-size: 20px; font-weight: bold; color: var(--cyan); }
-  .progress-bar-bg { background: #1e293b; height: 6px; border-radius: 3px; margin-top: 8px; overflow: hidden; }
-  .progress-bar-fill { background: linear-gradient(90deg, var(--cyan), var(--green)); height: 100%; width: 0%; transition: width 0.3s; }
+  .progress-bar-bg { background: #1e293b; height: 8px; border-radius: 4px; margin-top: 8px; overflow: hidden; }
+  .progress-bar-fill { background: linear-gradient(90deg, var(--green), var(--cyan)); height: 100%; width: 100%; transition: width 0.2s, background 0.3s; }
 
   .main-arena {
     display: grid;
-    grid-template-columns: 1fr 1.2fr 1fr;
+    grid-template-columns: 1fr 1.3fr 1fr;
     gap: 16px;
     margin-bottom: 16px;
   }
@@ -117,7 +116,7 @@ def generate_arc_html_dashboard() -> str:
     display: flex;
     flex-direction: column;
   }
-  .panel-title { font-size: 12px; color: var(--cyan); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .panel-title { font-size: 12px; color: var(--cyan); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
   /* 2D Canvas Grid Renderer */
   .grid-canvas-container {
@@ -125,12 +124,13 @@ def generate_arc_html_dashboard() -> str:
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 220px;
+    min-height: 250px;
     background: #090e1a;
     border: 1px solid var(--border);
     border-radius: 6px;
     padding: 10px;
     margin-bottom: 8px;
+    position: relative;
   }
   .arc-grid {
     display: grid;
@@ -138,163 +138,180 @@ def generate_arc_html_dashboard() -> str:
     background: #2d3748;
     border: 2px solid #334155;
     padding: 2px;
+    position: relative;
   }
   .arc-cell {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
     border-radius: 2px;
+    position: relative;
   }
 
-  /* Pillar Feed */
-  .hyp-list {
+  /* Organism Cursor Avatar */
+  .organism-cursor {
+    position: absolute;
+    inset: 0;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px #00f0ff, inset 0 0 6px #00f0ff;
+    border-radius: 3px;
+    animation: cursor-pulse 0.8s infinite alternate;
+    pointer-events: none;
+    z-index: 10;
+  }
+  @keyframes cursor-pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.15); opacity: 1.0; }
+  }
+
+  /* Event Feed */
+  .event-list {
     display: flex;
     flex-direction: column;
     gap: 6px;
     overflow-y: auto;
     max-height: 250px;
   }
-  .hyp-item {
+  .event-item {
     background: #131d33;
     border-left: 3px solid var(--cyan);
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 4px;
     font-size: 11px;
     color: #cbd5e1;
+    display: flex;
+    justify-content: space-between;
   }
-  .hyp-item.Classical { border-left-color: var(--cyan); }
-  .hyp-item.Quantum { border-left-color: var(--purple); }
-  .hyp-item.Modern { border-left-color: var(--amber); }
-  .hyp-item.String { border-left-color: var(--green); }
+  .event-item.nutrition { border-left-color: var(--green); background: rgba(16, 185, 129, 0.08); }
+  .event-item.toxic { border-left-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
+  .event-item.death { border-left-color: var(--red); background: rgba(239, 68, 68, 0.12); color: #fca5a5; }
+  .event-item.clear { border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.15); font-weight: bold; }
 
-  /* Leaderboard & Laws */
+  /* Bottom Controls & Info */
   .bottom-grid {
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: 1fr 1fr;
     gap: 16px;
   }
   @media (max-width: 900px) { .bottom-grid { grid-template-columns: 1fr; } }
-  .leaderboard-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 12px;
-    background: #131d33;
-    border-radius: 6px;
-    margin-bottom: 6px;
+  .palette-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    vertical-align: middle;
+    margin-right: 6px;
+    border: 1px solid #475569;
   }
-  .law-feed {
-    max-height: 220px;
-    overflow-y: auto;
-  }
-  .law-row {
-    padding: 6px 10px;
-    background: #131d33;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-  }
-  .law-row:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="title-group">
-    <h1>🌌 ARC-AGI SOVEREIGN DISCOVERY ARENA</h1>
-    <span class="badge badge-live">● LIVE 24/7</span>
-    <span class="badge badge-pass" id="pass-badge">PASS #1</span>
+    <h1>🌱 ARC-AGI AUTOPOIETIC SURVIVAL ECOLOGY</h1>
+    <span class="badge badge-live">● LIVING ORGANISM</span>
+    <span class="badge badge-gen" id="gen-badge">GEN #1</span>
     <span class="badge badge-time" id="time-badge">00:00:00</span>
     <a href="https://huggingface.co/datasets/Explorerp/binorylogy-physics-memory" target="_blank" style="text-decoration: none;">
-      <span class="badge badge-pass" id="vault-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--amber); border: 1px solid var(--amber); cursor: pointer;">🤗 HF VAULT: CONNECTED</span>
+      <span class="badge badge-gen" id="vault-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--amber); border: 1px solid var(--amber); cursor: pointer;">🤗 HF MEMORY VAULT</span>
     </a>
   </div>
   <div style="color: var(--text-dim); font-size: 11px;">
-    Host: <code>god-1d2m.onrender.com</code> | Model: <strong>SovereignCivilization (4 Living Pillars)</strong> | Vault: <a href="https://huggingface.co/datasets/Explorerp/binorylogy-physics-memory" target="_blank" style="color: var(--amber); text-decoration: none;"><strong>Explorerp/binorylogy-physics-memory</strong></a>
+    Zero pre-coded physics rules. Correct pixels = <strong>Food</strong>. Wrong pixels = <strong>Waste</strong>. Starvation = <strong>Death</strong>.
   </div>
 </header>
 
 <div class="grid-stats">
   <div class="stat-card">
-    <div class="stat-label">Total Verified Laws</div>
-    <div class="stat-val" id="total-laws" style="color: var(--green);">0</div>
-    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;">100% Ground Truth Verified</div>
+    <div class="stat-label">Organism Vitality (Hunger)</div>
+    <div class="stat-val" id="organism-vitality" style="color: var(--green);">100.0%</div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="vitality-bar"></div></div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="vitality-status">Well Nourished</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">ARC-AGI-1 (Training 400)</div>
-    <div class="stat-val" id="agi1-stat">0 / 400 (0.0%)</div>
-    <div class="progress-bar-bg"><div class="progress-bar-fill" id="agi1-bar"></div></div>
-    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="agi1-sub">0 cumulative hits</div>
+    <div class="stat-label">Generations & Lineage</div>
+    <div class="stat-val" id="stat-generation">Gen 1</div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="stat-births-deaths">Births: 1 | Starvations: 0</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">ARC-AGI-2 (Evaluation 400)</div>
-    <div class="stat-val" id="agi2-stat">0 / 400 (0.0%)</div>
-    <div class="progress-bar-bg"><div class="progress-bar-fill" id="agi2-bar"></div></div>
-    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="agi2-sub">0 cumulative hits</div>
+    <div class="stat-label">Metabolic Food Ingestion</div>
+    <div class="stat-val" id="stat-food" style="color: var(--green);">0 px</div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="stat-puzzles-cleared">0 Puzzles Cleared</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">Current Task</div>
-    <div class="stat-val" id="current-task-name" style="color: var(--amber);">idle</div>
-    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="current-track-name">Track: -</div>
+    <div class="stat-label">Active Environment Terrain</div>
+    <div class="stat-val" id="current-task-name" style="color: var(--amber);">genesis</div>
+    <div style="font-size: 11px; color: var(--text-dim); margin-top: 4px;" id="stat-organism-pos">Body Pos: (0, 0) | Tool: 1</div>
   </div>
 </div>
 
 <div class="main-arena">
-  <!-- 1. Input Grid -->
+  <!-- 1. Input Canvas -->
   <div class="panel">
     <div class="panel-title">
-      <span>1. Sensory Input Grid</span>
+      <span>1. Environmental Input Canvas</span>
       <span id="input-dims">-</span>
     </div>
     <div class="grid-canvas-container">
       <div id="input-grid-box" class="arc-grid"></div>
     </div>
-    <div style="font-size: 11px; color: var(--text-dim); text-align: center;">Raw input matrix fed into 4 Pillars</div>
+    <div style="font-size: 11px; color: var(--text-dim); text-align: center;">Starting landscape of the puzzle terrain</div>
   </div>
 
-  <!-- 2. 4 Pillars Active Reasoning Stream -->
-  <div class="panel">
+  <!-- 2. Working Canvas (Living Organism Body) -->
+  <div class="panel" style="border: 1px solid var(--cyan);">
     <div class="panel-title">
-      <span>2. 4 Pillars Deliberation & Hypotheses</span>
-      <span style="color: var(--green);" id="task-status-text">Thinking...</span>
-    </div>
-    <div class="hyp-list" id="hyp-stream">
-      <div class="hyp-item">Pillars initializing search tree...</div>
-    </div>
-    <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border); font-size: 11px; color: var(--cyan);">
-      Winning Law: <strong id="winning-law-text" style="color: var(--green);">-</strong>
-    </div>
-  </div>
-
-  <!-- 3. Output Comparison (Prediction vs Target) -->
-  <div class="panel">
-    <div class="panel-title">
-      <span>3. Prediction vs ARC Ground Truth</span>
-      <span id="output-dims">-</span>
+      <span style="color: var(--cyan);">2. Living Canvas (Organism Body)</span>
+      <span id="working-dims" style="color: var(--green);">Active</span>
     </div>
     <div class="grid-canvas-container">
-      <div id="output-grid-box" class="arc-grid"></div>
+      <div id="working-grid-box" class="arc-grid"></div>
     </div>
-    <div style="font-size: 11px; color: var(--text-dim); text-align: center;" id="match-verdict">Evaluating...</div>
+    <div style="font-size: 11px; color: var(--text-dim); text-align: center;">
+      Organism cursor <span style="display:inline-block; width:8px; height:8px; border:2px solid #fff; box-shadow:0 0 4px #00f0ff;"></span> walks & paints pixels to eat
+    </div>
+  </div>
+
+  <!-- 3. Target Ground Truth -->
+  <div class="panel">
+    <div class="panel-title">
+      <span>3. Target Canvas (Hidden Food Map)</span>
+      <span id="target-dims">-</span>
+    </div>
+    <div class="grid-canvas-container">
+      <div id="target-grid-box" class="arc-grid"></div>
+    </div>
+    <div style="font-size: 11px; color: var(--text-dim); text-align: center;">Environmental ground truth required to feast</div>
   </div>
 </div>
 
 <div class="bottom-grid">
-  <!-- Pillar Leaderboard -->
+  <!-- Live Biological Events Feed -->
   <div class="panel">
-    <div class="panel-title">4 Sovereign Pillars Leaderboard</div>
-    <div id="pillar-board">
-      <div class="leaderboard-row"><span>Classical-Eikonal</span><strong style="color: var(--cyan);" id="score-classical">0</strong></div>
-      <div class="leaderboard-row"><span>Quantum-Superposed</span><strong style="color: var(--purple);" id="score-quantum">0</strong></div>
-      <div class="leaderboard-row"><span>Modern-Thermodynamic</span><strong style="color: var(--amber);" id="score-modern">0</strong></div>
-      <div class="leaderboard-row"><span>String-10D-Topological</span><strong style="color: var(--green);" id="score-string">0</strong></div>
+    <div class="panel-title">Biological Event & Metabolism Feed</div>
+    <div class="event-list" id="event-stream">
+      <div class="event-item">Organism initialized on the grid...</div>
     </div>
   </div>
 
-  <!-- Live Discovered Laws Log -->
+  <!-- Connectome & Physical Memory -->
   <div class="panel">
-    <div class="panel-title">Live Discovered Laws Feed</div>
-    <div class="law-feed" id="laws-container">
-      <div class="law-row"><span>Waiting for first law...</span></div>
+    <div class="panel-title">Sensory-Motor Connectome & Memory</div>
+    <div style="display: flex; flex-direction: column; gap: 8px;">
+      <div style="background: #131d33; padding: 10px; border-radius: 6px;">
+        <div style="font-size: 11px; color: var(--text-dim);">Selected Color Tool:</div>
+        <div style="font-size: 14px; font-weight: bold; margin-top: 4px;" id="selected-color-info">
+          <span class="palette-swatch" id="color-swatch" style="background: #1E88E5;"></span> Color 1
+        </div>
+      </div>
+      <div style="background: #131d33; padding: 10px; border-radius: 6px;">
+        <div style="font-size: 11px; color: var(--text-dim);">Fittest Ancestor Lifespan:</div>
+        <div style="font-size: 14px; font-weight: bold; color: var(--cyan); margin-top: 4px;" id="best-lifespan-info">0 ticks</div>
+      </div>
+      <div style="background: #131d33; padding: 10px; border-radius: 6px;">
+        <div style="font-size: 11px; color: var(--text-dim);">Lineage Memory Storage:</div>
+        <div style="font-size: 12px; color: var(--amber); margin-top: 4px;" id="storage-info">HF Vault: Explorerp/binorylogy-physics-memory</div>
+      </div>
     </div>
   </div>
 </div>
@@ -313,7 +330,7 @@ const ARC_PALETTE = [
   '#5D4037'  // 9: Maroon
 ];
 
-function renderGrid(containerId, matrix) {
+function renderGrid(containerId, matrix, organismPos = null) {
   const container = document.getElementById(containerId);
   if (!container || !matrix || !matrix.length) {
     container.innerHTML = '<div style="color: #64748b; font-size: 11px;">No Data</div>';
@@ -321,8 +338,9 @@ function renderGrid(containerId, matrix) {
   }
   const rows = matrix.length;
   const cols = matrix[0].length;
-  container.style.gridTemplateColumns = `repeat(${cols}, 18px)`;
+  container.style.gridTemplateColumns = `repeat(${cols}, 20px)`;
   container.innerHTML = '';
+
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       const val = matrix[r][c];
@@ -330,6 +348,12 @@ function renderGrid(containerId, matrix) {
       cell.className = 'arc-cell';
       cell.style.backgroundColor = ARC_PALETTE[val] || '#000';
       cell.title = `(${r}, ${c}): Color ${val}`;
+
+      if (organismPos && organismPos.r === r && organismPos.c === c) {
+        const cursor = document.createElement('div');
+        cursor.className = 'organism-cursor';
+        cell.appendChild(cursor);
+      }
       container.appendChild(cell);
     }
   }
@@ -342,107 +366,84 @@ async function fetchLiveTelemetry() {
     const d = await res.json();
 
     // Badges & Timer
-    document.getElementById('pass-badge').innerText = `PASS #${d.current_pass || 1}`;
+    document.getElementById('gen-badge').innerText = `GEN #${d.generation || 1}`;
     document.getElementById('time-badge').innerText = d.elapsed_time_formatted || '00:00:00';
-    document.getElementById('total-laws').innerText = d.total_laws_discovered || 0;
 
-    // Cloud Vault Badge
-    if (d.cloud_vault) {
-      const vb = document.getElementById('vault-badge');
-      if (vb) {
-        if (d.cloud_vault.connected) {
-          vb.innerText = `🤗 HF VAULT: SYNCED (${d.cloud_vault.last_cloud_sync || 'ACTIVE'})`;
-        } else {
-          vb.innerText = '🤗 HF VAULT: LOCAL CACHE';
-        }
-      }
+    // Organism Vitality / Hunger
+    const org = d.organism || {};
+    const vit = org.vitality !== undefined ? org.vitality : 100.0;
+    const vitPct = org.vitality_pct !== undefined ? org.vitality_pct : vit;
+    document.getElementById('organism-vitality').innerText = `${vit.toFixed(1)}%`;
+    const vitBar = document.getElementById('vitality-bar');
+    vitBar.style.width = `${Math.max(0, Math.min(100, vitPct))}%`;
+
+    const vitStatus = document.getElementById('vitality-status');
+    if (vit > 60) {
+      vitBar.style.background = 'linear-gradient(90deg, #10b981, #00f0ff)';
+      vitStatus.innerText = 'Well Nourished (Active)';
+      vitStatus.style.color = '#10b981';
+    } else if (vit > 25) {
+      vitBar.style.background = 'linear-gradient(90deg, #f59e0b, #eab308)';
+      vitStatus.innerText = 'Hunger Rising (Searching for Food)';
+      vitStatus.style.color = '#f59e0b';
+    } else {
+      vitBar.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+      vitStatus.innerText = 'STARVATION IMMINENT!';
+      vitStatus.style.color = '#ef4444';
     }
 
-    // Progress
-    if (d.agi1_progress) {
-      const p1 = d.agi1_progress;
-      const uniq = (p1.unique_mastered !== undefined) ? p1.unique_mastered : p1.mastered;
-      const rate = (p1.mastery_rate !== undefined) ? (p1.mastery_rate * 100).toFixed(1) : '0.0';
-      document.getElementById('agi1-stat').innerText = `${uniq} / ${p1.total_tasks} (${rate}%)`;
-      document.getElementById('agi1-bar').style.width = `${(uniq / p1.total_tasks) * 100}%`;
-      const s1 = document.getElementById('agi1-sub');
-      if (s1 && p1.cumulative_hits) s1.innerText = `${p1.cumulative_hits} total pass hits across runs`;
-    }
-    if (d.agi2_progress) {
-      const p2 = d.agi2_progress;
-      const uniq = (p2.unique_mastered !== undefined) ? p2.unique_mastered : p2.mastered;
-      const rate = (p2.mastery_rate !== undefined) ? (p2.mastery_rate * 100).toFixed(1) : '0.0';
-      document.getElementById('agi2-stat').innerText = `${uniq} / ${p2.total_tasks} (${rate}%)`;
-      document.getElementById('agi2-bar').style.width = `${(uniq / p2.total_tasks) * 100}%`;
-      const s2 = document.getElementById('agi2-sub');
-      if (s2 && p2.cumulative_hits) s2.innerText = `${p2.cumulative_hits} total pass hits across runs`;
-    }
+    // Stats
+    document.getElementById('stat-generation').innerText = `Gen ${d.generation || 1}`;
+    document.getElementById('stat-births-deaths').innerText = `Births: ${d.total_births || 1} | Deaths: ${d.total_deaths || 0}`;
+    document.getElementById('stat-food').innerText = `${d.total_food_eaten || 0} px`;
+    document.getElementById('stat-puzzles-cleared').innerText = `${d.puzzles_cleared || 0} Puzzles Cleared`;
+    document.getElementById('current-task-name').innerText = d.task_id || d.current_task || 'genesis';
+    document.getElementById('stat-organism-pos').innerText = `Body Pos: (${org.r || 0}, ${org.c || 0}) | Color: ${org.selected_color || 0}`;
 
-    // Current Task
-    document.getElementById('current-task-name').innerText = d.task_id || d.current_task || 'idle';
-    document.getElementById('current-track-name').innerText = `Track: ${d.track || d.current_track || '-'}`;
+    // Connectome / Selected color info
+    const toolCol = org.selected_color || 0;
+    document.getElementById('selected-color-info').innerHTML = `
+      <span class="palette-swatch" style="background: ${ARC_PALETTE[toolCol] || '#fff'};"></span> Color ${toolCol}
+    `;
+    document.getElementById('best-lifespan-info').innerText = `${d.best_lifespan || 0} ticks`;
 
     // Render Grids
     if (d.input_grid && d.input_grid.length) {
       document.getElementById('input-dims').innerText = `${d.input_grid.length}x${d.input_grid[0].length}`;
       renderGrid('input-grid-box', d.input_grid);
     }
-    if (d.output_grid && d.output_grid.length) {
-      document.getElementById('output-dims').innerText = `${d.output_grid.length}x${d.output_grid[0].length}`;
-      renderGrid('output-grid-box', d.output_grid);
+    if (d.working_grid && d.working_grid.length) {
+      document.getElementById('working-dims').innerText = `${d.working_grid.length}x${d.working_grid[0].length}`;
+      renderGrid('working-grid-box', d.working_grid, { r: org.r, c: org.c });
+    }
+    if (d.target_grid && d.target_grid.length) {
+      document.getElementById('target-dims').innerText = `${d.target_grid.length}x${d.target_grid[0].length}`;
+      renderGrid('target-grid-box', d.target_grid);
     }
 
-    // Hypotheses
-    const hypBox = document.getElementById('hyp-stream');
-    if (d.active_hyps && d.active_hyps.length) {
-      hypBox.innerHTML = d.active_hyps.map(h => {
-        let cls = 'Classical';
-        if (h.includes('quantum')) cls = 'Quantum';
-        if (h.includes('modern') || h.includes('diffusion')) cls = 'Modern';
-        if (h.includes('string') || h.includes('topological')) cls = 'String';
-        return `<div class="hyp-item ${cls}">${h}</div>`;
+    // Events Feed
+    const evBox = document.getElementById('event-stream');
+    if (d.recent_events && d.recent_events.length) {
+      evBox.innerHTML = d.recent_events.slice().reverse().map(e => {
+        let cls = 'event-item';
+        if (e.msg.includes('NUTRITION')) cls += ' nutrition';
+        else if (e.msg.includes('TOXIC')) cls += ' toxic';
+        else if (e.msg.includes('STARVATION')) cls += ' death';
+        else if (e.msg.includes('CLEARED')) cls += ' clear';
+        return `
+          <div class="${cls}">
+            <span>${e.msg}</span>
+            <span style="color: #64748b;">Tick ${e.tick} | Gen ${e.gen}</span>
+          </div>
+        `;
       }).join('');
     }
-
-    // Verdict
-    if (d.solved) {
-      document.getElementById('task-status-text').innerText = `SOLVED by ${d.pillar}`;
-      document.getElementById('task-status-text').style.color = '#10b981';
-      document.getElementById('winning-law-text').innerText = d.law || '-';
-      document.getElementById('match-verdict').innerText = '100% Exact Match on Ground Truth';
-      document.getElementById('match-verdict').style.color = '#10b981';
-    } else {
-      document.getElementById('task-status-text').innerText = 'Searching...';
-      document.getElementById('task-status-text').style.color = '#00f0ff';
-      document.getElementById('winning-law-text').innerText = 'Exploring compound hypotheses';
-      document.getElementById('match-verdict').innerText = 'No exact primitive match (Moving to next)';
-      document.getElementById('match-verdict').style.color = '#94a3b8';
-    }
-
-    // Leaderboard
-    if (d.pillar_leaderboard) {
-      document.getElementById('score-classical').innerText = d.pillar_leaderboard['Classical-Eikonal'] || 0;
-      document.getElementById('score-quantum').innerText = d.pillar_leaderboard['Quantum-Superposed'] || 0;
-      document.getElementById('score-modern').innerText = d.pillar_leaderboard['Modern-Thermodynamic'] || 0;
-      document.getElementById('score-string').innerText = d.pillar_leaderboard['String-10D-Topological'] || 0;
-    }
-
-    // Recent Laws
-    if (d.recent_discoveries && d.recent_discoveries.length) {
-      const lawsBox = document.getElementById('laws-container');
-      lawsBox.innerHTML = d.recent_discoveries.slice().reverse().map(l => `
-        <div class="law-row">
-          <span><strong>${l.pillar}</strong>: Task <code>${l.task_id}</code> &mdash; ${l.law}</span>
-          <span style="color: #64748b;">${l.time_sec}s | ${l.timestamp}</span>
-        </div>
-      `).join('');
-    }
   } catch (e) {
-    console.error('ARC Telemetry fetch error:', e);
+    console.error('Survival Telemetry fetch error:', e);
   }
 }
 
-setInterval(fetchLiveTelemetry, 1000);
+setInterval(fetchLiveTelemetry, 500);
 fetchLiveTelemetry();
 </script>
 
