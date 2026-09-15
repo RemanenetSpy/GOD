@@ -42,31 +42,25 @@ class SovereignArcCoordinator:
         if self.core is None:
             try:
                 from binory_core import BinoryCore
-                self.core = BinoryCore()
-            except ImportError:
+                self.core = BinoryCore("data/binory_state.json", "data/binory_log.txt")
+            except Exception:
                 try:
                     from src.binory_core import BinoryCore
-                    self.core = BinoryCore()
-                except ImportError:
+                    self.core = BinoryCore("data/binory_state.json", "data/binory_log.txt")
+                except Exception:
                     self.core = None
+
 
         self.loader = ARCTaskLoader()
         self.vault = vault or ARCSovereignVault()
         self.is_running = False
         self._thread: Optional[threading.Thread] = None
         self._last_vault_save = 0.0
+        self.cloud_sync_count = 0
 
         # Initialize the Living Autopoietic World powered directly by the 4 Pillars
         self.world = ArcSurvivalWorld(loader=self.loader, civilization=self.civilization, core=self.core)
         self.start_time = time.time()
-
-    def _get_core_synapse_count(self) -> int:
-        if self.core is not None:
-            if hasattr(self.core, "_synapses"):
-                return len(self.core._synapses)
-            elif hasattr(self.core, "_weights"):
-                return len(self.core._weights)
-        return 0
 
         # Telemetry & State
         self.current_task_id = self.world.current_task_id
@@ -86,6 +80,15 @@ class SovereignArcCoordinator:
 
         # Restore from Hugging Face Cloud Vault if available
         self._restore_from_vault()
+
+    def _get_core_synapse_count(self) -> int:
+        if self.core is not None:
+            if hasattr(self.core, "_synapses"):
+                return len(self.core._synapses)
+            elif hasattr(self.core, "_weights"):
+                return len(self.core._weights)
+        return 0
+
 
     def _restore_from_vault(self):
         """Restores survival lineage and generational memory from Cloud Vault."""
@@ -141,8 +144,10 @@ class SovereignArcCoordinator:
                 commit_msg=f"ARC Survival Gen {self.world.generation} | {self.world.total_deaths} Deaths | {self.world.total_puzzles_cleared} Solved",
                 async_upload=True
             )
+            self.cloud_sync_count += 1
         except Exception as e:
             print(f"[ARC Vault Save Warning]: {e}")
+
 
     def start_background_loop(self):
         """Starts the 24/7 Autopoietic Survival Ecology loop."""
@@ -223,10 +228,12 @@ class SovereignArcCoordinator:
             "cloud_vault": {
                 "connected": self.vault is not None and bool(getattr(self.vault, "token", None)),
                 "repo": getattr(self.vault, "repo_id", "local_only"),
-                "total_saved": self.world.total_puzzles_cleared,
+                "total_saved": self.cloud_sync_count,
+                "puzzles_cleared": self.world.total_puzzles_cleared,
                 "last_cloud_sync": time.strftime("%H:%M:%S UTC", time.gmtime(self._last_vault_save)) if self._last_vault_save > 0 else "pending"
             }
         }
+
 
     def get_live_visual_state(self) -> Dict[str, Any]:
         """Returns the active task's live 2D grids and 4-pillar state for UI rendering."""
