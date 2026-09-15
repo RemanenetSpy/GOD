@@ -117,7 +117,13 @@ class ArcSurvivalWorld:
             self.organism.c = max(0, self.organism.c - 1)
         elif action == ArcLivingOrganism.ACTION_MOVE_RIGHT:
             self.organism.c = min(w - 1, self.organism.c + 1)
+
+        if action in (ArcLivingOrganism.ACTION_MOVE_UP, ArcLivingOrganism.ACTION_MOVE_DOWN,
+                      ArcLivingOrganism.ACTION_MOVE_LEFT, ArcLivingOrganism.ACTION_MOVE_RIGHT):
+            if hasattr(self.organism, "lifespan_memory"):
+                self.organism.lifespan_memory.record_visit(self.organism.r, self.organism.c)
         elif action == ArcLivingOrganism.ACTION_PAINT:
+
             r, c = self.organism.r, self.organism.c
             target_color = int(self.target_canvas[r, c])
             paint_color = int(self.organism.selected_color)
@@ -269,6 +275,8 @@ class ArcSurvivalWorld:
                 "is_alive": self.organism.is_alive,
                 "lifespan": self.organism.lifespan_ticks,
                 "food_eaten": self.organism.food_eaten,
+                "visited_tiles_count": self.organism.lifespan_memory.unique_tiles_count() if hasattr(self.organism, "lifespan_memory") else 0,
+                "total_steps": self.organism.lifespan_memory.total_steps() if hasattr(self.organism, "lifespan_memory") else 0,
             },
             "input_canvas": self.input_canvas.tolist(),
             "working_canvas": self.working_canvas.tolist(),
@@ -276,5 +284,7 @@ class ArcSurvivalWorld:
             "pillar_info": pillar_info,
             "core_synapses": core_synapse_count,
             "ancestral_memory": self.ancestral_memory.to_dict(),
+            "lifespan_memory": self.organism.lifespan_memory.to_dict() if hasattr(self.organism, "lifespan_memory") else {},
             "recent_events": self.recent_events[-8:]
         }
+

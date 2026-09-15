@@ -314,12 +314,17 @@ def generate_arc_html_dashboard() -> str:
         <div style="font-size: 14px; font-weight: bold; color: var(--cyan); margin-top: 4px;" id="best-lifespan-info">0 ticks</div>
       </div>
       <div style="background: #131d33; padding: 10px; border-radius: 6px;">
+        <div style="font-size: 11px; color: var(--text-dim);">Lifespan Spatial Trail:</div>
+        <div style="font-size: 14px; font-weight: bold; color: var(--green); margin-top: 4px;" id="lifespan-visited-info">1 / 81 Tiles (1.2%)</div>
+      </div>
+      <div style="background: #131d33; padding: 10px; border-radius: 6px;">
         <div style="font-size: 11px; color: var(--text-dim);">Lineage Memory Storage:</div>
         <div style="font-size: 12px; color: var(--amber); margin-top: 4px;" id="storage-info">HF Vault: Explorerp/binorylogy-physics-memory</div>
       </div>
     </div>
   </div>
 </div>
+
 
 <script>
 const ARC_PALETTE = [
@@ -419,6 +424,14 @@ async function fetchLiveTelemetry() {
       <span class="palette-swatch" style="background: ${ARC_PALETTE[toolCol] || '#fff'};"></span> Color ${toolCol}
     `;
     document.getElementById('best-lifespan-info').innerText = `${d.best_lifespan || 0} ticks`;
+
+    // Lifespan Visited Trail
+    const visitedCount = org.visited_tiles_count !== undefined ? org.visited_tiles_count : 1;
+    const totalCells = (d.target_grid && d.target_grid.length) ? (d.target_grid.length * d.target_grid[0].length) : 81;
+    const visitedPct = ((visitedCount / totalCells) * 100).toFixed(1);
+    const visEl = document.getElementById('lifespan-visited-info');
+    if (visEl) visEl.innerText = `${visitedCount} / ${totalCells} Tiles (${visitedPct}%)`;
+
 
     // Render Grids
     if (d.input_grid && d.input_grid.length) {

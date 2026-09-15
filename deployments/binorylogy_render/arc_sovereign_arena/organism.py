@@ -52,6 +52,35 @@ except ImportError:
         def to_dict(self): return {}
         def load_dict(self, d): pass
 
+try:
+    from arc_sovereign_arena.lifespan_memory import LifespanSpatialMemory
+except ImportError:
+    try:
+        from lifespan_memory import LifespanSpatialMemory
+    except ImportError:
+        class LifespanSpatialMemory:
+            def __init__(self):
+                self.visit_counts = {}
+                self.visit_history = []
+            def record_visit(self, r, c):
+                pos = (int(r), int(c))
+                self.visit_counts[pos] = self.visit_counts.get(pos, 0) + 1
+                self.visit_history.append(pos)
+            def has_visited(self, r, c): return (int(r), int(c)) in self.visit_counts
+            def get_visit_count(self, r, c): return self.visit_counts.get((int(r), int(c)), 0)
+            def unique_tiles_count(self): return len(self.visit_counts)
+            def total_steps(self): return len(self.visit_history)
+            def reset(self):
+                self.visit_counts.clear()
+                self.visit_history.clear()
+            def to_dict(self):
+                return {
+                    "unique_tiles_count": len(self.visit_counts),
+                    "total_steps": len(self.visit_history),
+                    "visited_coords": [list(pos) for pos in self.visit_counts.keys()]
+                }
+
+
 
 class ArcLivingOrganism:
     """
@@ -92,6 +121,10 @@ class ArcLivingOrganism:
         # Episodic Action Trace (Rolling buffer for Retrograde Death Assignment)
         self.episodic_trace: List[Dict[str, Any]] = []
 
+        # Intra-Lifespan Spatial Memory (Strictly tracks visited tiles within this individual life)
+        self.lifespan_memory = LifespanSpatialMemory()
+        self.lifespan_memory.record_visit(self.r, self.c)
+
     @property
     def energy(self) -> float:
         """Returns the sovereign metabolic vitality (hunger) of the organism."""
@@ -112,6 +145,9 @@ class ArcLivingOrganism:
         """Places the organism at the center of the canvas and syncs node positions."""
         self.r = grid_h // 2
         self.c = grid_w // 2
+        if hasattr(self, "lifespan_memory"):
+            self.lifespan_memory.reset()
+            self.lifespan_memory.record_visit(self.r, self.c)
         if self.civilization and hasattr(self.civilization, "nodes"):
             for n in self.civilization.nodes.values():
                 if hasattr(n, "state") and hasattr(n.state, "position"):
@@ -191,12 +227,21 @@ class ArcLivingOrganism:
                 elif working_canvas[nr, nc] == 0:
                     # Moderate attraction: unpainted terrain
                     score += 3.0
+
+                # Lifespan Spatial Working Memory: Novelty drive & anti-looping
+                visit_count = self.lifespan_memory.get_visit_count(nr, nc)
+                if visit_count == 0:
+                    score += 5.0  # Novelty bonus for unexplored tile in this life
+                else:
+                    score -= min(4.0, visit_count * 1.0)  # Re-visit damping penalty
+
                 candidates.append((score, act))
 
         if candidates:
             candidates.sort(key=lambda x: x[0], reverse=True)
-            if candidates[0][0] > 0.0 and np.random.rand() < 0.70:
+            if candidates[0][0] > 0.0 and np.random.rand() < 0.75:
                 classical_move = candidates[0][1]
+
 
         if classical_move is None and self.civilization and hasattr(self.civilization, "nodes") and "classical_prime" in self.civilization.nodes:
             c_node = self.civilization.nodes["classical_prime"]
