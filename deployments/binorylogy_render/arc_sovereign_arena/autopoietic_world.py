@@ -127,11 +127,14 @@ class ArcSurvivalWorld:
                 break
 
         if self.verified_law is None and self.active_candidates:
-            # Guide organism by the best invariant candidate field
-            sample_pred = self.active_candidates[0].apply(self.input_canvas)
-            if sample_pred is not None and sample_pred.shape == self.target_canvas.shape:
-                self.organism.active_predicted_grid = sample_pred
-                self.organism.active_law_description = f"[{self.active_candidates[0].pillar_id}] {self.active_candidates[0].description}"
+            # Guide organism by the best candidate field that predicts an active transformation
+            for cand in self.active_candidates:
+                sample_pred = cand.apply(self.input_canvas)
+                if sample_pred is not None and sample_pred.shape == self.target_canvas.shape:
+                    if not np.array_equal(sample_pred, self.input_canvas):
+                        self.organism.active_predicted_grid = sample_pred
+                        self.organism.active_law_description = f"[{cand.pillar_id}] {cand.description}"
+                        break
 
     def tick(self) -> Dict[str, Any]:
         """Runs one biological tick: perception, STDP spikes, 4-pillar council action, and metabolic feedback."""

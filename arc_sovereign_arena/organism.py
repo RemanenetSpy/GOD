@@ -348,10 +348,7 @@ class ArcLivingOrganism:
         # 3. Modern-Thermodynamic Node: Anti-Camping & Vitality Governor
         current_pixel_value = int(working_canvas[self.r, self.c])
         is_redundant_paint = (current_pixel_value == self.selected_color)
-        current_tile_already_satisfied = (
-            (field_target_color is not None and current_pixel_value == field_target_color) or
-            (confirmed_color is not None and current_pixel_value == confirmed_color)
-        )
+        current_tile_already_satisfied = (confirmed_color is not None and current_pixel_value == confirmed_color)
 
         modern_paint = False
         if is_redundant_paint or current_tile_already_satisfied:
