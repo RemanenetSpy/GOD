@@ -1,0 +1,44 @@
+{
+  "vault_type": "arc_sovereign_memory",
+  "current_pass": 1,
+  "stats": {
+    "agi1": {
+      "tested": 1,
+      "solved": 1,
+      "accuracy": 0.0
+    },
+    "agi2": {
+      "tested": 0,
+      "solved": 0,
+      "accuracy": 0.0
+    },
+    "agi3": {
+      "tested": 0,
+      "solved": 0,
+      "accuracy": 0.0
+    },
+    "pillar_leaderboard": {
+      "Classical-Eikonal": 0,
+      "Quantum-Superposed": 0,
+      "Modern-Thermodynamic": 0,
+      "String-10D-Topological": 1
+    }
+  },
+  "total_laws_discovered": 1,
+  "mastered_task_ids": [
+    "007bbfb7"
+  ],
+  "discoveries": [
+    {
+      "pass": 1,
+      "track": "AGI-1",
+      "task_id": "007bbfb7",
+      "pillar": "String-10D-Topological",
+      "law": "Self-similar Kronecker fractal expansion",
+      "time_sec": 0.0011,
+      "timestamp": "16:47:13 UTC"
+    }
+  ],
+  "saved_at": "2026-09-13 16:47:13 UTC",
+  "hf_repo": "Explorerp/binorylogy-physics-memory"
+}

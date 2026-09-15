@@ -53,6 +53,15 @@ except ImportError:
         def load_dict(self, d): pass
 
 try:
+    from arc_sovereign_arena.causal_deduction import InverseCausalDeducer, DeducedHypothesis
+except ImportError:
+    try:
+        from causal_deduction import InverseCausalDeducer, DeducedHypothesis
+    except ImportError:
+        InverseCausalDeducer = None
+        DeducedHypothesis = None
+
+try:
     from arc_sovereign_arena.lifespan_memory import LifespanSpatialMemory
 except ImportError:
     try:
@@ -125,6 +134,11 @@ class ArcLivingOrganism:
         self.lifespan_memory = LifespanSpatialMemory()
         self.lifespan_memory.record_visit(self.r, self.c)
 
+        # Invariant Field Hypotheses & Potential Gradient State
+        self.active_hypotheses: List[Any] = []
+        self.active_predicted_grid: Optional[np.ndarray] = None
+        self.active_law_description: Optional[str] = None
+
     @property
     def energy(self) -> float:
         """Returns the sovereign metabolic vitality (hunger) of the organism."""
@@ -145,6 +159,8 @@ class ArcLivingOrganism:
         """Places the organism at the center of the canvas and syncs node positions."""
         self.r = grid_h // 2
         self.c = grid_w // 2
+        self.active_predicted_grid = None
+        self.active_law_description = None
         if hasattr(self, "lifespan_memory"):
             self.lifespan_memory.reset()
             self.lifespan_memory.record_visit(self.r, self.c)
@@ -152,6 +168,29 @@ class ArcLivingOrganism:
             for n in self.civilization.nodes.values():
                 if hasattr(n, "state") and hasattr(n.state, "position"):
                     n.state.position = (self.r, self.c)
+
+    def infer_invariant_laws(self, train_pairs: List[Dict[str, np.ndarray]]) -> List[Any]:
+        """
+        Synthesizes causal physical invariant laws across all demonstration pairs
+        using the 4 Sovereign Pillars, Noether Invariants, and Field Potentials.
+        """
+        if not InverseCausalDeducer or not train_pairs:
+            return []
+
+        try:
+            candidates = InverseCausalDeducer.deduce_all(train_pairs)
+        except Exception:
+            return []
+
+        # Prioritize candidates based on Ancestral Memory priors
+        if self.ancestral_memory and hasattr(self.ancestral_memory, "get_invariant_priors"):
+            priors = set(self.ancestral_memory.get_invariant_priors())
+            candidates.sort(key=lambda h: (0 if h.signature in priors else 1, h.complexity))
+        else:
+            candidates.sort(key=lambda h: h.complexity)
+
+        self.active_hypotheses = candidates
+        return candidates
 
     def perceive_and_spike(self, input_canvas: np.ndarray, working_canvas: np.ndarray) -> List[str]:
         """
@@ -228,6 +267,12 @@ class ArcLivingOrganism:
                     # Moderate attraction: unpainted terrain
                     score += 3.0
 
+                # Potential Field Gradient Attraction (Principle of Least Action)
+                if self.active_predicted_grid is not None and self.active_predicted_grid.shape == working_canvas.shape:
+                    pred_col = int(self.active_predicted_grid[nr, nc])
+                    if working_canvas[nr, nc] != pred_col:
+                        score += 25.0  # Dominant potential gradient pull toward field solution!
+
                 # Lifespan Spatial Working Memory: Novelty drive & anti-looping
                 visit_count = self.lifespan_memory.get_visit_count(nr, nc)
                 if visit_count == 0:
@@ -260,12 +305,19 @@ class ArcLivingOrganism:
                 self.ACTION_MOVE_LEFT, self.ACTION_MOVE_RIGHT
             ]))
 
-        # 2. Quantum-Superposed Node: Discrete Color State Collapse with ANCESTRAL VETO
+        # 2. Quantum-Superposed Node: Discrete Color State Collapse with Invariant Field Guidance
+        field_target_color = None
+        if self.active_predicted_grid is not None and self.active_predicted_grid.shape == working_canvas.shape:
+            field_target_color = int(self.active_predicted_grid[self.r, self.c])
+
         confirmed_color = None
         if self.ancestral_memory:
             confirmed_color = self.ancestral_memory.is_confirmed_nutrition(task_id, self.r, self.c)
 
-        if confirmed_color is not None:
+        if field_target_color is not None and working_canvas[self.r, self.c] != field_target_color:
+            # First-Principles Field Priority: select color demanded by the physical invariant law!
+            self.selected_color = field_target_color
+        elif confirmed_color is not None:
             # INSTANT RECALL: Ancestor already verified this nutrient color!
             self.selected_color = confirmed_color
         else:
@@ -296,13 +348,19 @@ class ArcLivingOrganism:
         # 3. Modern-Thermodynamic Node: Anti-Camping & Vitality Governor
         current_pixel_value = int(working_canvas[self.r, self.c])
         is_redundant_paint = (current_pixel_value == self.selected_color)
-        current_tile_already_satisfied = (confirmed_color is not None and current_pixel_value == confirmed_color)
+        current_tile_already_satisfied = (
+            (field_target_color is not None and current_pixel_value == field_target_color) or
+            (confirmed_color is not None and current_pixel_value == confirmed_color)
+        )
 
         modern_paint = False
         if is_redundant_paint or current_tile_already_satisfied:
             # TILE IS ALREADY PAINTED WITH THIS COLOR OR ALREADY SATISFIED:
             # ANTI-CAMPING VETO: Forbid painting; force organism to move and seek another pixel!
             modern_paint = False
+        elif field_target_color is not None and current_pixel_value != field_target_color:
+            # High thermodynamic urgency: standing directly on a physical invariant discrepancy!
+            modern_paint = True
         else:
             if self.civilization and hasattr(self.civilization, "nodes") and "modern_prime" in self.civilization.nodes:
                 m_node = self.civilization.nodes["modern_prime"]

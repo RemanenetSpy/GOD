@@ -35,9 +35,74 @@ class DeducedHypothesis:
             return None
 
 
+class NoetherInvariantProfile:
+    """
+    Physical Invariant Audit across all demonstration pairs (Input -> Output).
+    Quantifies conservation of mass, spatial geometry, topology, and momentum.
+    """
+    def __init__(self, train_pairs: List[Dict[str, np.ndarray]]):
+        self.is_mass_conserved = True
+        self.is_shape_conserved = True
+        self.is_geometry_conserved = True
+        self.dim_ratio: Tuple[float, float] = (1.0, 1.0)
+        self.cm_shift: Optional[Tuple[float, float]] = None
+        self.color_delta: Dict[int, int] = {}
+        self.dominant_field: Optional[str] = None
+
+        if not train_pairs:
+            return
+
+        p0_in = train_pairs[0]["input"]
+        p0_out = train_pairs[0]["output"]
+        h_in, w_in = p0_in.shape
+        h_out, w_out = p0_out.shape
+        self.dim_ratio = (h_out / max(1, h_in), w_out / max(1, w_in))
+        self.is_shape_conserved = (h_in == h_out and w_in == w_out)
+
+        # 1. Mass Conservation Audit: exact color multiset equality across all pairs
+        for pair in train_pairs:
+            hist_in = np.bincount(pair["input"].flat, minlength=10)
+            hist_out = np.bincount(pair["output"].flat, minlength=10)
+            if not np.array_equal(hist_in, hist_out):
+                self.is_mass_conserved = False
+                for c in range(10):
+                    diff = int(hist_out[c] - hist_in[c])
+                    if diff != 0:
+                        self.color_delta[c] = diff
+                break
+
+        # 2. Geometry Conservation: spatial distribution of active foreground pixels
+        if self.is_shape_conserved:
+            for pair in train_pairs:
+                mask_in = (pair["input"] != 0)
+                mask_out = (pair["output"] != 0)
+                if not np.array_equal(mask_in, mask_out):
+                    self.is_geometry_conserved = False
+                    break
+
+        # 3. Center of Mass Shift (Momentum / Field Direction)
+        if self.is_shape_conserved:
+            in_fg = np.argwhere(p0_in != 0)
+            out_fg = np.argwhere(p0_out != 0)
+            if len(in_fg) > 0 and len(out_fg) > 0:
+                cm_in = np.mean(in_fg, axis=0)
+                cm_out = np.mean(out_fg, axis=0)
+                dr, dc = float(cm_out[0] - cm_in[0]), float(cm_out[1] - cm_in[1])
+                self.cm_shift = (dr, dc)
+                if dr > 0.5 and abs(dc) <= abs(dr):
+                    self.dominant_field = "gravity_down"
+                elif dr < -0.5 and abs(dc) <= abs(dr):
+                    self.dominant_field = "gravity_up"
+                elif dc > 0.5 and abs(dr) <= abs(dc):
+                    self.dominant_field = "gravity_right"
+                elif dc < -0.5 and abs(dr) <= abs(dc):
+                    self.dominant_field = "gravity_left"
+
+
 class InverseCausalDeducer:
     """
-    Analyzes training examples (Input_k -> Output_k) and directly deduces candidate laws.
+    Analyzes training examples (Input_k -> Output_k) and directly deduces candidate laws
+    via Noether Invariant Analysis, Potential Field Gradients, and Minimal Description Length.
     """
 
     @classmethod
@@ -48,6 +113,12 @@ class InverseCausalDeducer:
         hyps: List[DeducedHypothesis] = []
         p0_in = train_pairs[0]["input"]
         p0_out = train_pairs[0]["output"]
+
+        # First-Principles Noether Invariant Audit
+        profile = NoetherInvariantProfile(train_pairs)
+
+        # 0. Primary Noether & Field Invariant Deductions (Gravity, Momentum, Diffusion)
+        hyps.extend(cls._deduce_noether_and_field_laws(train_pairs, profile))
 
         # Parse initial perceptual scenes
         in_scenes = [PerceptualScene(p["input"]) for p in train_pairs]
@@ -66,6 +137,149 @@ class InverseCausalDeducer:
         hyps.extend(cls._deduce_thermodynamic_compositions(train_pairs, hyps))
 
         return hyps
+
+    # ═════════════════════════════════════════════════════════════════════════
+    # 0. NOETHER & CONTINUOUS FIELD INVARIANT DEDUCTIONS
+    # ═════════════════════════════════════════════════════════════════════════
+    @classmethod
+    def _deduce_noether_and_field_laws(cls, train_pairs: List[Dict[str, np.ndarray]],
+                                       profile: NoetherInvariantProfile) -> List[DeducedHypothesis]:
+        deduced = []
+        p0_in = train_pairs[0]["input"]
+        p0_out = train_pairs[0]["output"]
+
+        # A. Conservative Gravitational & Kinematic Advection (Least Action Potential Gradient)
+        if profile.is_shape_conserved:
+            def make_gravity_down():
+                def g_down(grid):
+                    res = np.zeros_like(grid)
+                    h, w = grid.shape
+                    for c in range(w):
+                        col = grid[:, c]
+                        nz = col[col != 0]
+                        if len(nz) > 0:
+                            res[h - len(nz):, c] = nz
+                    return res
+                return g_down
+
+            def make_gravity_up():
+                def g_up(grid):
+                    res = np.zeros_like(grid)
+                    for c in range(grid.shape[1]):
+                        col = grid[:, c]
+                        nz = col[col != 0]
+                        if len(nz) > 0:
+                            res[:len(nz), c] = nz
+                    return res
+                return g_up
+
+            def make_gravity_left():
+                def g_left(grid):
+                    res = np.zeros_like(grid)
+                    for r in range(grid.shape[0]):
+                        row = grid[r, :]
+                        nz = row[row != 0]
+                        if len(nz) > 0:
+                            res[r, :len(nz)] = nz
+                    return res
+                return g_left
+
+            def make_gravity_right():
+                def g_right(grid):
+                    res = np.zeros_like(grid)
+                    w = grid.shape[1]
+                    for r in range(grid.shape[0]):
+                        row = grid[r, :]
+                        nz = row[row != 0]
+                        if len(nz) > 0:
+                            res[r, w - len(nz):] = nz
+                    return res
+                return g_right
+
+            # Prioritize matching gravitational field direction based on Center-of-Mass gradient
+            gravity_candidates = [
+                ("gravity_down", "Classical Kinematics: Gravitational Advection Downward (-grad_Phi = -g j)", make_gravity_down()),
+                ("gravity_up", "Classical Kinematics: Gravitational Inversion Upward (-grad_Phi = +g j)", make_gravity_up()),
+                ("gravity_left", "Classical Kinematics: Horizontal Drift Leftward (-grad_Phi = -g i)", make_gravity_left()),
+                ("gravity_right", "Classical Kinematics: Horizontal Drift Rightward (-grad_Phi = +g i)", make_gravity_right()),
+            ]
+
+            # Obstacle-supported gravity (particles fall until hitting an obstacle or floor)
+            def make_supported_gravity_down():
+                def sg_down(grid):
+                    res = grid.copy()
+                    h, w = res.shape
+                    moved = True
+                    # Simulate falling steps until rest
+                    for _ in range(h):
+                        if not moved:
+                            break
+                        moved = False
+                        for r in range(h - 2, -1, -1):
+                            for c in range(w):
+                                if res[r, c] != 0 and res[r + 1, c] == 0:
+                                    res[r + 1, c] = res[r, c]
+                                    res[r, c] = 0
+                                    moved = True
+                    return res
+                return sg_down
+
+            gravity_candidates.append((
+                "gravity_supported_down",
+                "Classical Kinematics: Obstacle-Supported Gravity Downward",
+                make_supported_gravity_down()
+            ))
+
+            for sig, desc, op in gravity_candidates:
+                # If mass is conserved or field direction matches, test candidate
+                sample_t = op(p0_in)
+                if sample_t is not None and sample_t.shape == p0_out.shape:
+                    deduced.append(DeducedHypothesis(
+                        "classical_prime", f"noether_{sig}", desc, op, complexity=1.1
+                    ))
+
+            # B. Center of Mass Momentum Translation
+            if profile.cm_shift is not None:
+                dr = int(round(profile.cm_shift[0]))
+                dc = int(round(profile.cm_shift[1]))
+                if dr != 0 or dc != 0:
+                    def make_cm_shift(r_s, c_s):
+                        return lambda x: np.roll(np.roll(x, r_s, axis=0), c_s, axis=1)
+                    deduced.append(DeducedHypothesis(
+                        "classical_prime",
+                        f"noether_momentum_shift_{dr}_{dc}",
+                        f"Noether Momentum Shift: Center-of-Mass Vector ({dr}, {dc})",
+                        make_cm_shift(dr, dc),
+                        complexity=1.2
+                    ))
+
+        # C. Fluid Diffusion Wavefront (Laplacian Propagation)
+        # Check if new colored mass appeared that diffuses from existing seed pixels
+        if profile.is_shape_conserved and profile.color_delta:
+            for seed_color, delta in profile.color_delta.items():
+                if delta > 0 and seed_color != 0:
+                    # Color increased: test Laplacian flood-fill into adjacent background 0s
+                    def make_laplacian_diffusion(col=seed_color):
+                        def diffuse_fn(grid):
+                            res = grid.copy()
+                            seed_mask = (grid == col)
+                            # Diffuse into connected background zeros
+                            struct = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+                            dilated = scipy.ndimage.binary_dilation(seed_mask, structure=struct)
+                            # Only fill where currently empty (0)
+                            res[dilated & (grid == 0)] = col
+                            return res
+                        return diffuse_fn
+
+                    deduced.append(DeducedHypothesis(
+                        "modern_prime",
+                        f"noether_laplacian_diffusion_c{seed_color}",
+                        f"Modern Thermodynamics: Laplacian Fluid Diffusion (Color {seed_color})",
+                        make_laplacian_diffusion(seed_color),
+                        complexity=1.3
+                    ))
+
+        return deduced
 
     # ═════════════════════════════════════════════════════════════════════════
     # 1. CLASSICAL-EIKONAL DEDUCTIONS

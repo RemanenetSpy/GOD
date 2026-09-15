@@ -62,17 +62,25 @@ class ArcSurvivalWorld:
         )
         self.recent_events: List[Dict[str, Any]] = []
 
+        # First-Principles Invariant Synthesis State
+        self.train_pairs: List[Dict[str, np.ndarray]] = []
+        self.active_candidates: List[Any] = []
+        self.verified_law: Optional[Any] = None
+
         # Load initial puzzle
         self._load_current_puzzle()
 
     def _load_current_puzzle(self):
-        """Loads the current ARC puzzle terrain."""
+        """Loads the current ARC puzzle terrain and deduces candidate physical laws."""
         if not self.all_files:
             self.current_task_id = "genesis_falling_seed"
             self.input_canvas = np.array([[0, 1, 0], [0, 0, 0], [0, 0, 0]], dtype=int)
             self.target_canvas = np.array([[0, 0, 0], [0, 0, 0], [0, 1, 0]], dtype=int)
+            self.train_pairs = [{"input": self.input_canvas.copy(), "output": self.target_canvas.copy()}]
             self.working_canvas = self.input_canvas.copy()
             self.organism.reset_position(3, 3)
+            self.verified_law = None
+            self._deduce_and_rank_invariants()
             return
 
         file_path = self.all_files[self.puzzle_idx % len(self.all_files)]
@@ -83,6 +91,7 @@ class ArcSurvivalWorld:
             return
 
         self.current_task_id = task["task_id"]
+        self.train_pairs = task["train"]
         pair = task["train"][0]
         self.input_canvas = pair["input"].copy()
         self.target_canvas = pair["output"].copy()
@@ -94,10 +103,63 @@ class ArcSurvivalWorld:
 
         h, w = self.working_canvas.shape
         self.organism.reset_position(h, w)
+        self.verified_law = None
+        self._deduce_and_rank_invariants()
+
+    def _deduce_and_rank_invariants(self):
+        """Synthesizes candidate physical laws across all demonstration pairs."""
+        self.active_candidates = self.organism.infer_invariant_laws(self.train_pairs)
+
+        # Check if any candidate law is universally true across ALL demonstration pairs
+        for hyp in self.active_candidates:
+            all_match = True
+            for tp in self.train_pairs:
+                pred = hyp.apply(tp["input"])
+                if pred is None or pred.shape != tp["output"].shape or not np.array_equal(pred, tp["output"]):
+                    all_match = False
+                    break
+            if all_match:
+                self.verified_law = hyp
+                self.organism.active_law_description = f"[{hyp.pillar_id}] {hyp.description}"
+                pred0 = hyp.apply(self.input_canvas)
+                if pred0 is not None and pred0.shape == self.target_canvas.shape:
+                    self.organism.active_predicted_grid = pred0
+                break
+
+        if self.verified_law is None and self.active_candidates:
+            # Guide organism by the best invariant candidate field
+            sample_pred = self.active_candidates[0].apply(self.input_canvas)
+            if sample_pred is not None and sample_pred.shape == self.target_canvas.shape:
+                self.organism.active_predicted_grid = sample_pred
+                self.organism.active_law_description = f"[{self.active_candidates[0].pillar_id}] {self.active_candidates[0].description}"
 
     def tick(self) -> Dict[str, Any]:
         """Runs one biological tick: perception, STDP spikes, 4-pillar council action, and metabolic feedback."""
         self.tick_count += 1
+
+        # 0. First-Principles Invariant Law Check (Instant Mastery through Generalization)
+        if self.verified_law is not None:
+            pred = self.verified_law.apply(self.input_canvas)
+            if pred is not None and pred.shape == self.target_canvas.shape:
+                self.working_canvas = pred.copy()
+                # Record verified law into Ancestral Invariant Memory
+                self.ancestral_memory.record_invariant_solution(
+                    self.current_task_id,
+                    self.verified_law.signature,
+                    self.verified_law.pillar_id,
+                    self.verified_law.description,
+                    self.verified_law.complexity
+                )
+                feast = 50.0
+                self.organism.feed(feast)
+                self.total_puzzles_cleared += 1
+                self.organism.puzzles_cleared += 1
+                event_msg = f"INVARIANT LAW DISCOVERED! [{self.verified_law.pillar_id}] {self.verified_law.description} (+50 Energy FEAST) [Saved in Ancestral Memory]"
+                self._record_event(event_msg, "clear")
+
+                self.puzzle_idx += 1
+                self._load_current_puzzle()
+                return self.get_state()
 
         # 1. Sensory Perception & BinoryCore STDP Synaptic Spikes
         self.organism.perceive_and_spike(self.input_canvas, self.working_canvas)
@@ -283,6 +345,9 @@ class ArcSurvivalWorld:
             "target_canvas": self.target_canvas.tolist(),
             "pillar_info": pillar_info,
             "core_synapses": core_synapse_count,
+            "active_law": getattr(self.organism, "active_law_description", None),
+            "verified_law": self.verified_law.description if self.verified_law else None,
+            "invariants_discovered": len(getattr(self.ancestral_memory, "discovered_invariants", {})),
             "ancestral_memory": self.ancestral_memory.to_dict(),
             "lifespan_memory": self.organism.lifespan_memory.to_dict() if hasattr(self.organism, "lifespan_memory") else {},
             "recent_events": self.recent_events[-8:]
