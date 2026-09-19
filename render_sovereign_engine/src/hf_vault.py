@@ -3,7 +3,7 @@ Mirrors the pattern used by the Automata Multiverse deployment.
 Saves the full physics discovery state as JSON to HF Dataset repo on every checkpoint.
 On Render reboot, restores from HF (true immortal 24/7 training).
 """
-import os, json, threading
+import os, io, json, threading
 from typing import Dict, Any, Optional
 try:
     from huggingface_hub import HfApi, hf_hub_download, create_repo
@@ -36,11 +36,17 @@ class BinoryHFVault:
 
     def save(self, state: Dict[str, Any], filename: str = "binory_checkpoint.json",
              commit_msg: str = "BinoryLogy auto-checkpoint", async_upload: bool = True):
-        """Save checkpoint locally and push to HF Dataset (async by default)."""
+        """Save checkpoint compactly and push to HF Dataset via in-memory stream."""
+        try:
+            compact_json = json.dumps(state, separators=(',', ':'), default=str)
+        except Exception as e:
+            print(f"[BinoryVault] Serialization error: {e}")
+            return
+
         local_path = os.path.join(self.local_cache_dir, filename)
         try:
             with open(local_path, "w", encoding="utf-8") as f:
-                json.dump(state, f, indent=2, default=str)
+                f.write(compact_json)
         except Exception as e:
             print(f"[BinoryVault] Local save error: {e}")
             return
@@ -50,8 +56,9 @@ class BinoryHFVault:
 
         def _upload():
             try:
+                stream_buf = io.BytesIO(compact_json.encode("utf-8"))
                 self.api.upload_file(
-                    path_or_fileobj=local_path,
+                    path_or_fileobj=stream_buf,
                     path_in_repo=filename,
                     repo_id=self.repo_id,
                     repo_type="dataset",

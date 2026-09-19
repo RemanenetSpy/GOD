@@ -1,7 +1,27 @@
 import os
+import io
 import json
 import threading
 from typing import Dict, Any, Optional
+
+def prune_hf_cache():
+    """Prunes temporary huggingface cache locks and incomplete blobs to prevent disk bloat."""
+    import shutil
+    try:
+        cache_hub = os.path.expanduser("~/.cache/huggingface/hub")
+        if os.path.exists(cache_hub):
+            for item in os.listdir(cache_hub):
+                if item.startswith("tmp") or item.endswith(".incomplete") or item.endswith(".lock"):
+                    p = os.path.join(cache_hub, item)
+                    try:
+                        if os.path.isdir(p):
+                            shutil.rmtree(p, ignore_errors=True)
+                        else:
+                            os.remove(p)
+                    except Exception:
+                        pass
+    except Exception:
+        pass
 
 try:
     from huggingface_hub import HfApi, hf_hub_download, create_repo
@@ -59,11 +79,17 @@ class ARCSovereignVault:
         commit_msg: str = "ARC Sovereign checkpoint auto-save",
         async_upload: bool = True
     ):
-        """Saves checkpoint locally and pushes asynchronously to HF Dataset."""
+        """Saves checkpoint compactly and pushes via in-memory stream to HF Dataset."""
+        try:
+            compact_json = json.dumps(state, separators=(',', ':'), default=str)
+        except Exception as e:
+            print(f"[ARC Vault] Serialization error: {e}")
+            return
+
         local_path = os.path.join(self.local_cache_dir, filename)
         try:
             with open(local_path, "w", encoding="utf-8") as fe:
-                json.dump(state, fe, indent=2, default=str)
+                fe.write(compact_json)
         except Exception as e:
             print(f"[ARC Vault] Local save error: {e}")
             return
@@ -73,8 +99,9 @@ class ARCSovereignVault:
 
         def _upload():
             try:
+                stream_buf = io.BytesIO(compact_json.encode("utf-8"))
                 self.api.upload_file(
-                    path_or_fileobj=local_path,
+                    path_or_fileobj=stream_buf,
                     path_in_repo=filename,
                     repo_id=self.repo_id,
                     repo_type="dataset",

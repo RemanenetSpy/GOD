@@ -190,7 +190,7 @@ class BinoryCore:
             "step": self._step,
             "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"),
         }
-        tmp.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        tmp.write_text(json.dumps(data, separators=(',', ':')), encoding="utf-8")
         tmp.replace(self._state_path)
 
     def update(self, active_nodes: list, cpu_load: float) -> dict:
@@ -271,6 +271,12 @@ class BinoryCore:
     def _log_emergence(self, a: str, b: str, strength: float, te: float) -> None:
         ts = time.strftime("%Y-%m-%d %H:%M:%S")
         line = f"[{ts}] CAUSAL LINK: {readable(a)} -->> {readable(b)}  (strength: {strength:.1f}, TE: {te:.4f})\n"
+        try:
+            if self._log_path.exists() and self._log_path.stat().st_size > 500_000:
+                lines = self._log_path.read_text(encoding="utf-8", errors="ignore").splitlines()
+                self._log_path.write_text("\n".join(lines[-1500:]) + "\n", encoding="utf-8")
+        except Exception:
+            pass
         with open(self._log_path, "a", encoding="utf-8") as f:
             f.write(line)
 

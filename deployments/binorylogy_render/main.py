@@ -17,6 +17,11 @@ import json
 import threading
 import math
 import numpy as np
+import shutil
+try:
+    import psutil
+except ImportError:
+    psutil = None
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, Response, Header
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -103,7 +108,52 @@ _restore_from_vault()
 # ── Engine Loop Background Thread ───────────────────────────────────────────
 _sample_interval = 0.5
 _last_cloud_save = time.time()
+_last_housekeeping = time.time()
 CLOUD_SAVE_INTERVAL = 120.0  # 2 minutes = 30 commits/hour, well within HF 128/hr limit
+
+def get_disk_telemetry() -> Dict[str, Any]:
+    """Returns real-time container disk space usage."""
+    if not psutil:
+        return {"status": "unavailable"}
+    try:
+        usage = psutil.disk_usage("/")
+        return {
+            "total_mb": round(usage.total / (1024 * 1024), 1),
+            "used_mb": round(usage.used / (1024 * 1024), 1),
+            "free_mb": round(usage.free / (1024 * 1024), 1),
+            "used_percent": round(usage.percent, 1)
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+def run_disk_housekeeping():
+    """Periodically cleans temporary huggingface cache locks and incomplete blobs to prevent disk bloat."""
+    try:
+        cache_hub = os.path.expanduser("~/.cache/huggingface/hub")
+        if os.path.exists(cache_hub):
+            for item in os.listdir(cache_hub):
+                if item.startswith("tmp") or item.endswith(".incomplete") or item.endswith(".lock"):
+                    p = os.path.join(cache_hub, item)
+                    try:
+                        if os.path.isdir(p):
+                            shutil.rmtree(p, ignore_errors=True)
+                        else:
+                            os.remove(p)
+                    except Exception:
+                        pass
+        tmp_dir = "/tmp"
+        if os.path.exists(tmp_dir):
+            now = time.time()
+            for item in os.listdir(tmp_dir):
+                if item.startswith("tmp") or item.startswith("pip-"):
+                    p = os.path.join(tmp_dir, item)
+                    try:
+                        if os.path.isdir(p) and (now - os.path.getmtime(p) > 3600):
+                            shutil.rmtree(p, ignore_errors=True)
+                    except Exception:
+                        pass
+    except Exception:
+        pass
 
 def _cloud_save(step: int):
     try:
@@ -136,7 +186,7 @@ def _cloud_save(step: int):
         print(f"[BinoryLogy Cloud Save Error]: {e}")
 
 def _engine_loop():
-    global _sample_interval, _last_cloud_save, TOTAL_STEPS
+    global _sample_interval, _last_cloud_save, _last_housekeeping, TOTAL_STEPS
     step = core._step
     
     while True:
@@ -266,6 +316,11 @@ def _engine_loop():
             if now - _last_cloud_save >= CLOUD_SAVE_INTERVAL:
                 _last_cloud_save = now
                 _cloud_save(step)
+
+            # 10. Background Disk Housekeeping every 30 minutes
+            if now - _last_housekeeping >= 1800.0:
+                _last_housekeeping = now
+                run_disk_housekeeping()
                 
         except Exception as e:
             print(f"[BinoryLogy Daemon Error at Step {step}]: {e}")
@@ -306,7 +361,8 @@ def health():
         "system": "BinoryLogy 2.0 Sovereign Physics Engine",
         "step": TOTAL_STEPS,
         "tier": int(curriculum.tier),
-        "cloud_vault": HF_REPO
+        "cloud_vault": HF_REPO,
+        "disk": get_disk_telemetry()
     }
 
 @app.get("/api/state")
@@ -315,6 +371,7 @@ def api_state():
         st = dict(LIVE_STATE)
         if "arc_coordinator" in globals() and arc_coordinator:
             st["arc_arena"] = arc_coordinator.get_telemetry()
+        st["disk"] = get_disk_telemetry()
         return JSONResponse(content=st)
 
 @app.get("/api/discoveries")
