@@ -185,6 +185,7 @@ def generate_arc_html_dashboard() -> str:
   .event-item.toxic { border-left-color: var(--amber); background: rgba(245, 158, 11, 0.08); }
   .event-item.death { border-left-color: var(--red); background: rgba(239, 68, 68, 0.12); color: #fca5a5; }
   .event-item.clear { border-left-color: #38bdf8; background: rgba(56, 189, 248, 0.15); font-weight: bold; }
+  .event-item.synthesis { border-left-color: #ec4899; background: rgba(236, 72, 153, 0.15); color: #f472b6; font-weight: bold; }
 
   /* Bottom Controls & Info */
   .bottom-grid {
@@ -314,6 +315,11 @@ def generate_arc_html_dashboard() -> str:
         <div style="font-size: 14px; font-weight: bold; color: var(--cyan); margin-top: 4px;" id="best-lifespan-info">0 ticks</div>
       </div>
       <div style="background: #131d33; padding: 10px; border-radius: 6px;">
+        <div style="font-size: 11px; color: var(--text-dim);">Epigenetic Living Limbs (Synthesized Procedural Organs):</div>
+        <div style="font-size: 13px; font-weight: bold; color: #ec4899; margin-top: 4px;" id="epigenetic-organs-info">0 Synthesized Limbs</div>
+        <div id="epigenetic-organs-list" style="margin-top: 6px; display: flex; flex-direction: column; gap: 4px; font-size: 11px;"></div>
+      </div>
+      <div style="background: #131d33; padding: 10px; border-radius: 6px;">
         <div style="font-size: 11px; color: var(--text-dim);">Lifespan Spatial Trail:</div>
         <div style="font-size: 14px; font-weight: bold; color: var(--green); margin-top: 4px;" id="lifespan-visited-info">1 / 81 Tiles (1.2%)</div>
       </div>
@@ -432,6 +438,25 @@ async function fetchLiveTelemetry() {
     const visEl = document.getElementById('lifespan-visited-info');
     if (visEl) visEl.innerText = `${visitedCount} / ${totalCells} Tiles (${visitedPct}%)`;
 
+    // Epigenetic Synthesized Organs
+    const organs = d.synthesized_organs || [];
+    const organInfo = document.getElementById('epigenetic-organs-info');
+    const organList = document.getElementById('epigenetic-organs-list');
+    if (organInfo) {
+      organInfo.innerText = `${organs.length} Living Limb${organs.length === 1 ? '' : 's'}`;
+    }
+    if (organList) {
+      if (organs.length === 0) {
+        organList.innerHTML = '<span style="color: #64748b;">No active limbs (synthesizes under stress/stall)</span>';
+      } else {
+        organList.innerHTML = organs.map(o => `
+          <div style="display: flex; justify-content: space-between; background: rgba(236, 72, 153, 0.08); padding: 4px 8px; border-radius: 4px; border-left: 2px solid #ec4899;">
+            <span><strong>${o.name}</strong> <span style="color: #94a3b8;">[${o.type}]</span></span>
+            <span style="color: #10b981;">Fit: ${o.fitness}</span>
+          </div>
+        `).join('');
+      }
+    }
 
     // Render Grids
     if (d.input_grid && d.input_grid.length) {
@@ -452,10 +477,11 @@ async function fetchLiveTelemetry() {
     if (d.recent_events && d.recent_events.length) {
       evBox.innerHTML = d.recent_events.slice().reverse().map(e => {
         let cls = 'event-item';
-        if (e.msg.includes('NUTRITION')) cls += ' nutrition';
+        if (e.msg.includes('EPIGENESIS')) cls += ' synthesis';
+        else if (e.msg.includes('NUTRITION')) cls += ' nutrition';
         else if (e.msg.includes('TOXIC')) cls += ' toxic';
         else if (e.msg.includes('STARVATION')) cls += ' death';
-        else if (e.msg.includes('CLEARED')) cls += ' clear';
+        else if (e.msg.includes('CLEARED') || e.msg.includes('INVARIANT')) cls += ' clear';
         return `
           <div class="${cls}">
             <span>${e.msg}</span>

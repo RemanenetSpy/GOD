@@ -30,6 +30,8 @@ class AncestralCausalMemory:
         self.discovered_invariants: Dict[str, Dict[str, Any]] = {}
         # Invariant Class Prior Statistics: law_signature -> success count
         self.invariant_class_counts: Dict[str, int] = {}
+        # Synthesized Algorithmic Genes: signature -> serialized organ dict
+        self.synthesized_genes: Dict[str, Dict[str, Any]] = {}
 
     def record_nutrition(self, task_id: str, r: int, c: int, color: int):
         """Records a verified food source."""
@@ -106,6 +108,20 @@ class AncestralCausalMemory:
         """Returns invariant law signatures sorted by historical success frequency."""
         return sorted(self.invariant_class_counts.keys(), key=lambda k: self.invariant_class_counts[k], reverse=True)
 
+    def record_synthesized_gene(self, organ_data: Dict[str, Any]):
+        """Records a synthesized procedural limb for generational inheritance."""
+        sig = organ_data.get("signature")
+        if sig:
+            self.synthesized_genes[sig] = organ_data
+
+    def get_inherited_genes(self) -> List[Dict[str, Any]]:
+        """Returns sorted list of active synthesized genes by fitness score."""
+        return sorted(
+            self.synthesized_genes.values(),
+            key=lambda x: x.get("fitness_score", 1.0),
+            reverse=True
+        )
+
     def to_dict(self) -> Dict[str, Any]:
         """Serializes ancestral memory for checkpoint storage and telemetry."""
         return {
@@ -114,9 +130,11 @@ class AncestralCausalMemory:
             "task_deaths": self.task_deaths,
             "discovered_invariants": self.discovered_invariants,
             "invariant_class_counts": self.invariant_class_counts,
+            "synthesized_genes": self.synthesized_genes,
             "total_invariants_discovered": len(self.discovered_invariants),
             "total_nutrition_discovered": len(self.confirmed_nutrition),
             "total_toxic_vetoed": len(self.toxic_ledger),
+            "total_synthesized_genes": len(self.synthesized_genes),
             "total_deaths_recorded": sum(self.task_deaths.values()),
             "recent_lethal_traces": self.lethal_traces[-5:]
         }
@@ -131,4 +149,5 @@ class AncestralCausalMemory:
         self.lethal_traces = data.get("recent_lethal_traces", [])
         self.discovered_invariants = data.get("discovered_invariants", {})
         self.invariant_class_counts = data.get("invariant_class_counts", {})
+        self.synthesized_genes = data.get("synthesized_genes", {})
 

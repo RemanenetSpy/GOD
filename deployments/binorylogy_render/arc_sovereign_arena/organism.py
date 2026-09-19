@@ -91,6 +91,17 @@ except ImportError:
 
 
 
+try:
+    from epigenetic_synthesizer import EpigeneticOrgan, EpigeneticSandbox, EpigeneticProgramSynthesizer
+except ImportError:
+    try:
+        from src.epigenetic_synthesizer import EpigeneticOrgan, EpigeneticSandbox, EpigeneticProgramSynthesizer
+    except ImportError:
+        EpigeneticOrgan = None
+        EpigeneticSandbox = None
+        EpigeneticProgramSynthesizer = None
+
+
 class ArcLivingOrganism:
     """
     Embodied avatar of the Sovereign Civilization living on the ARC canvas.
@@ -139,6 +150,14 @@ class ArcLivingOrganism:
         self.active_predicted_grid: Optional[np.ndarray] = None
         self.active_law_description: Optional[str] = None
 
+        # Epigenetic Self-Synthesis: Dynamic Living Limbs & Procedural Organs
+        self.synthesizer = EpigeneticProgramSynthesizer() if EpigeneticProgramSynthesizer else None
+        self.synthesized_organs: Dict[str, Any] = {}
+        self._last_synthesis_tick: int = -999
+
+        # Inherit and compile verified genes from ancestral lineage
+        self._inherit_ancestral_organs()
+
     @property
     def energy(self) -> float:
         """Returns the sovereign metabolic vitality (hunger) of the organism."""
@@ -168,6 +187,58 @@ class ArcLivingOrganism:
             for n in self.civilization.nodes.values():
                 if hasattr(n, "state") and hasattr(n.state, "position"):
                     n.state.position = (self.r, self.c)
+
+    def _inherit_ancestral_organs(self):
+        """Compiles and mounts all verified algorithmic genes inherited from ancestry."""
+        if not self.ancestral_memory or not hasattr(self.ancestral_memory, "get_inherited_genes") or not EpigeneticSandbox or not EpigeneticOrgan:
+            return
+        for gene_data in self.ancestral_memory.get_inherited_genes():
+            sig = gene_data.get("signature")
+            code_str = gene_data.get("code_str")
+            if sig and code_str and sig not in self.synthesized_organs:
+                func, msg = EpigeneticSandbox.compile_organ(code_str)
+                if func is not None:
+                    organ = EpigeneticOrgan.from_dict(gene_data)
+                    organ.callable_func = func
+                    self.synthesized_organs[sig] = organ
+
+    def trigger_epigenetic_synthesis(
+        self,
+        train_pairs: List[Dict[str, np.ndarray]],
+        working_canvas: np.ndarray,
+        step: int = 0
+    ) -> List[Any]:
+        """
+        Synthesizes novel procedural organs to overcome environmental stagnation.
+        """
+        if not self.synthesizer:
+            return []
+        if self.lifespan_ticks - self._last_synthesis_tick < 15:
+            return []
+        self._last_synthesis_tick = self.lifespan_ticks
+
+        new_organs = self.synthesizer.synthesize_candidates(train_pairs, working_canvas, step=step)
+        mounted = []
+        for organ in new_organs:
+            if organ.signature not in self.synthesized_organs:
+                self.synthesized_organs[organ.signature] = organ
+                mounted.append(organ)
+                if self.ancestral_memory and hasattr(self.ancestral_memory, "record_synthesized_gene"):
+                    self.ancestral_memory.record_synthesized_gene(organ.to_dict())
+        return mounted
+
+    def get_synthesized_organs_summary(self) -> List[Dict[str, Any]]:
+        """Returns metadata of currently active synthesized procedural organs."""
+        return [
+            {
+                "signature": org.signature,
+                "name": org.organ_name,
+                "type": org.organ_type,
+                "fitness": round(org.fitness_score, 2),
+                "success_rate": round(org.success_count / max(1, org.usage_count), 2)
+            }
+            for org in self.synthesized_organs.values()
+        ]
 
     def infer_invariant_laws(self, train_pairs: List[Dict[str, np.ndarray]]) -> List[Any]:
         """
@@ -250,9 +321,33 @@ class ArcLivingOrganism:
 
         h, w = working_canvas.shape
 
+        # 0. Dynamic Procedural Organ Activation (Epigenetic Morphogenesis)
+        if self.active_predicted_grid is None and self.synthesized_organs and EpigeneticSandbox:
+            transformers = [org for org in self.synthesized_organs.values() if org.organ_type == "PATTERN_TRANSFORMER" and org.callable_func]
+            if transformers:
+                best_transformer = max(transformers, key=lambda x: x.fitness_score)
+                res, success, _ = EpigeneticSandbox.execute_safely(best_transformer.callable_func, working_canvas)
+                if success and isinstance(res, np.ndarray) and res.shape == working_canvas.shape:
+                    self.active_predicted_grid = res
+                    self.active_law_description = f"Dynamic Organ: {best_transformer.organ_name}"
+
         # 1. Classical-Eikonal Node: Spatial Kinematics & Pathing
-        # Compute Eikonal gradient toward hungry / unsolved tiles
         classical_move = None
+
+        # Consult synthesized VECTOR_NAVIGATOR organ if mounted
+        if self.synthesized_organs and EpigeneticSandbox and np.random.rand() < 0.85:
+            navigators = [org for org in self.synthesized_organs.values() if org.organ_type == "VECTOR_NAVIGATOR" and org.callable_func]
+            if navigators:
+                best_nav = max(navigators, key=lambda x: x.fitness_score)
+                goal_grid = self.active_predicted_grid if (self.active_predicted_grid is not None and self.active_predicted_grid.shape == working_canvas.shape) else working_canvas
+                res, success, _ = EpigeneticSandbox.execute_safely(best_nav.callable_func, working_canvas, goal_grid, self.r, self.c)
+                if success and isinstance(res, tuple) and len(res) == 2:
+                    dr, dc = res
+                    dir_map = {(-1, 0): self.ACTION_MOVE_UP, (1, 0): self.ACTION_MOVE_DOWN,
+                               (0, -1): self.ACTION_MOVE_LEFT, (0, 1): self.ACTION_MOVE_RIGHT}
+                    if (dr, dc) in dir_map:
+                        classical_move = dir_map[(dr, dc)]
+
         candidates = []
         for dr, dc, act in [(-1, 0, self.ACTION_MOVE_UP), (1, 0, self.ACTION_MOVE_DOWN),
                             (0, -1, self.ACTION_MOVE_LEFT), (0, 1, self.ACTION_MOVE_RIGHT)]:
@@ -282,7 +377,7 @@ class ArcLivingOrganism:
 
                 candidates.append((score, act))
 
-        if candidates:
+        if classical_move is None and candidates:
             candidates.sort(key=lambda x: x[0], reverse=True)
             if candidates[0][0] > 0.0 and np.random.rand() < 0.75:
                 classical_move = candidates[0][1]
@@ -432,7 +527,7 @@ class ArcLivingOrganism:
             self.is_alive = False
 
     def spawn_next_generation(self) -> "ArcLivingOrganism":
-        """Spawns next generation of the Sovereign Civilization, inheriting Ancestral Causal Memory."""
+        """Spawns next generation of the Sovereign Civilization, inheriting Ancestral Causal Memory and Synthesized Organs."""
         child = ArcLivingOrganism(
             civilization=self.civilization,
             core=self.core,
@@ -441,4 +536,6 @@ class ArcLivingOrganism:
         )
         child.puzzles_cleared = self.puzzles_cleared
         child._vitality = 100.0
+        # Inherit all currently functional synthesized organs
+        child.synthesized_organs.update(self.synthesized_organs)
         return child

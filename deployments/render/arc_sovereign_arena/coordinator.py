@@ -186,6 +186,8 @@ class SovereignArcCoordinator:
                 "target_grid": st["target_canvas"],
                 "pillar_info": st["pillar_info"],
                 "core_synapses": st["core_synapses"],
+                "synthesized_organs": st.get("synthesized_organs", []),
+                "ancestral_memory": st.get("ancestral_memory", {}),
                 "recent_events": st["recent_events"],
                 "last_update": time.strftime("%H:%M:%S UTC", time.gmtime())
             }
@@ -223,6 +225,7 @@ class SovereignArcCoordinator:
                 "lifespan": self.world.organism.lifespan_ticks,
                 "food_eaten": self.world.organism.food_eaten
             },
+            "synthesized_organs": self.world.organism.get_synthesized_organs_summary() if hasattr(self.world.organism, "get_synthesized_organs_summary") else [],
             "ancestral_memory": self.world.ancestral_memory.to_dict(),
             "recent_events": self.world.recent_events[-6:],
             "cloud_vault": {

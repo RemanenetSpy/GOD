@@ -167,7 +167,20 @@ class ArcSurvivalWorld:
         # 1. Sensory Perception & BinoryCore STDP Synaptic Spikes
         self.organism.perceive_and_spike(self.input_canvas, self.working_canvas)
 
-        # 2. Embodied Action via 4-Pillar Council Consensus (Informed by Ancestral Memory)
+        # 1b. Epigenetic Morphogenesis Pulse:
+        # If vitality is under metabolic pressure or puzzle is stalling, synthesize dynamic organs
+        task_deaths = self.ancestral_memory.task_deaths.get(self.current_task_id, 0) if self.ancestral_memory else 0
+        if (self.organism.energy < 40.0 or task_deaths > 5) and hasattr(self.organism, "trigger_epigenetic_synthesis"):
+            newly_synthesized = self.organism.trigger_epigenetic_synthesis(
+                self.train_pairs,
+                self.working_canvas,
+                step=self.tick_count
+            )
+            if newly_synthesized:
+                names = ", ".join([o.organ_name for o in newly_synthesized])
+                self._record_event(f"🧬 EPIGENESIS: Organism synthesized dynamic organs: [{names}]", "synthesis")
+
+        # 2. Embodied Action via 4-Pillar Council Consensus (Informed by Ancestral Memory & Dynamic Organs)
         action = self.organism.decide_action(self.input_canvas, self.working_canvas, task_id=self.current_task_id)
 
         event_msg = None
@@ -204,6 +217,11 @@ class ArcSurvivalWorld:
                     self.ancestral_memory.record_nutrition(self.current_task_id, r, c, paint_color)
                     event_msg = f"NUTRITION! Pixel ({r},{c}) set to {paint_color} (+15 Energy) [Saved in Ancestral Memory]"
 
+                    # Reward active synthesized procedural organs
+                    if hasattr(self.organism, "synthesized_organs"):
+                        for org in self.organism.synthesized_organs.values():
+                            org.record_success(0.5)
+
                     # Potentiate STDP node in BinoryCore
                     if self.core is not None and hasattr(self.core, "update"):
                         try:
@@ -221,6 +239,11 @@ class ArcSurvivalWorld:
                 self.organism.punish(waste_penalty)
                 self.working_canvas[r, c] = paint_color
                 event_msg = f"TOXIC! Pixel ({r},{c}) set to {paint_color}, needed {target_color} (-3 Energy) [Vetoed in Ledger]"
+
+                # Penalize active synthesized procedural organs
+                if hasattr(self.organism, "synthesized_organs"):
+                    for org in self.organism.synthesized_organs.values():
+                        org.record_failure(0.8)
 
                 # Record toxic choice in Ancestral Causal Ledger
                 self.ancestral_memory.record_toxic(self.current_task_id, r, c, paint_color, penalty=waste_penalty)
@@ -351,6 +374,7 @@ class ArcSurvivalWorld:
             "active_law": getattr(self.organism, "active_law_description", None),
             "verified_law": self.verified_law.description if self.verified_law else None,
             "invariants_discovered": len(getattr(self.ancestral_memory, "discovered_invariants", {})),
+            "synthesized_organs": self.organism.get_synthesized_organs_summary() if hasattr(self.organism, "get_synthesized_organs_summary") else [],
             "ancestral_memory": self.ancestral_memory.to_dict(),
             "lifespan_memory": self.organism.lifespan_memory.to_dict() if hasattr(self.organism, "lifespan_memory") else {},
             "recent_events": self.recent_events[-8:]
