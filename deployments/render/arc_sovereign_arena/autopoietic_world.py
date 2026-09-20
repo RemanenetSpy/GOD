@@ -106,6 +106,30 @@ class ArcSurvivalWorld:
         self.verified_law = None
         self._deduce_and_rank_invariants()
 
+    def _respawn_organism_on_terrain(self):
+        """
+        Niche Construction & Ecological Inheritance (Odling-Smee et al., 2003):
+        Offspring inherit the terrain transformed by their ancestors.
+        Preserves confirmed nutrient pixels, purges toxic mistakes back to input,
+        and resets organism position and vitality.
+        """
+        h, w = self.working_canvas.shape
+        self.organism.reset_position(h, w)
+        self.organism._vitality = 100.0
+        self.organism.is_alive = True
+
+        # Purge toxic waste back to input terrain while preserving confirmed food
+        in_h, in_w = self.input_canvas.shape
+        for r in range(h):
+            for c in range(w):
+                curr_val = self.working_canvas[r, c]
+                target_val = self.target_canvas[r, c]
+                input_val = self.input_canvas[r, c] if (r < in_h and c < in_w) else 0
+
+                # If pixel is toxic (wrong and not matching target), revert to input
+                if curr_val != target_val and curr_val != input_val:
+                    self.working_canvas[r, c] = input_val
+
     def _deduce_and_rank_invariants(self):
         """Synthesizes candidate physical laws across all demonstration pairs."""
         self.active_candidates = self.organism.infer_invariant_laws(self.train_pairs)
@@ -290,9 +314,9 @@ class ArcSurvivalWorld:
             self.generation += 1
             self.total_births += 1
             self.organism = self.organism.spawn_next_generation()
-            self._load_current_puzzle()
+            self._respawn_organism_on_terrain()
 
-            event_msg = f"STARVATION! Gen {old_gen} starved at tick {self.tick_count}. Fatal choices permanently vetoed in Ancestral Ledger."
+            event_msg = f"STARVATION! Gen {old_gen} starved at tick {self.tick_count}. Niche Construction preserved food; toxic mistakes purged."
             self._record_event(event_msg, "death")
             return self.get_state()
 

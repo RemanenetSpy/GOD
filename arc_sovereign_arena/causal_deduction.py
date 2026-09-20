@@ -429,6 +429,61 @@ class InverseCausalDeducer:
                 gravity_up, complexity=1.5
             ))
 
+            # F. Boundary-Anchored Relative Kinematics & Shear Advection (No-Slip Boundary + Differential Drift)
+            shear_configs = [
+                ("bottom_base", "right", "Fixed Bottom Base + Rightward Shear Drift", "bottom", 0, 1),
+                ("bottom_base", "left", "Fixed Bottom Base + Leftward Shear Drift", "bottom", 0, -1),
+                ("top_base", "right", "Fixed Top Base + Rightward Shear Drift", "top", 0, 1),
+                ("top_base", "left", "Fixed Top Base + Leftward Shear Drift", "top", 0, -1),
+                ("left_base", "down", "Fixed Left Base + Downward Shear Drift", "left", 1, 0),
+                ("left_base", "up", "Fixed Left Base + Upward Shear Drift", "left", -1, 0),
+                ("right_base", "down", "Fixed Right Base + Downward Shear Drift", "right", 1, 0),
+                ("right_base", "up", "Fixed Right Base + Upward Shear Drift", "right", -1, 0),
+            ]
+            for tag, sdir, desc, anchor_type, dr, dc in shear_configs:
+                def make_anchored_shear_op(atype=anchor_type, shift_r=dr, shift_c=dc):
+                    def shear_fn(grid):
+                        res = np.zeros_like(grid)
+                        h, w = grid.shape
+                        colors = [c for c in np.unique(grid) if c != 0]
+                        for col in colors:
+                            coords = np.argwhere(grid == col)
+                            if len(coords) == 0:
+                                continue
+                            r_min, c_min = np.min(coords, axis=0)
+                            r_max, c_max = np.max(coords, axis=0)
+                            for r, c in coords:
+                                is_anchored = False
+                                if atype == "bottom":
+                                    # Fixed base: bottom row or corner cell above bottom
+                                    if r == r_max or (r == r_max - 1 and c == c_max):
+                                        is_anchored = True
+                                elif atype == "top":
+                                    if r == r_min or (r == r_min + 1 and c == c_min):
+                                        is_anchored = True
+                                elif atype == "left":
+                                    if c == c_min or (c == c_min + 1 and r == r_max):
+                                        is_anchored = True
+                                elif atype == "right":
+                                    if c == c_max or (c == c_max - 1 and r == r_min):
+                                        is_anchored = True
+
+                                if is_anchored:
+                                    res[r, c] = col
+                                else:
+                                    nr, nc = r + shift_r, c + shift_c
+                                    if 0 <= nr < h and 0 <= nc < w:
+                                        res[nr, nc] = col
+                        return res
+                    return shear_fn
+
+                deduced.append(DeducedHypothesis(
+                    "classical_prime", f"anchored_shear_{tag}_{sdir}",
+                    f"Classical Kinematics: {desc}",
+                    make_anchored_shear_op(anchor_type, dr, dc),
+                    complexity=1.8
+                ))
+
         return deduced
 
     # ═════════════════════════════════════════════════════════════════════════
