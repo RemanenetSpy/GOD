@@ -56,6 +56,7 @@ class SovereignArcCoordinator:
         self.is_running = False
         self._thread: Optional[threading.Thread] = None
         self._last_vault_save = 0.0
+        self._last_puzzles_cleared = 0
         self.cloud_sync_count = 0
 
         # Initialize the Living Autopoietic World powered directly by the 4 Pillars
@@ -108,6 +109,7 @@ class SovereignArcCoordinator:
             self.world.best_lifespan = saved.get("best_lifespan", 0)
             if "ancestral_memory" in saved:
                 self.world.ancestral_memory.load_dict(saved["ancestral_memory"])
+            self._last_puzzles_cleared = self.world.total_puzzles_cleared
 
             print(f"[ARC Survival Vault Cloud Sync] Restored Generation {self.world.generation} | {self.world.total_deaths} Deaths | {self.world.total_puzzles_cleared} Puzzles Cleared from {getattr(self.vault, 'repo_id', 'cache')}")
         except Exception as e:
@@ -117,8 +119,11 @@ class SovereignArcCoordinator:
         """Saves living lineage, generational stats, and core state to Cloud Vault."""
         if not self.vault:
             return
+        if os.environ.get("DISABLE_CLOUD_VAULT", "").lower() in ("1", "true", "yes"):
+            return
+        sync_interval = float(os.environ.get("ARC_VAULT_SYNC_INTERVAL", "3600.0"))  # 1 hour default
         now = time.time()
-        if not force and (now - self._last_vault_save < 30.0):
+        if not force and (now - self._last_vault_save < sync_interval):
             return
         self._last_vault_save = now
 
@@ -192,8 +197,12 @@ class SovereignArcCoordinator:
                 "last_update": time.strftime("%H:%M:%S UTC", time.gmtime())
             }
 
-            # 3. Periodic cloud save
-            self._save_to_vault(force=False)
+            # 3. Periodic cloud save (Force on puzzle cleared milestone, otherwise 1hr interval)
+            if self.world.total_puzzles_cleared > self._last_puzzles_cleared:
+                self._last_puzzles_cleared = self.world.total_puzzles_cleared
+                self._save_to_vault(force=True)
+            else:
+                self._save_to_vault(force=False)
 
             # Ticking speed: ~12.5 ticks per second (0.08s)
             time.sleep(0.08)

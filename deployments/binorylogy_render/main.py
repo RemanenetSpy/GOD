@@ -109,7 +109,7 @@ _restore_from_vault()
 _sample_interval = 0.5
 _last_cloud_save = time.time()
 _last_housekeeping = time.time()
-CLOUD_SAVE_INTERVAL = 120.0  # 2 minutes = 30 commits/hour, well within HF 128/hr limit
+CLOUD_SAVE_INTERVAL = float(os.environ.get("CLOUD_SAVE_INTERVAL", "3600.0"))  # 1 hour (was 2 minutes, saving 97% bandwidth)
 
 def get_disk_telemetry() -> Dict[str, Any]:
     """Returns real-time container disk space usage."""
@@ -156,6 +156,8 @@ def run_disk_housekeeping():
         pass
 
 def _cloud_save(step: int):
+    if os.environ.get("DISABLE_CLOUD_VAULT", "").lower() in ("1", "true", "yes"):
+        return
     try:
         cur_status = curriculum.status()
         state = {

@@ -97,6 +97,15 @@ class ARCSovereignVault:
         if not self.api:
             return
 
+        # Bandwidth Guard: Hash deduplication to eliminate redundant network uploads
+        import hashlib
+        content_hash = hashlib.sha256(compact_json.encode("utf-8")).hexdigest()
+        if not hasattr(self, "_last_hashes"):
+            self._last_hashes = {}
+        if self._last_hashes.get(filename) == content_hash:
+            return
+        self._last_hashes[filename] = content_hash
+
         def _upload():
             try:
                 stream_buf = io.BytesIO(compact_json.encode("utf-8"))
